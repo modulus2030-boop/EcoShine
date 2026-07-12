@@ -1,0 +1,394 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoShine Car Wash cc | Premium Mobile Car Care</title>
+  <meta name="description" content="EcoShine Car Wash cc - Premium mobile car wash service. We come to you, anytime, anywhere. Eco-friendly, water-saving car detailing in Namibia.">
+  <link rel="icon" type="image/png" href="assets/images/icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emerald: { 500: '#6dbb6d', 600: '#5da85d', 400: '#8cc88c' },
+            teal: { 700: '#1a5f7a', 600: '#1e6b8a', 500: '#23799c' },
+            slate: { 950: '#07090f', 900: '#0a0f1a', 850: '#0d1320' }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/custom-animations.css">
+  <link rel="stylesheet" href="css/tailwind-base.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    html { scroll-behavior: smooth; }
+    body {
+      background:
+        radial-gradient(circle at top, rgba(109, 187, 109, 0.08), transparent 32%),
+        radial-gradient(circle at 85% 15%, rgba(35, 121, 156, 0.10), transparent 28%),
+        linear-gradient(180deg, #05070c 0%, #070b13 35%, #05070c 100%);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    .section-shell {
+      position: relative;
+      isolation: isolate;
+    }
+    .section-shell::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(109,187,109,0.06), transparent 40%);
+      pointer-events: none;
+      z-index: -1;
+    }
+    .glass-panel {
+      background: rgba(10, 15, 26, 0.68);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+    }
+    .premium-button {
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+    .premium-button:hover { transform: translateY(-1px); }
+    .metric-card {
+      background: rgba(10, 15, 26, 0.64);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 12px 40px rgba(0,0,0,0.22);
+    }
+    .timeline-node {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(10,15,26,0.72);
+      backdrop-filter: blur(14px);
+    }
+    .footer-field {
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.03);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-gray-100">
+
+  <!-- NAVBAR COMPONENT -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-white/5 transition-all duration-500" style="padding-top: env(safe-area-inset-top);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-18">
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center gap-4 group">
+          <div class="relative">
+            <img src="assets/images/icon.png" alt="EcoShine" class="h-16 w-16 md:h-20 md:w-20 object-contain relative z-10 transition-transform duration-300 group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-30 blur-md rounded-full"></div>
+          </div>
+          <div class="hidden sm:block">
+            <span class="text-white font-bold text-xl md:text-2xl tracking-tight uppercase">Eco<span class="text-emerald-400">Shine</span></span>
+            <span class="block text-[10px] text-emerald-400 tracking-[0.25em] uppercase font-semibold -mt-0.5">CAR WASHING</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden lg:flex flex-1 items-end justify-center gap-8 xl:gap-10 pb-1" style="transform: translateY(1cm);">
+          <a href="index.html" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</a>
+          <a href="#mission" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">About Us</a>
+          <a href="#pricing" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Pricing</a>
+          <a href="#contact" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Contact Us</a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-300 hover:text-white transition-colors">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden lg:hidden pb-4">
+        <div class="glass-strong rounded-xl p-4 space-y-2">
+          <a href="index.html" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Home</a>
+          <a href="#mission" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">About Us</a>
+          <a href="#pricing" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Pricing</a>
+          <a href="#contact" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="relative min-h-screen flex items-start overflow-hidden pt-28 sm:pt-32 section-shell">
+    <div class="absolute inset-0 opacity-90">
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(109,187,109,0.12),transparent_24%),radial-gradient(circle_at_80%_20%,rgba(35,121,156,0.12),transparent_22%),linear-gradient(180deg,rgba(5,7,12,0.2),rgba(5,7,12,0.94))]"></div>
+      <div class="absolute inset-0 grid-bg opacity-20"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid lg:grid-cols-[1.15fr_0.85fr] gap-8 lg:gap-12 items-start">
+        <div class="max-w-2xl space-y-6 lg:pr-4">
+          <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[0.92] tracking-tight text-white">
+            We Come to You. <span class="text-emerald-400">Anytime.</span> Anywhere.
+          </h1>
+          <h2 class="font-display text-2xl sm:text-3xl font-semibold text-gray-200 leading-snug">
+            Premium Mobile Car Wash at Your Home, Office, or Business.
+          </h2>
+          <div class="pt-1 flex flex-wrap items-center gap-3">
+            <a href="auth.html" class="premium-button inline-flex items-center justify-center rounded-xl bg-emerald-500 px-7 py-4 text-sm font-bold text-white shadow-none hover:bg-emerald-400">
+              Book Now
+            </a>
+            <a href="index.html#contact" class="premium-button inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-7 py-4 text-sm font-semibold text-gray-200 hover:border-emerald-400/40 hover:text-white hover:bg-white/10">
+              Visit Site
+            </a>
+          </div>
+        </div>
+        <div class="lg:pl-4 flex flex-col items-center lg:items-start lg:-ml-8">
+          <div class="relative w-full max-w-[480px]">
+            <img src="assets/images/icon.png" alt="EcoShine mobile car care hero visual" class="w-full h-auto object-contain">
+            <div class="absolute right-4 top-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-slate-950/75 px-4 py-2 text-sm font-semibold text-emerald-300 backdrop-blur-md">
+              <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+              24/7 Hours
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT US / MISSION SECTION -->
+  <section id="mission" class="relative py-24 sm:py-28 section-shell">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-start">
+        <div class="space-y-8">
+          <div class="space-y-5">
+            <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[0.95] tracking-tight text-white max-w-3xl md:whitespace-nowrap md:max-w-none" style="margin-top: -2cm;">
+              Redefining Car Care for a Greener Tomorrow
+            </h2>
+            <div class="grid gap-4 sm:grid-cols-3 mt-[7cm]">
+              <div class="glass-panel rounded-2xl overflow-hidden min-h-[140px]">
+                <img src="assets/images/car%20washing.png" alt="Car washing" class="h-full w-full object-cover">
+              </div>
+              <div class="glass-panel rounded-2xl overflow-hidden min-h-[140px]">
+                <img src="assets/images/washing%20quality.png" alt="Washing quality" class="h-full w-full object-cover">
+              </div>
+              <div class="glass-panel rounded-2xl overflow-hidden min-h-[140px]">
+                <img src="assets/images/wheel.png" alt="Wheel cleaning" class="h-full w-full object-cover">
+              </div>
+            </div>
+            <div class="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] items-start">
+              <div class="space-y-6">
+                <p class="text-base sm:text-lg leading-8 text-gray-300 max-w-2xl">
+                  EcoShine was founded to deliver a flawless, showroom detail without costing our planet or draining our precious water resources. In a country as dry as ours, saving every drop matters. That’s why we bring a premium, hassle-free car wash experience straight to your doorstep anywhere. No queues, no wasted water, just a brilliant shine that protects your car and Namibia’s future.
+                </p>
+
+                <div class="flex flex-wrap items-center gap-4">
+                  <a href="#pricing" class="premium-button inline-flex items-center gap-2 rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-5 py-3 text-sm font-semibold text-emerald-300 hover:bg-emerald-400/15 hover:text-emerald-200">
+                    Learn more about our EcoShine <span aria-hidden="true">→</span>
+                  </a>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <div class="glass-panel rounded-xl p-3 sm:p-4 border border-white/10 bg-white/4">
+                  <div class="flex items-start gap-2.5">
+                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400/20 to-teal-500/20 ring-1 ring-emerald-400/20 text-emerald-300">
+                      <i class="fas fa-water text-[11px]"></i>
+                    </div>
+                    <div class="space-y-1">
+                      <h3 class="text-sm font-bold text-white">Smart Water-Saving</h3>
+                      <p class="text-xs leading-5 text-gray-300">Use 80% less water than traditional washes.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="glass-panel rounded-xl p-3 sm:p-4 border border-white/10 bg-white/4">
+                  <div class="flex items-start gap-2.5">
+                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400/20 to-teal-500/20 ring-1 ring-emerald-400/20 text-emerald-300">
+                      <i class="fas fa-location-dot text-[11px]"></i>
+                    </div>
+                    <div class="space-y-1">
+                      <h3 class="text-sm font-bold text-white">100% Mobile</h3>
+                      <p class="text-xs leading-5 text-gray-300">We come directly to your home, apartment, or office.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+
+  <!-- PRICING SECTION -->
+  <section id="pricing" class="relative py-24 sm:py-28 section-shell">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="max-w-4xl space-y-4 mb-12">
+        <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[0.96] tracking-tight text-white">
+          Professional wash packages made simple
+        </h2>
+        <p class="text-base sm:text-lg leading-8 text-gray-300 max-w-2xl">
+          Professional detailing brought directly to your home or office. No hidden fees.
+        </p>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-3 items-stretch">
+        <article class="group glass-panel rounded-3xl p-5 sm:p-6 flex flex-col transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.015] hover:shadow-[0_28px_70px_rgba(0,0,0,0.38)]">
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <h3 class="font-display text-xl sm:text-2xl font-bold text-white leading-tight">The Quick Clean</h3>
+            <span class="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.28em] text-emerald-300 whitespace-nowrap">Maintenance Wash</span>
+          </div>
+
+          <div class="space-y-3">
+            <div class="rounded-2xl border border-white/10 bg-white/4 p-3.5 sm:p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h4 class="font-display text-lg sm:text-xl font-bold text-white leading-tight">Express Exterior Wash</h4>
+                  <p class="mt-1 text-xs sm:text-sm leading-6 text-gray-300">Exterior wash &amp; tire cleaning</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-400">Price</p>
+                  <p class="mt-1.5 text-xl sm:text-2xl font-extrabold text-white leading-none">N$ 80</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-white/10 bg-white/4 p-3.5 sm:p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h4 class="font-display text-lg sm:text-xl font-bold text-white leading-tight">Interior Cleaning</h4>
+                  <p class="mt-1 text-xs sm:text-sm leading-6 text-gray-300">Vacuum, dashboard &amp; windows</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-400">Price</p>
+                  <p class="mt-1.5 text-xl sm:text-2xl font-extrabold text-white leading-none">N$ 180</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <p class="text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Best for</p>
+            <p class="mt-2 text-xs sm:text-sm leading-6 text-gray-300">Regular weekly or bi-weekly upkeep.</p>
+          </div>
+
+        </article>
+
+        <article class="group glass-panel rounded-3xl p-5 sm:p-6 flex flex-col relative border border-emerald-400/40 shadow-[0_0_0_1px_rgba(109,187,109,0.12),0_24px_70px_rgba(0,0,0,0.35)] transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.015] hover:shadow-[0_28px_70px_rgba(0,0,0,0.42)] lg:scale-[1.03]">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-emerald-400 px-4 py-1 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-950 shadow-lg">
+            Most Popular
+          </div>
+          <div class="flex items-center justify-between gap-3 mb-4 pt-2">
+            <h3 class="font-display text-xl sm:text-2xl font-bold text-white leading-tight">The Eco-Detail</h3>
+            <span class="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.28em] text-emerald-300 whitespace-nowrap">Deep Care</span>
+          </div>
+
+          <div class="space-y-3">
+            <div class="rounded-2xl border border-emerald-400/25 bg-emerald-400/8 p-3.5 sm:p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h4 class="font-display text-lg sm:text-xl font-bold text-white leading-tight">Premium Wash</h4>
+                  <p class="mt-1 text-xs sm:text-sm leading-6 text-gray-300">Exterior, tires &amp; wax finish</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-400">Price</p>
+                  <p class="mt-1.5 text-xl sm:text-2xl font-extrabold text-white leading-none">N$ 150</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-emerald-400/25 bg-emerald-400/8 p-3.5 sm:p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h4 class="font-display text-lg sm:text-xl font-bold text-white leading-tight">Full Detailing</h4>
+                  <p class="mt-1 text-xs sm:text-sm leading-6 text-gray-300">Complete interior &amp; exterior</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-400">Price</p>
+                  <p class="mt-1.5 text-xl sm:text-2xl font-extrabold text-white leading-none">N$ 350</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <p class="text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Best for</p>
+            <p class="mt-2 text-xs sm:text-sm leading-6 text-gray-300">Deep interior and exterior care.</p>
+          </div>
+
+        </article>
+
+        <article class="group glass-panel rounded-3xl p-5 sm:p-6 flex flex-col transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.015] hover:shadow-[0_28px_70px_rgba(0,0,0,0.38)]">
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <h3 class="font-display text-xl sm:text-2xl font-bold text-white leading-tight">The Executive Polish</h3>
+            <span class="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.28em] text-emerald-300 whitespace-nowrap">Premium</span>
+          </div>
+
+          <div class="space-y-3">
+            <div class="rounded-2xl border border-white/10 bg-white/4 p-3.5 sm:p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h4 class="font-display text-lg sm:text-xl font-bold text-white leading-tight">SUV &amp; Double Cab</h4>
+                  <p class="mt-1 text-xs sm:text-sm leading-6 text-gray-300">Premium full wash</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-400">Price</p>
+                  <p class="mt-1.5 text-xl sm:text-2xl font-extrabold text-white leading-none">N$ 220</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-2xl border border-white/10 bg-white/4 p-3.5 sm:p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h4 class="font-display text-lg sm:text-xl font-bold text-white leading-tight">Fleet &amp; Corporate</h4>
+                  <p class="mt-1 text-xs sm:text-sm leading-6 text-gray-300">Custom packages</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-[10px] font-semibold uppercase tracking-[0.25em] text-gray-400">Price</p>
+                  <p class="mt-1.5 text-xl sm:text-2xl font-extrabold text-white leading-none">Quote</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <p class="text-xs sm:text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Best for</p>
+            <p class="mt-2 text-xs sm:text-sm leading-6 text-gray-300">Ultimate showroom protection and larger vehicle care.</p>
+          </div>
+
+        </article>
+      </div>
+
+      <div class="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div class="glass-panel rounded-3xl p-6 sm:p-7">
+          <h3 class="font-display text-2xl font-bold text-white">Add-on Services</h3>
+          <ul class="mt-5 grid gap-3 sm:grid-cols-2 text-sm leading-7 text-gray-200">
+            <li class="flex items-start gap-3"><i class="fas fa-plus mt-1 text-emerald-400"></i><span>Engine Cleaning - N$100</span></li>
+            <li class="flex items-start gap-3"><i class="fas fa-plus mt-1 text-emerald-400"></i><span>Seat Shampoo - N$150</span></li>
+            <li class="flex items-start gap-3"><i class="fas fa-plus mt-1 text-emerald-400"></i><span>Headlight Restoration - N$120</span></li>
+            <li class="flex items-start gap-3"><i class="fas fa-plus mt-1 text-emerald-400"></i><span>Ceramic Spray Protection - N$180</span></li>
+            <li class="flex items-start gap-3"><i class="fas fa-plus mt-1 text-emerald-400"></i><span>Odour Removal - N$80</span></li>
+          </ul>
+        </div>
+
+        <div class="glass-panel rounded-3xl p-6 sm:p-7 border border-emerald-400/20">
+          <p class="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Quick booking</p>
+          <h3 class="mt-3 font-display text-2xl font-bold text-white">Ready for a cleaner ride?</h3>
+          <p class="mt-3 text-sm leading-7 text-gray-300">
+            Pick the package that suits your vehicle and book your wash in a few taps.
+          </p>
+          <a href="auth.html" class="premium-button mt-6 inline-flex w-full items-center justify-center rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-400">
+            Book Your Wash
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
