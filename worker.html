@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Worker Portal - EcoShine Car Wash cc | Job Dispatch</title>
+  <meta name="description" content="Worker portal for EcoShine Car Wash cc. View available jobs and track active assignments.">
+  <link rel="icon" type="image/png" href="assets/images/icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emerald: { 500: '#6dbb6d', 600: '#5da85d', 400: '#8cc88c' },
+            teal: { 700: '#1a5f7a', 600: '#1e6b8a', 500: '#23799c' },
+            slate: { 950: '#07090f', 900: '#0a0f1a', 850: '#0d1320' }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/custom-animations.css">
+  <link rel="stylesheet" href="css/tailwind-base.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .job-card {
+      transition: all 0.3s ease;
+    }
+    .job-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    .status-pending { color: #fbbf24; }
+    .status-accepted { color: #3b82f6; }
+    .status-enroute { color: #8b5cf6; }
+    .status-completed { color: #22c55e; }
+    
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .pulse-dot {
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .live-indicator::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #ef4444;
+      border-radius: 50%;
+      animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+
+    .worker-map-shell .leaflet-container {
+      background: #0a0f1a !important;
+    }
+
+    .worker-map-shell .leaflet-control-zoom a {
+      background: rgba(10, 15, 26, 0.92) !important;
+      color: #6dbb6d !important;
+      border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .worker-map-shell .leaflet-control-zoom a:hover {
+      background: rgba(109, 187, 109, 0.18) !important;
+      color: #fff !important;
+    }
+
+    .worker-map-shell .leaflet-control-attribution {
+      display: none !important;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-gray-100">
+
+  <!-- NAVBAR -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-white/5 transition-all duration-500" style="padding-top: env(safe-area-inset-top);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <img src="assets/images/icon.png" alt="EcoShine" class="h-8 w-8 object-contain relative z-10">
+          <div>
+            <span class="text-white font-bold text-lg tracking-tight uppercase">Eco<span class="text-emerald-400">Shine</span></span>
+            <span class="block text-[9px] text-emerald-400 tracking-[0.2em] uppercase font-semibold -mt-0.5">Worker Portal</span>
+          </div>
+        </div>
+        <div class="hidden lg:flex items-center gap-7 xl:gap-8">
+          <a href="index.html" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</a>
+          <a href="index.html#mission" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Mission</a>
+          <a href="index.html#pricing" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Pricing</a>
+          <a href="index.html#contact" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Contact Us</a>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="auth.html" class="hidden lg:inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-gray-200 transition-all duration-300 hover:border-emerald-500/30 hover:bg-white/10 hover:text-white">
+            <i class="fas fa-right-to-bracket text-[10px] text-emerald-400"></i>
+            Join Us
+          </a>
+          <span id="worker-display-name" class="hidden sm:block text-gray-300 text-sm font-medium"></span>
+          <span class="live-indicator text-xs text-red-400 font-medium">LIVE</span>
+          <span id="worker-status-badge" class="px-2 py-1 rounded-full bg-green-500/20 text-green-400 text-[10px] font-medium border border-green-500/30">ONLINE</span>
+          <button id="logout-btn" class="px-3 py-1.5 rounded-lg glass hover:bg-red-500/10 hover:border-red-500/30 text-red-400 hover:text-red-300 transition-all text-xs font-medium">
+            <i class="fas fa-sign-out-alt mr-1"></i>Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- WORKER LOGIN GATE -->
+  <div id="worker-login-gate" class="fixed inset-0 z-[60] bg-slate-950/95 backdrop-blur-xl flex items-center justify-center">
+    <div class="max-w-md w-full mx-4">
+      <div class="glass-strong rounded-3xl p-8 border border-white/10 text-center">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-700/10 flex items-center justify-center mb-6">
+          <i class="fas fa-hard-hat text-emerald-400 text-2xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-white mb-2">Worker Portal</h2>
+        <p class="text-gray-400 text-sm mb-6">Sign in with your worker credentials to access the job board.</p>
+        
+        <div id="worker-login-error" class="error-message text-left"></div>
+        
+        <div class="space-y-4 text-left">
+          <div>
+            <label class="block text-white text-sm font-medium mb-2">Email</label>
+            <input type="email" id="worker-email" placeholder="worker@ecoshine.na" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all">
+          </div>
+          <div>
+            <label class="block text-white text-sm font-medium mb-2">Password</label>
+            <input type="password" id="worker-password" placeholder="••••••••" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all">
+          </div>
+          <button id="worker-login-btn" class="w-full btn-primary py-3.5 rounded-xl font-semibold">
+            <span class="relative z-10 flex items-center justify-center gap-2">
+              <i class="fas fa-sign-in-alt"></i>
+              Access Portal
+            </span>
+          </button>
+          <div class="flex justify-between items-center">
+            <a href="auth.html" class="auth-link text-sm">Back to Sign In</a>
+            <button type="button" onclick="showWorkerForgotPassword()" class="auth-link text-sm">Forgot password?</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKER PORTAL -->
+  <div id="worker-portal" class="pt-20 pb-12 hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Personalized Greeting Header -->
+      <div class="mb-8">
+        <span class="text-emerald-400 text-sm font-semibold tracking-widest uppercase">Worker Portal</span>
+        <h1 class="text-3xl sm:text-4xl font-bold text-white mt-2" id="worker-greeting">Welcome Worker!</h1>
+        <p class="text-gray-400 mt-1">Available jobs and your active assignments</p>
+        <div class="flex flex-wrap items-center gap-3 mt-4">
+          <div class="glass rounded-xl px-4 py-2 flex items-center gap-2">
+            <i class="fas fa-wallet text-emerald-400"></i>
+            <span class="text-white font-semibold">N$ <span id="worker-earnings">0</span></span>
+            <span class="text-gray-500 text-xs">earned</span>
+          </div>
+          <button id="toggle-status-btn" class="px-4 py-2 rounded-xl bg-green-500/20 border border-green-500/30 text-green-400 hover:bg-green-500/30 transition-all text-sm font-medium">
+            <i class="fas fa-circle text-xs mr-2"></i>Go Offline
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Map -->
+      <div class="worker-map-shell glass-strong rounded-3xl border border-white/10 p-4 sm:p-5 mb-8">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <i class="fas fa-map-location-dot text-emerald-400"></i>
+              <h2 class="text-lg font-semibold text-white">Live Job Map</h2>
+            </div>
+            <p class="text-gray-400 text-sm mt-1" id="worker-map-status">Waiting for an active job assignment.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 text-xs text-gray-400">
+            <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10">Worker position</span>
+            <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300">Customer position</span>
+            <button id="worker-map-navigate-btn" class="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/30 transition-colors">
+              Open navigation
+            </button>
+          </div>
+        </div>
+        <div id="worker-live-map" class="h-72 sm:h-80 rounded-2xl overflow-hidden border border-white/10"></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="flex gap-2 mb-8">
+        <button class="tab-btn active px-6 py-3 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-medium transition-all" data-tab="available">
+          <i class="fas fa-list mr-2"></i>Available Jobs
+        </button>
+        <button class="tab-btn px-6 py-3 rounded-xl glass border border-white/10 text-gray-400 hover:text-white hover:border-emerald-500/30 transition-all" data-tab="active">
+          <i class="fas fa-spinner mr-2"></i>My Active Jobs
+        </button>
+        <button class="tab-btn px-6 py-3 rounded-xl glass border border-white/10 text-gray-400 hover:text-white hover:border-emerald-500/30 transition-all" data-tab="history">
+          <i class="fas fa-history mr-2"></i>History
+        </button>
+      </div>
+
+      <!-- Available Jobs Tab -->
+      <div id="tab-available" class="tab-content">
+        <div id="available-jobs" class="grid gap-4">
+          <!-- Available jobs will be loaded here -->
+          <div class="text-center py-12 text-gray-500">
+            <i class="fas fa-search text-4xl mb-4 opacity-30"></i>
+            <p>Searching for available jobs...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Jobs Tab -->
+      <div id="tab-active" class="tab-content hidden">
+        <div id="active-jobs" class="grid gap-4">
+          <!-- Active jobs will be loaded here -->
+          <div class="text-center py-12 text-gray-500">
+            <i class="fas fa-clipboard-list text-4xl mb-4 opacity-30"></i>
+            <p>No active jobs</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- History Tab -->
+      <div id="tab-history" class="tab-content hidden">
+        <div class="glass-strong rounded-2xl overflow-hidden">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Client</th>
+                <th>Service</th>
+                <th>Earnings</th>
+                <th>Rating</th>
+              </tr>
+            </thead>
+            <tbody id="job-history">
+              <!-- History rows will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/5 py-3">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="border-t border-white/5 mt-4 pt-3 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <p class="text-gray-600 text-xs">&copy; 2024 EcoShine Car Wash cc. All rights reserved.</p>
+        <div class="flex gap-2.5">
+          <a href="https://www.facebook.com/ecoshine.na" target="_blank" rel="noopener noreferrer" class="inline-flex h-8 w-8 shrink-0 aspect-square items-center justify-center rounded-full glass text-gray-500 transition-all hover:text-emerald-400"><i class="fab fa-facebook-f text-[11px]"></i></a>
+          <a href="https://www.instagram.com/ecoshine_na?utm_source=qr&igsh=cGVmdzZ0dTUxdGlo" target="_blank" rel="noopener noreferrer" class="inline-flex h-8 w-8 shrink-0 aspect-square items-center justify-center rounded-full glass text-gray-500 transition-all hover:text-emerald-400"><i class="fab fa-instagram text-[11px]"></i></a>
+          <a href="https://www.linkedin.com/in/ecoshine-green-technology-b94b57411?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer" class="inline-flex h-8 w-8 shrink-0 aspect-square items-center justify-center rounded-full glass text-gray-500 transition-all hover:text-emerald-400"><i class="fab fa-linkedin text-[11px]"></i></a>
+          <a href="https://wa.me/264811234567" target="_blank" rel="noopener noreferrer" class="inline-flex h-8 w-8 shrink-0 aspect-square items-center justify-center rounded-full glass text-gray-500 transition-all hover:text-emerald-400"><i class="fab fa-whatsapp text-[11px]"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/matching.js"></script>
+  <script src="js/worker.js"></script>
+</body>
+</html>

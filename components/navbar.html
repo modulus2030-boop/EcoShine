@@ -1,0 +1,53 @@
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-white/5 transition-all duration-500" style="padding-top: env(safe-area-inset-top);">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-4 group">
+        <div class="relative">
+          <img src="assets/images/icon.png" alt="EcoShine" class="h-20 w-20 md:h-24 md:w-24 object-contain relative z-10 transition-transform duration-300 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-30 blur-md rounded-full"></div>
+        </div>
+        <div class="hidden sm:block">
+          <span class="text-white font-bold text-xl md:text-2xl tracking-tight uppercase">Eco<span class="text-emerald-400">Shine</span></span>
+          <span class="block text-[10px] text-emerald-400 tracking-[0.25em] uppercase font-semibold -mt-0.5">CAR WASHING</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden lg:flex items-center gap-8">
+        <a href="index.html" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</a>
+        <a href="pricing.html" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Pricing</a>
+        <a href="booking.html" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Book Now</a>
+        <a href="dashboard.html" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Dashboard</a>
+        <a href="admin.html" class="nav-link text-sm font-medium text-emerald-400 hover:text-emerald-300 transition-colors">Admin</a>
+        <a href="worker.html" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Workers</a>
+      </div>
+
+      <!-- CTA Button -->
+      <a href="booking.html" class="btn-primary text-sm px-6 py-2.5">
+        <span class="relative z-10 flex items-center gap-2">
+          <i class="fas fa-car text-xs"></i>
+          Book Mobile Wash
+        </span>
+      </a>
+
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-300 hover:text-white transition-colors">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden pb-4">
+      <div class="glass-strong rounded-xl p-4 space-y-2">
+        <a href="index.html" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Home</a>
+        <a href="pricing.html" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Pricing</a>
+        <a href="booking.html" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Book Now</a>
+        <a href="dashboard.html" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Dashboard</a>
+        <a href="admin.html" class="block px-4 py-3 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/5 rounded-lg transition-all">Admin Portal</a>
+        <a href="worker.html" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Workers</a>
+        <a href="booking.html" class="block px-4 py-3 text-center bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg font-medium">Book Mobile Wash</a>
+      </div>
+    </div>
+  </div>
+</nav>

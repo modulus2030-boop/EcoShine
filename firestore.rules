@@ -1,0 +1,80 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isWorker() {
+      return isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'worker';
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isBookingOwner(bookingData) {
+      return isAuthenticated() && (
+        bookingData.customerId == request.auth.uid ||
+        bookingData.userId == request.auth.uid
+      );
+    }
+
+    match /users/{userId} {
+      function isBootstrapAdmin() {
+        return request.auth.uid == userId
+          && request.resource.data.email == 'admin@ecoshine.na'
+          && request.resource.data.role == 'admin';
+      }
+
+      allow read: if isAdmin() || isOwner(userId) || isWorker();
+      allow create: if isAuthenticated() && (
+        (request.auth.uid == userId && request.resource.data.role == 'client') || isBootstrapAdmin()
+      );
+      allow update: if isAdmin() || isOwner(userId);
+      allow delete: if isAdmin();
+    }
+
+    match /washers/{washerId} {
+      allow read: if isAdmin() || isOwner(washerId) || isWorker();
+      allow create, update, delete: if isAdmin() || isOwner(washerId);
+    }
+
+    match /liveLocations/{washerId} {
+      allow read: if isAdmin() || isOwner(washerId) || isWorker();
+      allow create, update, delete: if isAdmin() || isOwner(washerId);
+    }
+
+    match /bookings/{bookingId} {
+      allow read: if isAdmin() || isWorker() || isBookingOwner(resource.data);
+      allow create: if isAuthenticated() && (
+        request.resource.data.customerId == request.auth.uid || request.resource.data.userId == request.auth.uid
+      );
+      allow update: if isAdmin() || (
+        isBookingOwner(resource.data) &&
+        request.resource.data.status == 'Cancelled' &&
+        request.resource.data.customerId == resource.data.customerId &&
+        request.resource.data.washerId == resource.data.washerId
+      );
+      allow delete: if isAdmin();
+
+      match /ratings/{ratingId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated() && (
+          request.resource.data.reviewerId == request.auth.uid || request.resource.data.reviewerRole == 'customer' || request.resource.data.reviewerRole == 'worker'
+        );
+        allow update, delete: if isAdmin() || request.auth.uid == resource.data.reviewerId;
+      }
+    }
+
+    match /{document=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+  }
+}
