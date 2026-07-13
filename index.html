@@ -78,7 +78,7 @@
     }
   </style>
 </head>
-<body class="bg-slate-950 text-gray-100">
+<body id="top" class="bg-slate-950 text-gray-100">
 
   <!-- NAVBAR COMPONENT -->
   <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-white/5 transition-all duration-500" style="padding-top: env(safe-area-inset-top);">
@@ -97,10 +97,12 @@
         </a>
 
         <!-- Desktop Navigation -->
-        <div class="hidden lg:flex flex-1 items-end justify-center gap-8 xl:gap-10 pb-1" style="transform: translateY(1cm);">
-          <a href="index.html" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</a>
+        <div class="hidden lg:flex flex-1 items-end justify-center gap-8 xl:gap-10 pb-1" style="transform: translateY(0.2cm);">
+          <a href="#top" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</a>
           <a href="#mission" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">About Us</a>
           <a href="#pricing" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Pricing</a>
+          <a href="#subscriptions" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Subscriptions</a>
+          <a href="#smart-booking" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Smart Booking</a>
           <a href="#contact" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Contact Us</a>
         </div>
 
@@ -113,9 +115,11 @@
       <!-- Mobile Menu -->
       <div id="mobile-menu" class="hidden lg:hidden pb-4">
         <div class="glass-strong rounded-xl p-4 space-y-2">
-          <a href="index.html" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Home</a>
+          <a href="#top" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Home</a>
           <a href="#mission" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">About Us</a>
           <a href="#pricing" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Pricing</a>
+          <a href="#subscriptions" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Subscriptions</a>
+          <a href="#smart-booking" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Smart Booking</a>
           <a href="#contact" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Contact Us</a>
         </div>
       </div>
@@ -389,6 +393,314 @@
       </div>
     </div>
   </section>
+
+  <!-- SUBSCRIPTIONS SECTION -->
+  <section id="subscriptions" class="relative py-24 sm:py-28 section-shell">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid lg:grid-cols-[0.95fr_1.05fr] gap-10 lg:gap-12 items-start">
+        <div class="space-y-6">
+          <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[0.95] tracking-tight text-white">
+            Unlimited Clean. <span class="text-emerald-400">One Monthly Payment.</span>
+          </h2>
+          <p class="text-sm sm:text-base leading-7 text-gray-300 max-w-xl">
+            Choose a monthly subscription that keeps your car looking sharp, saves time, and gives you better value than one-off washes.
+          </p>
+
+          <div class="glass-panel rounded-3xl p-5 sm:p-6 border border-emerald-400/20">
+            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-emerald-300">Business Fleet Plan</p>
+            <h3 class="mt-3 font-display text-xl sm:text-2xl font-bold text-white">Custom monthly packages for teams that move every day</h3>
+            <ul class="mt-4 grid gap-3 sm:grid-cols-2 text-xs sm:text-sm leading-6 text-gray-200">
+              <li class="flex items-start gap-3"><i class="fas fa-building mt-1 text-emerald-400"></i><span>Companies</span></li>
+              <li class="flex items-start gap-3"><i class="fas fa-landmark mt-1 text-emerald-400"></i><span>Government</span></li>
+              <li class="flex items-start gap-3"><i class="fas fa-car mt-1 text-emerald-400"></i><span>Car Dealers</span></li>
+              <li class="flex items-start gap-3"><i class="fas fa-taxi mt-1 text-emerald-400"></i><span>Taxi Fleets</span></li>
+              <li class="flex items-start gap-3"><i class="fas fa-truck-moving mt-1 text-emerald-400"></i><span>Logistics Companies</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid gap-6">
+          <article class="glass-panel rounded-3xl p-5 sm:p-6 border border-white/10">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <div class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.24em] text-gray-300">Silver</div>
+                <h3 class="mt-3 font-display text-xl sm:text-2xl font-bold text-white">N$399/month</h3>
+              </div>
+              <div class="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-300">
+                Entry Membership
+              </div>
+            </div>
+            <ul class="mt-4 space-y-2.5 text-xs sm:text-sm leading-6 text-gray-200">
+              <li class="flex items-start gap-3"><i class="fas fa-check mt-1 text-emerald-400"></i><span>4 Premium Washes</span></li>
+              <li class="flex items-start gap-3"><i class="fas fa-check mt-1 text-emerald-400"></i><span>Priority Booking</span></li>
+              <li class="flex items-start gap-3"><i class="fas fa-check mt-1 text-emerald-400"></i><span>10% Discount on Detailing</span></li>
+            </ul>
+          </article>
+
+          <article class="glass-panel rounded-3xl p-5 sm:p-6 border border-emerald-400/35 shadow-[0_0_0_1px_rgba(109,187,109,0.14),0_24px_70px_rgba(0,0,0,0.36)]">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <div class="inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.24em] text-emerald-300">Gold</div>
+                <h3 class="mt-3 font-display text-xl sm:text-2xl font-bold text-white">N$699/month</h3>
+              </div>
+              <div class="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-300">
+                Best Value
+              </div>
+            </div>
+            <ul class="mt-4 space-y-2.5 text-xs sm:text-sm leading-6 text-gray-200">
+              <li class="flex items-start gap-3"><i class="fas fa-check mt-1 text-emerald-400"></i><span>8 Premium Washes</span></li>
+              <li class="flex items-start gap-3"><i class="fas fa-check mt-1 text-emerald-400"></i><span>Interior Cleaning Included</span></li>
+              <li class="flex items-start gap-3"><i class="fas fa-check mt-1 text-emerald-400"></i><span>Free Engine Cleaning Every Month</span></li>
+            </ul>
+          </article>
+
+          <article class="glass-panel rounded-3xl p-5 sm:p-6 border border-white/10">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <div class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.24em] text-gray-300">Platinum</div>
+                <h3 class="mt-3 font-display text-xl sm:text-2xl font-bold text-white">N$999/month</h3>
+              </div>
+              <div class="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-300">
+                VIP Access
+              </div>
+            </div>
+            <ul class="mt-4 space-y-2.5 text-xs sm:text-sm leading-6 text-gray-200">
+              <li class="flex items-start gap-3"><i class="fas fa-check mt-1 text-emerald-400"></i><span>Unlimited Premium Washes*</span></li>
+              <li class="flex items-start gap-3"><i class="fas fa-check mt-1 text-emerald-400"></i><span>Priority VIP Service</span></li>
+              <li class="flex items-start gap-3"><i class="fas fa-check mt-1 text-emerald-400"></i><span>Free Monthly Full Detail</span></li>
+              <li class="flex items-start gap-3"><i class="fas fa-check mt-1 text-emerald-400"></i><span>Exclusive Member Discounts</span></li>
+            </ul>
+            <p class="mt-3 text-[10px] leading-5 text-gray-400">
+              *Subject to fair-use scheduling and availability.
+            </p>
+          </article>
+
+          <div class="glass-panel rounded-3xl p-5 sm:p-6 border border-emerald-400/20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.24em] text-emerald-300">Ready to join?</p>
+              <h3 class="mt-2 font-display text-xl sm:text-2xl font-bold text-white">Become a member and keep your car looking fresh all month.</h3>
+            </div>
+            <a href="auth.html" class="premium-button inline-flex items-center justify-center rounded-xl bg-emerald-500 px-5 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-emerald-400">
+              Become a Member
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SMART BOOKING SECTION -->
+  <section id="smart-booking" class="relative py-24 sm:py-28 section-shell">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-12 items-start">
+        <div class="space-y-5">
+          <p class="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-300">Smart Booking</p>
+          <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[0.95] tracking-tight text-white">
+            Book in less than one minute.
+          </h2>
+          <p class="text-sm sm:text-base leading-7 text-gray-300 max-w-xl">
+            A fast, simple booking flow that gets you from request to clean car without the back-and-forth.
+          </p>
+          <a href="auth.html" class="premium-button inline-flex items-center justify-center rounded-xl bg-emerald-500 px-5 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-emerald-400">
+            Start Booking
+          </a>
+        </div>
+
+        <div class="p-5 sm:p-6">
+          <div class="space-y-6 sm:space-y-7">
+            <div class="grid gap-6 lg:grid-cols-2">
+              <div class="border-t border-white/10 pt-5">
+                <div class="flex items-start gap-3 sm:gap-4">
+                  <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20">
+                    <i class="fas fa-location-dot text-[12px]"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-[9px] font-semibold uppercase tracking-[0.24em] text-emerald-300">Step 1</p>
+                    <p class="mt-1 text-sm sm:text-base font-semibold leading-tight text-white">Enter your location</p>
+                    <p class="mt-1 text-xs sm:text-sm leading-5 text-gray-300">Drop your address or pin the exact spot for the technician.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border-t border-white/10 pt-5">
+                <div class="flex items-start gap-3 sm:gap-4">
+                  <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20">
+                    <i class="fas fa-car text-[12px]"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-[9px] font-semibold uppercase tracking-[0.24em] text-emerald-300">Step 2</p>
+                    <p class="mt-1 text-sm sm:text-base font-semibold leading-tight text-white">Choose your vehicle</p>
+                    <p class="mt-1 text-xs sm:text-sm leading-5 text-gray-300">Select the car type so the wash plan fits perfectly.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid gap-6 lg:grid-cols-2">
+              <div class="border-t border-white/10 pt-5">
+                <div class="flex items-start gap-3 sm:gap-4">
+                  <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20">
+                    <i class="fas fa-broom text-[12px]"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-[9px] font-semibold uppercase tracking-[0.24em] text-emerald-300">Step 3</p>
+                    <p class="mt-1 text-sm sm:text-base font-semibold leading-tight text-white">Select a service</p>
+                    <p class="mt-1 text-xs sm:text-sm leading-5 text-gray-300">Pick from a quick wash, premium clean, or full detail.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border-t border-white/10 pt-5">
+                <div class="flex items-start gap-3 sm:gap-4">
+                  <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20">
+                    <i class="fas fa-calendar-days text-[12px]"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-[9px] font-semibold uppercase tracking-[0.24em] text-emerald-300">Step 4</p>
+                    <p class="mt-1 text-sm sm:text-base font-semibold leading-tight text-white">Pick date &amp; time</p>
+                    <p class="mt-1 text-xs sm:text-sm leading-5 text-gray-300">Choose a slot that works around your day.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid gap-6 lg:grid-cols-2">
+              <div class="border-t border-white/10 pt-5">
+                <div class="flex items-start gap-3 sm:gap-4">
+                  <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20">
+                    <i class="fas fa-credit-card text-[12px]"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-[9px] font-semibold uppercase tracking-[0.24em] text-emerald-300">Step 5</p>
+                    <p class="mt-1 text-sm sm:text-base font-semibold leading-tight text-white">Pay online or on arrival</p>
+                    <p class="mt-1 text-xs sm:text-sm leading-5 text-gray-300">Choose the payment option that feels easiest for you.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border-t border-white/10 pt-5">
+                <div class="flex items-start gap-3 sm:gap-4">
+                  <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20">
+                    <i class="fas fa-satellite-dish text-[12px]"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-[9px] font-semibold uppercase tracking-[0.24em] text-emerald-300">Step 6</p>
+                    <p class="mt-1 text-sm sm:text-base font-semibold leading-tight text-white">Receive live tracking</p>
+                    <p class="mt-1 text-xs sm:text-sm leading-5 text-gray-300">Follow the technician as they head to your location.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="border-t border-emerald-400/20 pt-5">
+              <div class="flex items-start gap-3 sm:gap-4">
+                <div class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20">
+                  <i class="fas fa-star text-[12px]"></i>
+                </div>
+                <div class="min-w-0">
+                  <p class="text-[9px] font-semibold uppercase tracking-[0.24em] text-emerald-300">Final Step</p>
+                  <p class="mt-1 text-sm sm:text-base font-semibold leading-tight text-white">Rate your experience</p>
+                  <p class="mt-1 text-xs sm:text-sm leading-5 text-gray-300">Leave feedback so we can keep improving every wash.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="relative py-24 sm:py-28 section-shell">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="max-w-4xl space-y-4 mb-10">
+        <p class="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-300">Contact Us</p>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[0.95] tracking-tight text-white">
+          Whether you're booking a wash, managing a fleet, or exploring an investment opportunity, our team is ready to assist.
+        </h2>
+      </div>
+
+      <div class="grid gap-5 lg:grid-cols-3">
+        <div class="glass-panel rounded-3xl p-5 sm:p-6">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20">
+              <i class="fas fa-headset text-[11px]"></i>
+            </div>
+            <h3 class="font-display text-xl sm:text-2xl font-bold text-white">Customer Support</h3>
+          </div>
+          <ul class="mt-4 space-y-2.5 text-xs sm:text-sm leading-6 text-gray-200">
+            <li class="flex items-start gap-3"><i class="fas fa-calendar-check mt-1 text-emerald-400 text-[11px]"></i><span>Book an Appointment</span></li>
+            <li class="flex items-start gap-3"><i class="fas fa-file-invoice-dollar mt-1 text-emerald-400 text-[11px]"></i><span>Request a Quote</span></li>
+            <li class="flex items-start gap-3"><i class="fas fa-car-side mt-1 text-emerald-400 text-[11px]"></i><span>Fleet Services</span></li>
+            <li class="flex items-start gap-3"><i class="fas fa-id-card mt-1 text-emerald-400 text-[11px]"></i><span>Membership Support</span></li>
+          </ul>
+        </div>
+
+        <div class="glass-panel rounded-3xl p-5 sm:p-6 border border-emerald-400/20">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20">
+              <i class="fas fa-handshake text-[11px]"></i>
+            </div>
+            <h3 class="font-display text-xl sm:text-2xl font-bold text-white">Investor Relations</h3>
+          </div>
+          <ul class="mt-4 space-y-2.5 text-xs sm:text-sm leading-6 text-gray-200">
+            <li class="flex items-start gap-3"><i class="fas fa-chart-line mt-1 text-emerald-400 text-[11px]"></i><span>Investment Enquiries</span></li>
+            <li class="flex items-start gap-3"><i class="fas fa-people-arrows mt-1 text-emerald-400 text-[11px]"></i><span>Partnership Opportunities</span></li>
+            <li class="flex items-start gap-3"><i class="fas fa-store mt-1 text-emerald-400 text-[11px]"></i><span>Franchise Applications</span></li>
+            <li class="flex items-start gap-3"><i class="fas fa-briefcase mt-1 text-emerald-400 text-[11px]"></i><span>Corporate Collaborations</span></li>
+          </ul>
+        </div>
+
+        <div class="glass-panel rounded-3xl p-5 sm:p-6">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-300 ring-1 ring-emerald-400/20">
+              <i class="fas fa-address-book text-[11px]"></i>
+            </div>
+            <h3 class="font-display text-xl sm:text-2xl font-bold text-white">Contact Information</h3>
+          </div>
+          <div class="mt-4 space-y-2.5 text-xs sm:text-sm leading-6 text-gray-200">
+            <a href="https://www.google.com/maps/search/?api=1&query=EcoShine+Green+Technology" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 transition-colors hover:text-emerald-300">
+              <i class="fas fa-location-dot mt-1 text-emerald-400 text-[11px]"></i>
+              <span>Head Office</span>
+            </a>
+            <a href="tel:0814124238" class="flex items-start gap-3 transition-colors hover:text-emerald-300">
+              <i class="fas fa-phone mt-1 text-emerald-400 text-[11px]"></i>
+              <span>081 412 4238</span>
+            </a>
+            <a href="https://wa.me/264814124238" target="_blank" rel="noopener noreferrer" class="flex items-start gap-3 transition-colors hover:text-emerald-300">
+              <i class="fab fa-whatsapp mt-1 text-emerald-400 text-[11px]"></i>
+              <span>WhatsApp</span>
+            </a>
+            <a href="mailto:ecoshinegreentechnolgy@gmail.com" class="flex items-start gap-3 transition-colors hover:text-emerald-300">
+              <i class="fas fa-envelope mt-1 text-emerald-400 text-[11px]"></i>
+              <span>ecoshinegreentechnolgy@gmail.com</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="relative pb-10 pt-2 section-shell">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="border-t border-white/10 pt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-xs sm:text-sm text-gray-400">
+          EcoShine Car Wash cc
+        </p>
+        <div class="flex items-center gap-5 text-gray-300">
+          <a href="https://www.instagram.com/ecoshine_na?igsh=cGVmdzZ0dTUxdGlo" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs sm:text-sm transition-colors hover:text-emerald-300">
+            <i class="fab fa-instagram text-emerald-400 text-xs sm:text-sm"></i>
+            <span>Instagram</span>
+          </a>
+          <a href="https://www.linkedin.com/in/ecoshine-green-technology-b94b57411?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs sm:text-sm transition-colors hover:text-emerald-300">
+            <i class="fab fa-linkedin-in text-emerald-400 text-xs sm:text-sm"></i>
+            <span>LinkedIn</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
 </body>
 </html>
