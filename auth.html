@@ -118,50 +118,8 @@
 </head>
 <body class="bg-slate-950 text-gray-100 flex flex-col min-h-screen">
 
-  <!-- NAVBAR -->
-  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-white/5 transition-all duration-500" style="padding-top: env(safe-area-inset-top);">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-20">
-        <a href="index.html" class="flex items-center gap-4 group">
-          <div class="relative">
-            <img src="assets/images/icon.png" alt="EcoShine" class="h-20 w-20 md:h-24 md:w-24 object-contain relative z-10 transition-transform duration-300 group-hover:scale-110">
-            <div class="absolute inset-0 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-30 blur-md rounded-full"></div>
-          </div>
-          <div class="hidden sm:block">
-            <span class="text-white font-bold text-xl md:text-2xl tracking-tight uppercase">Eco<span class="text-emerald-400">Shine</span></span>
-            <span class="block text-[10px] text-emerald-400 tracking-[0.25em] uppercase font-semibold -mt-0.5">CAR WASHING</span>
-          </div>
-        </a>
-        <div class="hidden lg:flex items-center gap-7 xl:gap-8">
-          <a href="index.html" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</a>
-          <a href="index.html#mission" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Mission</a>
-          <a href="index.html#pricing" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Pricing</a>
-          <a href="index.html#contact" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Contact Us</a>
-        </div>
-        <a href="auth.html" class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-gray-200 transition-all duration-300 hover:border-emerald-500/30 hover:bg-white/10 hover:text-white">
-          <span class="relative z-10 flex items-center gap-2">
-            <i class="fas fa-right-to-bracket text-xs text-emerald-400"></i>
-            Join Us
-          </span>
-        </a>
-        <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-300 hover:text-white transition-colors">
-          <i class="fas fa-bars text-xl"></i>
-        </button>
-      </div>
-      <div id="mobile-menu" class="hidden lg:hidden pb-4">
-        <div class="glass-strong rounded-xl p-4 space-y-2">
-          <a href="index.html" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Home</a>
-          <a href="index.html#mission" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Mission</a>
-          <a href="index.html#pricing" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Pricing</a>
-          <a href="index.html#contact" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Contact Us</a>
-          <a href="auth.html" class="block px-4 py-3 text-center rounded-lg border border-white/10 bg-white/5 text-gray-200 font-medium">Join Us</a>
-        </div>
-      </div>
-    </div>
-  </nav>
-
   <!-- AUTH PAGE -->
-  <div class="auth-container flex-1 flex items-center justify-center pt-28 pb-8">
+  <div class="auth-container flex-1 flex items-center justify-center py-8">
     <div class="max-w-sm w-full mx-4">
       <div class="auth-card p-6 sm:p-8">
         
@@ -461,12 +419,6 @@
     async function socialLogin(provider) {
       showError('Social login is not configured yet. Please use email/password.');
     }
-
-    // Mobile menu toggle
-    document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
-      const menu = document.getElementById('mobile-menu');
-      menu.classList.toggle('hidden');
-    });
   </script>
 </body>
 </html>
