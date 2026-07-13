@@ -61,6 +61,36 @@
       transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
     }
     .premium-button:hover { transform: translateY(-1px); }
+    .nav-link {
+      position: relative;
+      transition: color 180ms ease, transform 180ms ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -0.45rem;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(140, 200, 140, 0), rgba(140, 200, 140, 0.95), rgba(35, 121, 156, 0.95));
+      transform: scaleX(0);
+      transform-origin: center;
+      opacity: 0;
+      transition: transform 180ms ease, opacity 180ms ease;
+    }
+    .nav-link:hover {
+      color: #8cc88c;
+      transform: translateY(-1px);
+    }
+    .nav-link.active {
+      color: #8cc88c;
+      font-weight: 700;
+    }
+    .nav-link.active::after {
+      transform: scaleX(1);
+      opacity: 1;
+    }
     .metric-card {
       background: rgba(10, 15, 26, 0.64);
       backdrop-filter: blur(16px);
@@ -75,6 +105,32 @@
     .footer-field {
       border: 1px solid rgba(255,255,255,0.10);
       background: rgba(255,255,255,0.03);
+    }
+    .glass-panel,
+    .metric-card,
+    .timeline-node,
+    .footer-field,
+    article.group,
+    .premium-button {
+      transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease, background-color 220ms ease, color 220ms ease, filter 220ms ease;
+      will-change: transform;
+    }
+    .glass-panel:hover,
+    .metric-card:hover,
+    .timeline-node:hover,
+    .footer-field:hover,
+    article.group:hover {
+      transform: translateY(-4px);
+    }
+    .card-image-zoom {
+      transition: transform 420ms ease, filter 420ms ease;
+      will-change: transform;
+      transform-origin: center;
+    }
+    .glass-panel:hover .card-image-zoom,
+    .metric-card:hover .card-image-zoom,
+    article.group:hover .card-image-zoom {
+      transform: scale(1.08);
     }
   </style>
 </head>
@@ -98,12 +154,12 @@
 
         <!-- Desktop Navigation -->
         <div class="hidden lg:flex flex-1 items-end justify-center gap-8 xl:gap-10 pb-1" style="transform: translateY(0.2cm);">
-          <a href="#top" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Home</a>
-          <a href="#mission" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">About Us</a>
-          <a href="#pricing" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Pricing</a>
-          <a href="#subscriptions" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Subscriptions</a>
-          <a href="#smart-booking" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Smart Booking</a>
-          <a href="#contact" class="nav-link text-sm font-medium text-gray-300 hover:text-white transition-colors">Contact Us</a>
+          <a href="#top" class="nav-link text-sm font-medium text-gray-300 hover:text-emerald-300 transition-colors">Home</a>
+          <a href="#mission" class="nav-link text-sm font-medium text-gray-300 hover:text-emerald-300 transition-colors">About Us</a>
+          <a href="#pricing" class="nav-link text-sm font-medium text-gray-300 hover:text-emerald-300 transition-colors">Pricing</a>
+          <a href="#subscriptions" class="nav-link text-sm font-medium text-gray-300 hover:text-emerald-300 transition-colors">Subscriptions</a>
+          <a href="#smart-booking" class="nav-link text-sm font-medium text-gray-300 hover:text-emerald-300 transition-colors">Smart Booking</a>
+          <a href="#contact" class="nav-link text-sm font-medium text-gray-300 hover:text-emerald-300 transition-colors">Contact Us</a>
         </div>
 
         <!-- Mobile Menu Button -->
@@ -115,12 +171,12 @@
       <!-- Mobile Menu -->
       <div id="mobile-menu" class="hidden lg:hidden pb-4">
         <div class="glass-strong rounded-xl p-4 space-y-2">
-          <a href="#top" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Home</a>
-          <a href="#mission" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">About Us</a>
-          <a href="#pricing" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Pricing</a>
-          <a href="#subscriptions" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Subscriptions</a>
-          <a href="#smart-booking" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Smart Booking</a>
-          <a href="#contact" class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Contact Us</a>
+          <a href="#top" class="nav-link block px-4 py-3 text-gray-300 hover:text-emerald-300 hover:bg-white/5 rounded-lg transition-all">Home</a>
+          <a href="#mission" class="nav-link block px-4 py-3 text-gray-300 hover:text-emerald-300 hover:bg-white/5 rounded-lg transition-all">About Us</a>
+          <a href="#pricing" class="nav-link block px-4 py-3 text-gray-300 hover:text-emerald-300 hover:bg-white/5 rounded-lg transition-all">Pricing</a>
+          <a href="#subscriptions" class="nav-link block px-4 py-3 text-gray-300 hover:text-emerald-300 hover:bg-white/5 rounded-lg transition-all">Subscriptions</a>
+          <a href="#smart-booking" class="nav-link block px-4 py-3 text-gray-300 hover:text-emerald-300 hover:bg-white/5 rounded-lg transition-all">Smart Booking</a>
+          <a href="#contact" class="nav-link block px-4 py-3 text-gray-300 hover:text-emerald-300 hover:bg-white/5 rounded-lg transition-all">Contact Us</a>
         </div>
       </div>
     </div>
@@ -153,7 +209,7 @@
         </div>
         <div class="lg:pl-4 flex flex-col items-center lg:items-start lg:-ml-8">
           <div class="relative w-full max-w-[480px]">
-            <img src="assets/images/icon.png" alt="EcoShine mobile car care hero visual" class="w-full h-auto object-contain">
+            <img src="assets/images/icon.png" alt="EcoShine mobile car care hero visual" class="card-image-zoom w-full h-auto object-contain">
             <div class="absolute right-4 top-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-slate-950/75 px-4 py-2 text-sm font-semibold text-emerald-300 backdrop-blur-md">
               <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
               24/7 Hours
@@ -175,13 +231,13 @@
             </h2>
             <div class="grid gap-4 sm:grid-cols-3 mt-[7cm]">
               <div class="glass-panel rounded-2xl overflow-hidden min-h-[140px]">
-                <img src="assets/images/car%20washing.png" alt="Car washing" class="h-full w-full object-cover">
+                <img src="assets/images/car%20washing.png" alt="Car washing" class="card-image-zoom h-full w-full object-cover">
               </div>
               <div class="glass-panel rounded-2xl overflow-hidden min-h-[140px]">
-                <img src="assets/images/washing%20quality.png" alt="Washing quality" class="h-full w-full object-cover">
+                <img src="assets/images/washing%20quality.png" alt="Washing quality" class="card-image-zoom h-full w-full object-cover">
               </div>
               <div class="glass-panel rounded-2xl overflow-hidden min-h-[140px]">
-                <img src="assets/images/wheel.png" alt="Wheel cleaning" class="h-full w-full object-cover">
+                <img src="assets/images/wheel.png" alt="Wheel cleaning" class="card-image-zoom h-full w-full object-cover">
               </div>
             </div>
             <div class="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] items-start">
@@ -701,6 +757,46 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    (() => {
+      const navLinks = Array.from(document.querySelectorAll('nav a.nav-link[href^="#"]'));
+      const sectionIds = ['top', 'mission', 'pricing', 'subscriptions', 'smart-booking', 'contact'];
+      const sections = sectionIds
+        .map((id) => {
+          const link = navLinks.find((navLink) => navLink.getAttribute('href') === `#${id}`);
+          const element = id === 'top' ? document.body : document.getElementById(id);
+          return { id, element, link };
+        })
+        .filter((entry) => entry.element && entry.link);
+
+      const setActive = (id) => {
+        navLinks.forEach((link) => {
+          const isActive = link.getAttribute('href') === `#${id}`;
+          link.classList.toggle('active', isActive);
+          link.setAttribute('aria-current', isActive ? 'page' : 'false');
+        });
+      };
+
+      const updateActive = () => {
+        const scrollPosition = window.scrollY + window.innerHeight * 0.28;
+        let activeId = 'top';
+
+        for (const section of sections) {
+          if (section.id === 'top') continue;
+          const offsetTop = section.element.offsetTop;
+          if (scrollPosition >= offsetTop) activeId = section.id;
+        }
+
+        setActive(activeId);
+      };
+
+      window.addEventListener('scroll', updateActive, { passive: true });
+      window.addEventListener('resize', updateActive);
+      window.addEventListener('hashchange', updateActive);
+      updateActive();
+    })();
+  </script>
 
 </body>
 </html>
