@@ -32,11 +32,28 @@ service cloud.firestore {
           && request.resource.data.role == 'admin';
       }
 
+      function isClientProfileUpdate() {
+        let changedKeys = request.resource.data.diff(resource.data).affectedKeys();
+        return changedKeys.hasOnly([
+            'name', 'displayName', 'phone', 'profilePicture', 'photoURL',
+            'membershipTier', 'tier', 'theme', 'preferredTheme', 'updatedAt'
+          ])
+          && request.resource.data.role == resource.data.role
+          && request.resource.data.email == resource.data.email
+          && (
+            !changedKeys.hasAny(['profilePicture'])
+            || (
+              request.resource.data.profilePicture is string
+              && request.resource.data.profilePicture.size() < 900000
+            )
+          );
+      }
+
       allow read: if isAdmin() || isOwner(userId) || isWorker();
       allow create: if isAuthenticated() && (
         (request.auth.uid == userId && request.resource.data.role == 'client') || isBootstrapAdmin()
       );
-      allow update: if isAdmin() || isOwner(userId);
+      allow update: if isAdmin() || (isOwner(userId) && isClientProfileUpdate());
       allow delete: if isAdmin();
     }
 
@@ -70,6 +87,12 @@ service cloud.firestore {
         );
         allow update, delete: if isAdmin() || request.auth.uid == resource.data.reviewerId;
       }
+    }
+
+    match /users/{userId}/notifications/{notificationId} {
+      allow read: if isAdmin() || isOwner(userId);
+      allow create: if isAdmin();
+      allow update, delete: if isAdmin() || isOwner(userId);
     }
 
     match /{document=**} {

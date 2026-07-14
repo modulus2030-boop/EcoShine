@@ -35,6 +35,7 @@
     html, body {
       height: 100%;
       overflow: hidden;
+      overflow-x: hidden;
       background: #141414;
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
@@ -42,29 +43,59 @@
     body {
       color: #f3f4f6;
       background:
-        radial-gradient(circle at top, rgba(109, 187, 109, 0.08), transparent 32%),
-        radial-gradient(circle at 85% 15%, rgba(35, 121, 156, 0.10), transparent 28%),
-        linear-gradient(180deg, #05070c 0%, #070b13 35%, #05070c 100%);
+        radial-gradient(circle at top, var(--theme-glow-1), transparent 32%),
+        radial-gradient(circle at 85% 15%, var(--theme-glow-2), transparent 28%),
+        linear-gradient(180deg, var(--theme-bg-top) 0%, var(--theme-bg-mid) 35%, var(--theme-bg-bottom) 100%);
+      --theme-bg-top: #05070c;
+      --theme-bg-mid: #070b13;
+      --theme-bg-bottom: #05070c;
+      --theme-glow-1: rgba(109, 187, 109, 0.08);
+      --theme-glow-2: rgba(35, 121, 156, 0.10);
+      --theme-panel: rgba(10, 15, 26, 0.72);
+      --theme-panel-strong: rgba(10, 15, 26, 0.92);
+      --theme-border: rgba(255,255,255,0.08);
+      --theme-accent: #6dbb6d;
+      --theme-accent-soft: rgba(109, 187, 109, 0.18);
+      --theme-accent-strong: rgba(109, 187, 109, 0.95);
+    }
+
+    body[data-theme="Ocean"] {
+      --theme-bg-top: #041017;
+      --theme-bg-mid: #061621;
+      --theme-bg-bottom: #031018;
+      --theme-glow-1: rgba(35, 121, 156, 0.13);
+      --theme-glow-2: rgba(109, 187, 109, 0.08);
+      --theme-panel: rgba(7, 18, 28, 0.76);
+      --theme-panel-strong: rgba(7, 18, 28, 0.94);
+      --theme-border: rgba(121, 205, 232, 0.16);
+      --theme-accent: #41b6d8;
+      --theme-accent-soft: rgba(65, 182, 216, 0.16);
+      --theme-accent-strong: rgba(65, 182, 216, 0.96);
+    }
+
+    body[data-theme="Fresh"] {
+      --theme-bg-top: #040c09;
+      --theme-bg-mid: #07130f;
+      --theme-bg-bottom: #040b08;
+      --theme-glow-1: rgba(140, 200, 140, 0.12);
+      --theme-glow-2: rgba(26, 95, 122, 0.08);
+      --theme-panel: rgba(8, 18, 14, 0.76);
+      --theme-panel-strong: rgba(8, 18, 14, 0.94);
+      --theme-border: rgba(140, 200, 140, 0.16);
+      --theme-accent: #8cc88c;
+      --theme-accent-soft: rgba(140, 200, 140, 0.16);
+      --theme-accent-strong: rgba(140, 200, 140, 0.96);
     }
 
     .panel {
-      background: rgba(10, 15, 26, 0.68);
+      background: var(--theme-panel);
       backdrop-filter: blur(18px);
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid var(--theme-border);
       box-shadow: 0 20px 60px rgba(0,0,0,0.28);
     }
 
-    .sidebar {
-      background: rgba(10, 15, 26, 0.92);
-      border-right: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .thin-scroll::-webkit-scrollbar {
-      width: 6px;
-    }
-    .thin-scroll::-webkit-scrollbar-track {
-      background: transparent;
-    }
+    .thin-scroll::-webkit-scrollbar { width: 6px; }
+    .thin-scroll::-webkit-scrollbar-track { background: transparent; }
     .thin-scroll::-webkit-scrollbar-thumb {
       background: rgba(255,255,255,0.14);
       border-radius: 999px;
@@ -73,9 +104,7 @@
     .nav-item {
       transition: transform 180ms ease, background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
     }
-    .nav-item:hover {
-      transform: translateY(-1px);
-    }
+    .nav-item:hover { transform: translateY(-1px); }
 
     .sidebar-icon {
       width: 2.55rem;
@@ -86,254 +115,313 @@
     }
 
     .active-pill {
-      background: rgba(109, 187, 109, 0.95);
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 14px 35px rgba(109, 187, 109, 0.24);
+      background: var(--theme-accent-strong);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 14px 35px color-mix(in srgb, var(--theme-accent-strong) 35%, transparent);
       color: #04110a;
     }
 
-    .badge-green {
-      background: rgba(109, 187, 109, 0.16);
-      color: #c7f3c7;
-      border: 1px solid rgba(109, 187, 109, 0.32);
-    }
-
-    .badge-blue {
-      background: rgba(35, 121, 156, 0.18);
-      color: #c7edf8;
-      border: 1px solid rgba(35, 121, 156, 0.35);
+    .drawer-active {
+      background: var(--theme-accent-soft);
+      color: color-mix(in srgb, var(--theme-accent) 55%, white);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-accent) 35%, transparent);
     }
 
     .map-btn {
-      background: rgba(10, 15, 26, 0.92);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--theme-panel-strong);
+      border: 1px solid var(--theme-border);
       box-shadow: 0 8px 24px rgba(0,0,0,0.28);
     }
-
-    .map-btn:hover {
-      background: rgba(18, 24, 36, 0.95);
-    }
+    .map-btn:hover { background: rgba(18, 24, 36, 0.95); }
 
     .leaflet-container {
       background: #07090f !important;
       font-family: inherit;
     }
-    .leaflet-control-container {
-      display: none;
-    }
+    .leaflet-control-container { display: none; }
 
     .pin-pulse {
       animation: ping 1.4s cubic-bezier(0, 0, 0.2, 1) infinite;
     }
 
-    .modal-backdrop {
-      background: rgba(3, 5, 10, 0.68);
-      backdrop-filter: blur(10px);
+    .overlay-backdrop {
+      background: rgba(3, 5, 10, 0.62);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+    }
+    .overlay-backdrop.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #app-shell {
+      height: 100dvh;
+    }
+
+    .slide-drawer {
+      transform: translateY(110%);
+      transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .slide-drawer.is-open { transform: translateY(0); }
+
+    .bottom-sheet {
+      transform: translateY(110%);
+      transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .bottom-sheet.is-open { transform: translateY(0); }
+
+    .content-sheet {
+      transform: translateY(110%);
+      transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .content-sheet.is-open { transform: translateY(0); }
+
+    .profile-popover {
+      opacity: 0;
+      transform: scale(0.94) translateY(8px);
+      pointer-events: none;
+      transition: opacity 200ms ease, transform 200ms ease;
+    }
+    .profile-popover.is-open {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+    }
+
+    .wizard-shell {
+      backdrop-filter: blur(18px);
+    }
+
+    .wizard-step {
+      opacity: 0;
+      transform: translateX(18px);
+      pointer-events: none;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      transition: opacity 300ms ease, transform 300ms ease;
+    }
+    .wizard-step.is-active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+    .wizard-step.is-prev {
+      transform: translateX(-18px);
+    }
+    .wizard-step.is-next {
+      transform: translateX(18px);
+    }
+
+    .wizard-card,
+    .wizard-addon,
+    .wizard-payment-option,
+    .wizard-suggestion {
+      transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease, color 180ms ease;
+    }
+    .wizard-card:hover,
+    .wizard-addon:hover,
+    .wizard-payment-option:hover,
+    .wizard-suggestion:hover {
+      transform: translateY(-1px);
+    }
+    .wizard-card.is-selected,
+    .wizard-addon.is-selected,
+    .wizard-payment-option.is-selected,
+    .wizard-suggestion.is-selected {
+      border-color: rgba(109, 187, 109, 0.45);
+      background: rgba(109, 187, 109, 0.12);
+      box-shadow: 0 0 0 1px rgba(109, 187, 109, 0.22);
     }
 
     @keyframes ping {
-      75%, 100% {
-        transform: scale(2.3);
-        opacity: 0;
+      75%, 100% { transform: scale(2.3); opacity: 0; }
+    }
+
+    @media (min-width: 768px) {
+      #app-shell {
+        height: 100vh;
+      }
+      .content-sheet {
+        transform: none;
+      }
+      .bottom-sheet-desktop {
+        transform: translateX(-110%);
+      }
+      .bottom-sheet-desktop.is-open {
+        transform: translateX(0);
       }
     }
   </style>
 </head>
 <body>
-  <div class="flex h-screen overflow-hidden">
-    <aside class="sidebar w-20 shrink-0 flex flex-col items-center py-4">
+  <div id="app-shell" class="relative overflow-visible pb-[4.5rem] md:pb-0">
+    <!-- Desktop sidebar -->
+    <aside class="hidden md:flex fixed left-0 top-0 z-30 h-full w-20 flex-col items-center py-4 bg-[rgba(10,15,26,0.94)] border-r border-white/5 shadow-[18px_0_50px_rgba(0,0,0,0.16)]">
       <div class="mb-5 grid place-items-center">
-        <img src="assets/images/icon.png" alt="EcoShine logo" class="h-12 w-12 rounded-2xl object-cover shadow-soft">
+        <img src="assets/images/icon.png" alt="EcoShine logo" class="h-12 w-12 rounded-3xl object-cover shadow-soft">
       </div>
 
       <nav class="flex flex-1 flex-col items-center gap-3 pt-2">
         <button class="nav-item sidebar-icon active-pill" data-section="dashboard" data-title="Dashboard" aria-label="Dashboard">
           <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
         </button>
-        <button class="nav-item sidebar-icon text-muted hover:text-white" data-section="booking" data-title="Booking" aria-label="Booking">
+        <button class="nav-item sidebar-icon text-muted hover:text-white" data-section="booking" data-title="Book a Wash" aria-label="Book a Wash">
           <i data-lucide="calendar-plus-2" class="w-5 h-5"></i>
         </button>
-        <button class="nav-item sidebar-icon text-muted hover:text-white" data-section="tracking" data-title="Tracking" aria-label="Tracking">
+        <button class="nav-item sidebar-icon text-muted hover:text-white" data-section="tracking" data-title="Services" aria-label="Services">
           <i data-lucide="route" class="w-5 h-5"></i>
-        </button>
-        <button class="nav-item sidebar-icon text-muted hover:text-white" data-section="plan-upgrades" data-title="Plan Upgrades" aria-label="Plan Upgrades">
-          <i data-lucide="gem" class="w-5 h-5"></i>
         </button>
         <button class="nav-item sidebar-icon text-muted hover:text-white" data-section="eco-impact" data-title="Eco Impact" aria-label="Eco Impact">
           <i data-lucide="leaf" class="w-5 h-5"></i>
         </button>
-        <button class="nav-item sidebar-icon text-muted hover:text-white" data-section="notifications" data-title="Notifications" aria-label="Notifications">
+        <button id="notifications-drawer-btn" class="nav-item sidebar-icon text-muted hover:text-white relative" data-drawer="notifications" aria-label="Notifications">
           <i data-lucide="bell" class="w-5 h-5"></i>
+          <span id="notif-dot" class="absolute right-1 top-1 h-2 w-2 rounded-full bg-emerald-500 hidden"></span>
         </button>
       </nav>
 
-      <div class="mt-auto pb-2">
-        <button id="account-btn" class="grid place-items-center" aria-label="Open account">
-          <img
-            alt="User profile"
-            class="w-10 h-10 rounded-full border border-white/10 object-cover"
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80">
+      <div class="relative mt-auto pb-2">
+        <button id="account-btn" class="grid place-items-center rounded-full transition hover:ring-2 hover:ring-emerald-500/40" aria-label="Open account">
+          <img id="sidebar-avatar" alt="User profile" class="w-10 h-10 rounded-full border border-white/10 object-cover" src="">
         </button>
       </div>
     </aside>
 
-    <section class="w-[400px] max-w-[92vw] shrink-0 bg-brandSidebar border-r border-white/5 flex flex-col">
-      <div class="px-5 pt-5 pb-4 border-b border-white/5">
-        <p class="text-[10px] font-semibold uppercase tracking-[0.35em] text-white/40">EcoShine</p>
-        <h1 id="section-title" class="mt-2 text-2xl font-extrabold text-white tracking-tight">Dashboard</h1>
-      </div>
-
-      <div class="flex-1 overflow-y-auto thin-scroll px-4 py-4 space-y-3">
-        <article class="panel rounded-2xl p-4 border border-emerald-500/25 bg-[rgba(10,15,26,0.92)]" data-panel="dashboard">
-          <div class="flex items-center justify-between gap-3">
+    <!-- Main column: content panel + map -->
+    <div class="relative flex h-full min-w-0 md:pl-20">
+      <!-- Content panel (desktop: fixed column; mobile: bottom sheet) -->
+      <section id="content-panel" class="content-sheet fixed inset-x-3 top-3 bottom-[5rem] z-[1300] max-h-none md:static md:inset-auto md:bottom-auto md:top-auto md:z-auto md:max-h-none md:translate-y-0 w-[calc(100%-1.5rem)] md:w-[400px] md:max-w-[92vw] shrink-0 bg-brandSidebar border border-white/5 flex flex-col rounded-[2rem] md:rounded-none overflow-hidden shadow-2xl md:shadow-none">
+        <div class="px-4 pt-4 pb-4 border-b border-white/5 space-y-4">
+          <div class="flex items-start justify-between gap-3">
             <div>
-              <p class="text-[10px] font-bold uppercase tracking-[0.28em] text-red-100/70">Active Booking</p>
-              <h2 class="mt-1 text-lg font-extrabold text-white">ECO-88910</h2>
-            </div>
-            <span class="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] text-emerald-100">
-              In Route
-            </span>
-          </div>
-
-          <div class="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-black/15 px-3 py-3">
-            <div class="flex items-center gap-3 min-w-0">
-              <img
-                alt="Johannes N."
-                class="h-11 w-11 rounded-full border border-white/10 object-cover"
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80">
-              <div class="min-w-0">
-                <p class="text-sm font-bold text-white">Johannes N.</p>
-                <p class="text-[10px] uppercase tracking-[0.28em] text-white/45">Technician</p>
-              </div>
-            </div>
-            <div class="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/90">
-              4.9
-            </div>
-          </div>
-
-          <div class="mt-4 grid grid-cols-4 gap-2">
-            <div class="rounded-2xl bg-black/15 px-3 py-3">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Plate</p>
-              <p class="mt-1 text-sm font-bold text-white">N 124-883 W</p>
-            </div>
-            <div class="rounded-2xl bg-black/15 px-3 py-3">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Service</p>
-              <p class="mt-1 text-sm font-bold text-white">Premium Wash</p>
-            </div>
-            <div class="rounded-2xl bg-black/15 px-3 py-3">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Add-on</p>
-              <p class="mt-1 text-sm font-bold text-white">Engine Cleaning</p>
-            </div>
-            <div class="rounded-2xl bg-black/15 px-3 py-3">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Price</p>
-              <p class="mt-1 text-sm font-bold text-white">N$250</p>
-            </div>
-          </div>
-
-          <div class="mt-4 grid grid-cols-2 gap-2">
-            <div class="rounded-2xl bg-black/15 px-3 py-3">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Arrival</p>
-              <p class="mt-1 text-sm font-bold text-white">10:15 AM</p>
-              <p class="text-[10px] text-emerald-100/70">In 12 mins</p>
-            </div>
-            <div class="rounded-2xl bg-black/15 px-3 py-3">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Payment</p>
-              <p class="mt-1 text-sm font-bold text-white">Pay on Arrival</p>
-            </div>
-          </div>
-
-          <div class="mt-4 flex items-center justify-between gap-3 rounded-2xl bg-black/15 px-3 py-3">
-            <div class="flex items-center gap-3 min-w-0">
-            <div class="flex h-11 w-11 items-center justify-center rounded-full border border-emerald-500/25 bg-emerald-500/10 text-emerald-100 font-bold">
-                A
-              </div>
-              <div class="min-w-0">
-                <p class="text-sm font-bold text-white">Adam Brady</p>
-                <p class="text-[10px] uppercase tracking-[0.28em] text-white/45">Support Driver</p>
-              </div>
+              <p class="text-[10px] font-semibold uppercase tracking-[0.35em] text-white/40">EcoShine</p>
+              <h1 id="section-title" class="mt-2 text-2xl font-extrabold text-white tracking-tight">Dashboard</h1>
             </div>
             <div class="flex items-center gap-2">
-              <button class="grid h-9 w-9 place-items-center rounded-full bg-emerald-500/10 text-emerald-100 transition hover:bg-emerald-500/15">
-                <i data-lucide="phone" class="w-4 h-4"></i>
-              </button>
-              <button class="grid h-9 w-9 place-items-center rounded-full bg-emerald-500/10 text-emerald-100 transition hover:bg-emerald-500/15">
-                <i data-lucide="message-circle" class="w-4 h-4"></i>
+              <button id="close-content-sheet" class="md:hidden map-btn grid h-10 w-10 place-items-center rounded-2xl text-white/70" aria-label="Close panel">
+                <i data-lucide="chevron-down" class="w-4 h-4"></i>
               </button>
             </div>
           </div>
-        </article>
+        </div>
 
-        <article class="panel rounded-2xl p-4 border border-white/6" data-panel="booking">
-          <div class="flex items-center justify-between gap-3">
-            <div>
-              <h3 class="text-base font-bold text-white">Current Plan</h3>
-              <p class="mt-1 text-xs text-muted">Silver Member • N$399/month</p>
+        <div class="flex-1 overflow-y-auto thin-scroll px-4 py-4 space-y-3">
+          <article class="panel rounded-3xl p-4 border border-emerald-500/25 bg-[rgba(10,15,26,0.92)]" data-panel="dashboard">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-[0.28em] text-red-100/70">Active Booking</p>
+                <h2 id="active-booking-title" class="mt-1 text-lg font-extrabold text-white">No active booking</h2>
+              </div>
+              <span id="active-booking-status" class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70">Waiting</span>
             </div>
-                <button class="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-100">
-              Upgrade
-            </button>
-          </div>
 
-          <div class="mt-4">
-            <div class="flex items-center justify-between text-xs text-muted">
-              <span>Washes Remaining</span>
-              <span class="font-semibold text-white">2 / 4</span>
+            <div class="mt-4 flex items-center justify-between gap-3 rounded-3xl bg-black/15 px-3 py-3">
+              <div class="flex items-center gap-3 min-w-0">
+                <img id="active-booking-avatar" alt="Technician" class="h-11 w-11 rounded-full border border-white/10 object-cover" src="">
+                <div class="min-w-0">
+                  <p id="active-booking-technician" class="text-sm font-bold text-white">Pending assignment</p>
+                  <p id="active-booking-role" class="text-[10px] uppercase tracking-[0.28em] text-white/45">Technician</p>
+                </div>
+              </div>
+              <div id="active-booking-rating" class="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/90">—</div>
             </div>
-            <div class="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
-              <div class="h-full w-1/2 rounded-full bg-emerald-500"></div>
-            </div>
-          </div>
 
-          <div class="mt-4 grid grid-cols-2 gap-2 text-sm">
-            <div class="rounded-2xl bg-white/5 px-3 py-3">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-muted">Priority</p>
-              <p class="mt-1 font-bold text-white">Enabled</p>
+            <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div class="rounded-3xl bg-black/15 px-3 py-3">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Plate</p>
+                <p id="active-booking-plate" class="mt-1 text-sm font-bold text-white">—</p>
+              </div>
+              <div class="rounded-3xl bg-black/15 px-3 py-3">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Service</p>
+                <p id="active-booking-service" class="mt-1 text-sm font-bold text-white">—</p>
+              </div>
+              <div class="rounded-3xl bg-black/15 px-3 py-3">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Add-on</p>
+                <p id="active-booking-addon" class="mt-1 text-sm font-bold text-white">—</p>
+              </div>
+              <div class="rounded-3xl bg-black/15 px-3 py-3">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Price</p>
+                <p id="active-booking-price" class="mt-1 text-sm font-bold text-white">—</p>
+              </div>
             </div>
-            <div class="rounded-2xl bg-white/5 px-3 py-3">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-muted">Discount</p>
-              <p class="mt-1 font-bold text-white">10% Auto Applied</p>
-            </div>
-            <div class="rounded-2xl bg-white/5 px-3 py-3 col-span-2">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-muted">Next Billing</p>
-              <p class="mt-1 font-bold text-white">August 1st, 2026</p>
-            </div>
-          </div>
-        </article>
 
-        <article class="panel rounded-2xl p-4 border border-white/6" data-panel="tracking">
-          <div class="flex items-center justify-between gap-3">
-            <h3 class="text-base font-bold text-white">Base Washes</h3>
-            <span class="text-[10px] uppercase tracking-[0.25em] text-muted">Vehicle Types</span>
-          </div>
-          <div class="mt-3 grid gap-2">
-            <div class="rounded-2xl bg-white/5 px-3 py-3">
-              <div class="flex items-start justify-between gap-3">
+            <div class="mt-4 grid grid-cols-2 gap-2">
+              <div class="rounded-3xl bg-black/15 px-3 py-3">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Arrival</p>
+                <p id="active-booking-arrival" class="mt-1 text-sm font-bold text-white">—</p>
+                <p id="active-booking-eta" class="text-[10px] text-emerald-100/70">—</p>
+              </div>
+              <div class="rounded-3xl bg-black/15 px-3 py-3">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Payment</p>
+                <p id="active-booking-payment" class="mt-1 text-sm font-bold text-white">—</p>
+              </div>
+            </div>
+
+            <div class="mt-4 flex items-center justify-between gap-3 rounded-3xl bg-black/15 px-3 py-3">
+              <div class="flex items-center gap-3 min-w-0">
+                <div id="active-booking-support-initial" class="flex h-11 w-11 items-center justify-center rounded-full border border-emerald-500/25 bg-emerald-500/10 text-emerald-100 font-bold">—</div>
+                <div class="min-w-0">
+                  <p id="active-booking-support" class="text-sm font-bold text-white">No support assigned</p>
+                  <p class="text-[10px] uppercase tracking-[0.28em] text-white/45">Support Driver</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="grid h-9 w-9 place-items-center rounded-full bg-emerald-500/10 text-emerald-100 transition hover:bg-emerald-500/15">
+                  <i data-lucide="phone" class="w-4 h-4"></i>
+                </button>
+                <button class="grid h-9 w-9 place-items-center rounded-full bg-emerald-500/10 text-emerald-100 transition hover:bg-emerald-500/15">
+                  <i data-lucide="message-circle" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel rounded-3xl p-4 border border-white/6 hidden" data-panel="booking">
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <h3 class="text-base font-bold text-white">Book a Wash</h3>
+                <p class="mt-1 text-xs text-muted">Schedule your next EcoShine visit</p>
+              </div>
+              <span id="booking-tier-badge" class="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-100">Silver</span>
+            </div>
+            <div class="mt-4 grid gap-2">
+              <button id="start-booking-btn" class="w-full rounded-3xl bg-emerald-500 px-4 py-3 text-sm font-bold text-slate-950 transition hover:bg-emerald-400">
+                Start New Booking
+              </button>
+            </div>
+            <p class="mt-4 text-xs text-muted">Priority scheduling and member discounts apply automatically at checkout.</p>
+          </article>
+
+          <article class="panel rounded-3xl p-4 border border-white/6 hidden" data-panel="tracking">
+            <div class="flex items-center justify-between gap-3">
+              <h3 class="text-base font-bold text-white">Base Washes</h3>
+              <span class="text-[10px] uppercase tracking-[0.25em] text-muted">Vehicle Types</span>
+            </div>
+            <div class="mt-3 grid gap-2">
+              <div class="rounded-3xl bg-white/5 px-3 py-3 flex items-start justify-between gap-3">
                 <div>
                   <p class="text-sm font-semibold text-white">Express Exterior Wash</p>
                   <p class="text-xs text-muted">Exterior wash & tire cleaning</p>
                 </div>
                 <p class="text-sm font-bold text-white">N$80</p>
               </div>
-            </div>
-            <div class="rounded-2xl bg-white/5 px-3 py-3">
-              <div class="flex items-start justify-between gap-3">
+              <div class="rounded-3xl bg-white/5 px-3 py-3 flex items-start justify-between gap-3">
                 <div>
                   <p class="text-sm font-semibold text-white">Premium Wash</p>
                   <p class="text-xs text-muted">Exterior, tires & wax finish</p>
                 </div>
                 <p class="text-sm font-bold text-white">N$150</p>
               </div>
-            </div>
-            <div class="rounded-2xl bg-white/5 px-3 py-3">
-              <div class="flex items-start justify-between gap-3">
+              <div class="rounded-3xl bg-white/5 px-3 py-3 flex items-start justify-between gap-3">
                 <div>
                   <p class="text-sm font-semibold text-white">Interior Cleaning</p>
                   <p class="text-xs text-muted">Vacuum, dashboard & windows</p>
                 </div>
                 <p class="text-sm font-bold text-white">N$180</p>
               </div>
-            </div>
-            <div class="rounded-2xl bg-white/5 px-3 py-3">
-              <div class="flex items-start justify-between gap-3">
+              <div class="rounded-3xl bg-white/5 px-3 py-3 flex items-start justify-between gap-3">
                 <div>
                   <p class="text-sm font-semibold text-white">Full Detailing</p>
                   <p class="text-xs text-muted">Complete interior & exterior</p>
@@ -341,235 +429,366 @@
                 <p class="text-sm font-bold text-white">N$350</p>
               </div>
             </div>
-          </div>
+          </article>
 
-          <div class="mt-4 grid gap-2 text-xs">
-            <div class="rounded-2xl bg-white/5 px-3 py-2 flex items-center justify-between gap-3">
-              <span class="text-muted">Sedan / Hatchback</span>
-              <span class="text-white font-semibold">1.0x</span>
+          <article class="panel rounded-3xl p-4 border border-white/6 hidden" data-panel="eco-impact">
+            <div class="flex items-center justify-between gap-3">
+              <h3 class="text-base font-bold text-white">Eco Impact</h3>
+              <span class="text-[10px] uppercase tracking-[0.25em] text-muted">Lifetime</span>
             </div>
-            <div class="rounded-2xl bg-white/5 px-3 py-2 flex items-center justify-between gap-3">
-              <span class="text-muted">SUV / Double Cab</span>
-              <span class="text-white font-semibold">N$220</span>
-            </div>
-            <div class="rounded-2xl bg-white/5 px-3 py-2 flex items-center justify-between gap-3">
-              <span class="text-muted">Motorcycle</span>
-              <span class="text-white font-semibold">0.8x</span>
-            </div>
-          </div>
-
-          <div class="mt-4 grid grid-cols-2 gap-2 text-xs">
-            <div class="rounded-2xl bg-white/5 px-3 py-2">
-              <p class="text-muted uppercase tracking-[0.2em]">Add-ons</p>
-              <p class="mt-1 text-white font-semibold">Engine, Shampoo, Headlights</p>
-            </div>
-            <div class="rounded-2xl bg-white/5 px-3 py-2">
-              <p class="text-muted uppercase tracking-[0.2em]">More</p>
-              <p class="mt-1 text-white font-semibold">Ceramic, Odour Removal</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="panel rounded-2xl p-4 border border-white/6" data-panel="eco-impact">
-          <div class="flex items-center justify-between gap-3">
-            <h3 class="text-base font-bold text-white">Eco Impact</h3>
-            <span class="text-[10px] uppercase tracking-[0.25em] text-muted">Lifetime</span>
-          </div>
-          <div class="mt-3 grid grid-cols-2 gap-2">
-            <div class="rounded-2xl bg-white/5 px-3 py-3">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-muted">Water Saved</p>
-              <p class="mt-1 text-sm font-bold text-white">960 Litres</p>
-            </div>
-            <div class="rounded-2xl bg-white/5 px-3 py-3">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-muted">CO₂ Prevented</p>
-              <p class="mt-1 text-sm font-bold text-white">14.2 kg</p>
-            </div>
-            <div class="rounded-2xl bg-white/5 px-3 py-3">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-muted">Eco-Washes</p>
-              <p class="mt-1 text-sm font-bold text-white">6 Washes</p>
-            </div>
-            <div class="rounded-2xl bg-white/5 px-3 py-3">
-              <p class="text-[10px] uppercase tracking-[0.2em] text-muted">Fertilizer</p>
-              <p class="mt-1 text-sm font-bold text-white">4.8 kg</p>
-            </div>
-          </div>
-        </article>
-
-        <article class="panel rounded-2xl p-4 border border-white/6" data-panel="plan-upgrades">
-          <div class="flex items-center justify-between gap-3">
-            <h3 class="text-base font-bold text-white">Plan Upgrades</h3>
-            <span class="text-[10px] uppercase tracking-[0.25em] text-muted">Carousel</span>
-          </div>
-          <div class="mt-3 grid gap-2">
-            <div class="rounded-2xl bg-white/5 px-3 py-3">
-              <div class="flex items-center justify-between gap-3">
-                <div>
-                  <p class="text-sm font-semibold text-white">Gold Plan</p>
-                  <p class="text-xs text-muted">N$699/mo • 8 Premium Washes + Free monthly engine cleaning</p>
-                </div>
-                <button class="rounded-full bg-emerald-500 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-950">Choose</button>
+            <div class="mt-3 grid grid-cols-2 gap-2">
+              <div class="rounded-3xl bg-white/5 px-3 py-3">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-muted">Water Saved</p>
+                <p class="mt-1 text-sm font-bold text-white">960 Litres</p>
+              </div>
+              <div class="rounded-3xl bg-white/5 px-3 py-3">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-muted">CO₂ Prevented</p>
+                <p class="mt-1 text-sm font-bold text-white">14.2 kg</p>
+              </div>
+              <div class="rounded-3xl bg-white/5 px-3 py-3">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-muted">Eco-Washes</p>
+                <p class="mt-1 text-sm font-bold text-white">6 Washes</p>
+              </div>
+              <div class="rounded-3xl bg-white/5 px-3 py-3">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-muted">Fertilizer</p>
+                <p class="mt-1 text-sm font-bold text-white">4.8 kg</p>
               </div>
             </div>
-            <div class="rounded-2xl bg-white/5 px-3 py-3">
-              <div class="flex items-center justify-between gap-3">
-                <div>
-                  <p class="text-sm font-semibold text-white">Platinum Plan</p>
-                  <p class="text-xs text-muted">N$999/mo • Unlimited Premium Washes + Free monthly full detailing</p>
-                </div>
-                <button class="rounded-full bg-emerald-500 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-950">Choose</button>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="panel rounded-2xl p-4 border border-white/6" data-panel="notifications">
-          <div class="flex items-center justify-between gap-3">
-            <h3 class="text-base font-bold text-white">Notifications</h3>
-            <span class="text-[10px] uppercase tracking-[0.25em] text-muted">Recent</span>
-          </div>
-          <div class="mt-3 grid gap-2">
-            <div class="rounded-2xl bg-white/5 px-3 py-3">
-              <p class="text-xs font-semibold text-white">Booking confirmed for ECO-88910</p>
-              <p class="mt-1 text-xs text-muted">Johannes N. is on the way.</p>
-            </div>
-            <div class="rounded-2xl bg-white/5 px-3 py-3">
-              <p class="text-xs font-semibold text-white">Silver Member active</p>
-              <p class="mt-1 text-xs text-muted">2 washes remaining this month.</p>
-            </div>
-          </div>
-        </article>
-      </div>
+          </article>
+        </div>
       </section>
 
-    <section class="relative flex-1 bg-brandDark overflow-hidden">
-      <div id="map" class="absolute inset-0"></div>
-
-      <div class="absolute right-4 top-4 z-[1200] flex flex-col gap-2">
-        <button class="map-btn grid h-10 w-10 place-items-center rounded-xl text-white/70 transition hover:text-white">
-          <i data-lucide="plus" class="w-4 h-4"></i>
-        </button>
-        <button class="map-btn grid h-10 w-10 place-items-center rounded-xl text-white/70 transition hover:text-white">
-          <i data-lucide="minus" class="w-4 h-4"></i>
-        </button>
-        <button class="map-btn grid h-10 w-10 place-items-center rounded-xl text-white/70 transition hover:text-white">
-          <i data-lucide="maximize" class="w-4 h-4"></i>
-        </button>
-      </div>
-    </section>
-  </div>
-
-  <div id="account-modal" class="fixed inset-0 z-[2500] hidden">
-    <div class="modal-backdrop absolute inset-0" data-close-account-modal></div>
-    <div class="relative flex h-full w-full items-center justify-end p-3 sm:p-6">
-      <div class="panel w-full max-w-[760px] max-h-[calc(100vh-1.5rem)] overflow-y-auto rounded-[28px] border border-white/10 bg-slate-950/95 p-5 shadow-2xl sm:p-6">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <p class="text-[10px] font-bold uppercase tracking-[0.34em] text-emerald-400">Profile Identity</p>
-            <h2 class="mt-2 text-2xl font-extrabold text-white tracking-tight">Shitana Simon</h2>
-              💎 Silver Member
-          </div>
-          <button id="close-account-modal" class="map-btn grid h-10 w-10 place-items-center rounded-xl text-white/70 transition hover:text-white" aria-label="Close account">
-            <i data-lucide="x" class="w-4 h-4"></i>
+      <!-- Map -->
+      <section class="relative flex-1 bg-brandDark overflow-hidden min-h-0">
+        <div id="map" class="absolute inset-0 z-0"></div>
+        <div class="absolute right-4 top-4 z-[1100] flex flex-col gap-2">
+          <button id="map-zoom-in" class="map-btn grid h-10 w-10 place-items-center rounded-2xl text-white/70 transition hover:text-white" aria-label="Zoom in">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+          </button>
+          <button id="map-zoom-out" class="map-btn grid h-10 w-10 place-items-center rounded-2xl text-white/70 transition hover:text-white" aria-label="Zoom out">
+            <i data-lucide="minus" class="w-4 h-4"></i>
+          </button>
+          <button id="map-fit" class="map-btn grid h-10 w-10 place-items-center rounded-2xl text-white/70 transition hover:text-white" aria-label="Fit route">
+            <i data-lucide="maximize" class="w-4 h-4"></i>
           </button>
         </div>
+      </section>
+    </div>
 
-        <div class="mt-6 grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
-          <div class="rounded-[24px] border border-white/8 bg-white/5 p-5">
-            <p class="text-[10px] font-bold uppercase tracking-[0.28em] text-white/45">Avatar Upload</p>
-            <label for="profile-upload" class="mt-4 group relative mx-auto flex h-36 w-36 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-white/10 bg-slate-900">
-              <img id="profile-avatar-preview" class="h-full w-full object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=360&q=80" alt="Profile photo">
-              <span class="absolute bottom-3 right-3 grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-emerald-500 text-slate-950 shadow-lg transition group-hover:scale-105">
-                <i data-lucide="camera" class="h-4 w-4"></i>
-              </span>
-            </label>
-            <input id="profile-upload" type="file" accept="image/*" class="hidden">
+    <!-- Mobile bottom nav -->
+    <nav class="fixed bottom-0 inset-x-0 z-[1400] md:hidden flex items-center justify-around gap-1 border-t border-white/8 bg-[rgba(10,15,26,0.96)] px-2 py-2 backdrop-blur-xl">
+      <button class="mobile-nav nav-item flex flex-col items-center gap-1 rounded-2xl px-2 py-1.5 text-[10px] text-muted active-pill" data-section="dashboard" data-title="Dashboard" aria-label="Dashboard">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+        <span>Home</span>
+      </button>
+      <button class="mobile-nav nav-item flex flex-col items-center gap-1 rounded-2xl px-2 py-1.5 text-[10px] text-muted" data-section="booking" data-title="Book a Wash" aria-label="Book a Wash">
+        <i data-lucide="calendar-plus-2" class="w-5 h-5"></i>
+        <span>Book</span>
+      </button>
+      <button class="mobile-nav nav-item flex flex-col items-center gap-1 rounded-2xl px-2 py-1.5 text-[10px] text-muted" data-section="tracking" data-title="Services" aria-label="Services">
+        <i data-lucide="route" class="w-5 h-5"></i>
+        <span>Services</span>
+      </button>
+      <button class="mobile-nav nav-item flex flex-col items-center gap-1 rounded-2xl px-2 py-1.5 text-[10px] text-muted relative" data-drawer="notifications" aria-label="Notifications">
+        <i data-lucide="bell" class="w-5 h-5"></i>
+        <span>Alerts</span>
+        <span class="mobile-notif-dot absolute right-2 top-1 h-1.5 w-1.5 rounded-full bg-emerald-500 hidden"></span>
+      </button>
+      <button id="mobile-account-btn" class="nav-item flex flex-col items-center gap-1 rounded-2xl px-2 py-1.5 text-[10px] text-muted" aria-label="Profile">
+        <img id="mobile-avatar" alt="" class="h-6 w-6 rounded-full border border-white/10 object-cover">
+        <span>Profile</span>
+      </button>
+    </nav>
 
-            <div class="mt-5 space-y-3 text-sm">
-              <div class="rounded-2xl bg-white/5 px-3 py-3">
-                <p class="text-[10px] uppercase tracking-[0.2em] text-muted">Email</p>
-                <p class="mt-1 font-semibold text-white">shitana@example.com</p>
+    <!-- Overlay backdrop -->
+    <div id="overlay-backdrop" class="overlay-backdrop fixed inset-0 z-[1500]"></div>
+
+    <!-- Booking wizard modal -->
+    <div id="booking-wizard-modal" class="fixed inset-0 z-[2000] hidden items-center justify-center overflow-y-auto p-2 sm:p-4">
+      <button id="booking-wizard-backdrop" type="button" class="absolute inset-0 z-0 bg-transparent backdrop-blur-[1px] sm:bg-slate-950/18" aria-label="Close booking wizard"></button>
+      <div class="relative z-10 w-full max-w-[360px]">
+        <div class="wizard-shell panel flex h-[min(88dvh,760px)] w-full flex-col overflow-hidden rounded-[1rem] border border-[#1f293d] bg-[#0e131f] shadow-2xl sm:h-[min(86vh,760px)]">
+          <div class="h-1 w-full bg-white/5">
+            <div id="wizard-progress-bar" class="h-full w-[20%] bg-emerald-500 shadow-[0_0_18px_rgba(109,187,109,0.55)] transition-all duration-300"></div>
+          </div>
+
+          <div class="border-b border-white/5 px-4 py-3 sm:px-5">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p class="text-[10px] font-semibold uppercase tracking-[0.45em] text-emerald-300/80">BOOK MOBILE WASH</p>
+                <h2 class="mt-1 text-lg font-extrabold text-white sm:text-xl">One Wizard Box</h2>
+                <p class="mt-1 text-[11px] text-muted sm:text-xs">Local booking flow</p>
               </div>
-              <div class="rounded-2xl bg-white/5 px-3 py-3">
-                <p class="text-[10px] uppercase tracking-[0.2em] text-muted">Phone</p>
-                <p class="mt-1 font-semibold text-white">+264 81 123 4567</p>
+              <div class="flex items-start gap-3">
+                <div class="text-right">
+                  <p id="wizard-step-label" class="text-xs font-semibold text-white/80 sm:text-sm">Step 1 of 5</p>
+                  <p id="wizard-step-caption" class="text-[10px] uppercase tracking-[0.22em] text-white/35">Location</p>
+                </div>
+                <button id="close-booking-wizard" class="map-btn grid h-9 w-9 place-items-center rounded-2xl text-white/70 sm:h-10 sm:w-10" aria-label="Close booking wizard">
+                  <i data-lucide="x" class="h-4 w-4"></i>
+                </button>
               </div>
             </div>
           </div>
 
-          <div class="space-y-4">
-            <section class="rounded-[24px] border border-white/8 bg-white/5 p-5">
+          <div id="wizard-stage" class="relative flex-1 min-h-0 overflow-hidden">
+            <section data-wizard-step="1" class="wizard-step absolute inset-0 p-4 md:p-5">
+              <div class="space-y-3">
+                <div>
+                  <h3 class="text-lg font-extrabold text-white sm:text-xl">Where is your car?</h3>
+                  <p class="mt-1 text-xs text-muted sm:text-sm">Use a real address or one of the examples below.</p>
+                </div>
+                <label class="block">
+                  <span class="sr-only">Location search</span>
+                  <div class="flex items-center gap-3 rounded-2xl border border-[#334155] bg-[#111827] px-3.5 py-2.5 text-white shadow-inner shadow-black/20">
+                    <i data-lucide="search" class="h-4 w-4 text-white/45"></i>
+                    <input id="wizard-location-input" type="text" value="" placeholder="Enter your current address..." class="w-full bg-transparent text-sm text-white placeholder:text-white/35 outline-none sm:text-[15px]" />
+                  </div>
+                </label>
+
+                <div class="space-y-2">
+                  <button type="button" class="wizard-suggestion w-full rounded-2xl border border-white/5 bg-white/5 px-3.5 py-2.5 text-left transition hover:border-emerald-500/25 hover:bg-white/8" data-location="123 Sam Nujoma Drive, Example City">
+                    <p class="text-sm font-semibold text-white">123 Sam Nujoma Drive, Example City</p>
+                    <p class="mt-1 text-[11px] text-muted">Example address</p>
+                  </button>
+                  <button type="button" class="wizard-suggestion w-full rounded-2xl border border-white/5 bg-white/5 px-3.5 py-2.5 text-left transition hover:border-emerald-500/25 hover:bg-white/8" data-location="35 Independence Ave, Example City">
+                    <p class="text-sm font-semibold text-white">35 Independence Ave, Example City</p>
+                    <p class="mt-1 text-[11px] text-muted">Fallback office</p>
+                  </button>
+                  <button type="button" class="wizard-suggestion w-full rounded-2xl border border-white/5 bg-white/5 px-3.5 py-2.5 text-left transition hover:border-emerald-500/25 hover:bg-white/8" data-location="Unit 4, Safari Hills, Example City">
+                    <p class="text-sm font-semibold text-white">Unit 4, Safari Hills, Example City</p>
+                    <p class="mt-1 text-[11px] text-muted">Fallback apartment</p>
+                  </button>
+                </div>
+
+                <button type="button" id="wizard-gps-btn" class="inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3.5 py-2.5 text-xs font-semibold text-emerald-200 transition hover:bg-emerald-400/15 sm:text-sm">
+                  <span class="grid h-6 w-6 place-items-center rounded-full bg-emerald-500 text-slate-950 shadow-lg sm:h-7 sm:w-7">
+                    <i data-lucide="map-pin" class="h-4 w-4"></i>
+                  </span>
+                  Use My Location
+                </button>
+              </div>
+            </section>
+
+            <section data-wizard-step="2" class="wizard-step absolute inset-0 p-4 md:p-5">
+              <div class="space-y-3">
+                <div>
+                  <h3 class="text-lg font-extrabold text-white sm:text-xl">Choose a vehicle</h3>
+                  <p class="mt-1 text-xs text-muted sm:text-sm">Swipe through saved cars or add a new one.</p>
+                </div>
+                <div id="wizard-vehicles" class="flex gap-3 overflow-x-auto pb-2 thin-scroll snap-x snap-mandatory"></div>
+                <button type="button" class="w-full rounded-2xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">
+                  + Add New Vehicle
+                </button>
+              </div>
+            </section>
+
+            <section data-wizard-step="3" class="wizard-step absolute inset-0 p-4 md:p-5">
+              <div class="space-y-3">
+                <div>
+                  <h3 class="text-lg font-extrabold text-white sm:text-xl">Select service & add-ons</h3>
+                  <p class="mt-1 text-xs text-muted sm:text-sm">Gold members can unlock free washes and engine cleans.</p>
+                </div>
+                <div id="wizard-tiers" class="grid gap-3"></div>
+                <div id="wizard-addons" class="space-y-3"></div>
+              </div>
+            </section>
+
+            <section data-wizard-step="4" class="wizard-step absolute inset-0 p-4 md:p-5">
+              <div class="space-y-3">
+                <div>
+                  <h3 class="text-lg font-extrabold text-white sm:text-xl">Payment</h3>
+                  <p class="mt-1 text-xs text-muted sm:text-sm">Quick pay on arrival or card checkout.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <button type="button" class="wizard-payment-option rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-3.5 py-3 text-left text-sm font-semibold text-emerald-100" data-payment="arrival">
+                    Pay on Arrival
+                  </button>
+                  <button type="button" class="wizard-payment-option rounded-2xl border border-white/10 bg-white/5 px-3.5 py-3 text-left text-sm font-semibold text-white/85" data-payment="card">
+                    Online Card
+                  </button>
+                </div>
+                <div class="rounded-[1.6rem] border border-white/8 bg-black/20 p-3.5 sm:p-4">
+                  <p class="text-[10px] uppercase tracking-[0.25em] text-white/35">Summary</p>
+                  <div id="wizard-summary" class="mt-2.5 space-y-2 text-sm"></div>
+                </div>
+              </div>
+            </section>
+
+            <section data-wizard-step="5" class="wizard-step absolute inset-0 p-4 md:p-5">
+              <div class="space-y-3">
+                <div>
+                  <h3 class="text-lg font-extrabold text-white sm:text-xl">Booking ready</h3>
+                  <p class="mt-1 text-xs text-muted sm:text-sm">Review the booking summary before you send it.</p>
+                </div>
+                <article class="panel rounded-[1rem] border border-emerald-500/20 bg-[rgba(10,15,26,0.92)] p-3.5 sm:p-4">
+                  <div class="flex items-center justify-between gap-3">
+                    <div>
+                      <p class="text-[10px] font-bold uppercase tracking-[0.28em] text-red-100/70">Summary</p>
+                      <h4 id="wizard-confirmation-title" class="mt-1 text-base font-extrabold text-white sm:text-lg">No booking selected</h4>
+                    </div>
+                    <span id="wizard-confirmation-status" class="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.22em] text-white/70">Draft</span>
+                  </div>
+
+                  <div class="mt-3.5 grid grid-cols-2 gap-2">
+                    <div class="rounded-3xl bg-black/15 px-3 py-2.5">
+                      <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Vehicle</p>
+                      <p id="wizard-confirmation-vehicle" class="mt-1 text-sm font-bold text-white">—</p>
+                    </div>
+                    <div class="rounded-3xl bg-black/15 px-3 py-2.5">
+                      <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Service</p>
+                      <p id="wizard-confirmation-service" class="mt-1 text-sm font-bold text-white">—</p>
+                    </div>
+                    <div class="rounded-3xl bg-black/15 px-3 py-2.5">
+                      <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Location</p>
+                      <p id="wizard-confirmation-location" class="mt-1 text-sm font-bold text-white">—</p>
+                    </div>
+                    <div class="rounded-3xl bg-black/15 px-3 py-2.5">
+                      <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Total</p>
+                      <p id="wizard-confirmation-total" class="mt-1 text-sm font-bold text-white">—</p>
+                    </div>
+                  </div>
+
+                  <div class="mt-3.5 grid grid-cols-2 gap-2">
+                    <div class="rounded-3xl bg-black/15 px-3 py-2.5">
+                      <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Payment</p>
+                      <p id="wizard-confirmation-payment" class="mt-1 text-sm font-bold text-white">—</p>
+                    </div>
+                    <div class="rounded-3xl bg-black/15 px-3 py-2.5">
+                      <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Status</p>
+                      <p id="wizard-confirmation-note" class="mt-1 text-sm font-bold text-white">Ready to submit</p>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </section>
+          </div>
+
+          <div class="border-t border-white/5 px-5 py-4">
+            <div class="flex items-center justify-between gap-3">
+              <button id="wizard-back-btn" class="rounded-full border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">Back</button>
+              <button id="wizard-next-btn" class="rounded-full bg-emerald-500 px-5 py-2.5 text-sm font-bold text-slate-950 transition hover:bg-emerald-400">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications drawer -->
+    <aside id="notifications-drawer" class="bottom-sheet fixed z-[1700] left-0 bottom-0 md:bottom-6 md:left-6 md:top-auto md:h-[min(82vh,720px)] w-full md:w-[360px] max-w-full panel border-t md:border-t md:border-r border-white/8 rounded-t-[2rem] md:rounded-[2rem] flex flex-col">
+      <div class="flex items-center justify-between gap-3 px-5 pt-5 pb-4 border-b border-white/5">
+        <div>
+          <p class="text-[10px] font-semibold uppercase tracking-[0.35em] text-white/40">Inbox</p>
+          <h2 class="mt-1 text-xl font-extrabold text-white">Notifications</h2>
+        </div>
+        <button class="drawer-close map-btn grid h-10 w-10 place-items-center rounded-2xl text-white/70" data-drawer="notifications" aria-label="Close notifications">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto thin-scroll px-4 py-4 space-y-3" id="notifications-list">
+        <div id="notifications-empty" class="hidden rounded-3xl border border-white/6 bg-white/5 px-4 py-6 text-center">
+          <p class="text-sm font-semibold text-white">No notifications yet</p>
+          <p class="mt-1 text-xs text-muted">Updates from your bookings will appear here.</p>
+        </div>
+      </div>
+    </aside>
+
+
+    <!-- Compact profile modal -->
+
+    <div id="account-modal" class="fixed inset-0 z-[1800] hidden">
+      <div class="overlay-backdrop absolute inset-0 is-open" data-close-profile></div>
+      <div class="relative flex h-full w-full items-end justify-center p-2.5 md:items-end md:justify-start md:pl-24 md:pb-6 sm:p-3">
+        <div id="profile-popover" class="profile-popover panel w-full max-w-[360px] rounded-[1rem] border border-white/10 bg-slate-950/95 p-3 shadow-2xl sm:max-w-[360px]">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <label for="profile-upload" class="group relative shrink-0 cursor-pointer">
+                <img id="profile-avatar-preview" class="h-11 w-11 rounded-full border border-white/10 object-cover" src="" alt="Profile photo">
+                <span class="absolute -bottom-1 -right-1 grid h-6 w-6 place-items-center rounded-full border border-white/10 bg-emerald-500 text-slate-950 shadow-lg transition group-hover:scale-105">
+                  <i data-lucide="camera" class="h-3 w-3"></i>
+                </span>
+              </label>
+              <input id="profile-upload" type="file" accept="image/*" class="hidden">
+              <div class="min-w-0">
+                <p class="text-[9px] font-bold uppercase tracking-[0.22em] text-emerald-400">Account</p>
+                <h2 id="profile-name" class="mt-0.5 truncate text-base font-extrabold text-white">—</h2>
+                <p id="profile-tier" class="mt-0.5 text-[11px] font-semibold text-emerald-200/90">—</p>
+                <p id="profile-theme-badge" class="mt-1 inline-flex rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-white/70">Midnight</p>
+              </div>
+            </div>
+            <button id="close-account-modal" class="map-btn grid h-8 w-8 place-items-center rounded-xl text-white/70" aria-label="Close profile">
+              <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+          <div class="mt-3 space-y-2 text-sm">
+            <div class="rounded-xl bg-white/5 px-2.5 py-2">
+              <p class="text-[9px] uppercase tracking-[0.18em] text-muted">Email</p>
+              <p id="profile-email" class="mt-0.5 truncate text-[11px] font-semibold text-white">—</p>
+            </div>
+            <div id="upload-status" class="hidden rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-2 text-[11px] text-emerald-100"></div>
+          </div>
+
+          <div class="mt-3 grid gap-2.5">
+            <div class="rounded-xl bg-white/5 p-2.5">
               <div class="flex items-center justify-between gap-3">
                 <div>
-                  <p class="text-[10px] font-bold uppercase tracking-[0.28em] text-white/45">Core Profile Settings</p>
-                  <h3 class="mt-2 text-lg font-bold text-white">Single editable view</h3>
+                  <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-white/40">Theme</p>
+                  <p class="mt-0.5 text-[11px] font-semibold text-white">Pick a look</p>
                 </div>
-                <span class="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-200">Active</span>
+                <span id="theme-state" class="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-emerald-100">Midnight</span>
               </div>
-              <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                <label class="block">
-                  <span class="mb-1 block text-[10px] uppercase tracking-[0.2em] text-muted">Full Name</span>
-                  <input class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition focus:border-emerald-500/60" value="Shitana Simon">
-                </label>
-                <label class="block">
-                  <span class="mb-1 block text-[10px] uppercase tracking-[0.2em] text-muted">Account Tier</span>
-              💎 Silver Member
-                </label>
-                <label class="block sm:col-span-2">
-                  <span class="mb-1 block text-[10px] uppercase tracking-[0.2em] text-muted">Contact Email</span>
-                  <input class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition focus:border-emerald-500/60" value="shitana@example.com">
-                </label>
-                <label class="block sm:col-span-2">
-                  <span class="mb-1 block text-[10px] uppercase tracking-[0.2em] text-muted">Phone</span>
-                  <input class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition focus:border-emerald-500/60" value="+264 81 123 4567">
-                </label>
+              <div class="mt-2.5 grid grid-cols-3 gap-1.5">
+                <button type="button" class="account-theme-btn rounded-xl border border-emerald-500/35 bg-emerald-500/15 px-2 py-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-emerald-100" data-theme="Midnight">Midnight</button>
+                <button type="button" class="account-theme-btn rounded-xl border border-white/10 bg-white/5 px-2 py-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-white/70" data-theme="Ocean">Ocean</button>
+                <button type="button" class="account-theme-btn rounded-xl border border-white/10 bg-white/5 px-2 py-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-white/70" data-theme="Fresh">Fresh</button>
               </div>
-            </section>
+            </div>
 
-            <section class="rounded-[24px] border border-white/8 bg-white/5 p-5">
-              <p class="text-[10px] font-bold uppercase tracking-[0.28em] text-white/45">Security</p>
-              <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                <label class="block">
-                  <span class="mb-1 block text-[10px] uppercase tracking-[0.2em] text-muted">Current Password</span>
-                  <input type="password" class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition focus:border-emerald-500/60" placeholder="Current password">
-                </label>
-                <label class="block">
-                  <span class="mb-1 block text-[10px] uppercase tracking-[0.2em] text-muted">New Password</span>
-                  <input type="password" class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition focus:border-emerald-500/60" placeholder="New password">
-                </label>
+            <div class="rounded-xl bg-white/5 p-2.5">
+              <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-white/40">Notifications</p>
+              <div class="mt-2.5 space-y-1.5">
+                <div class="flex items-center justify-between gap-3 rounded-xl bg-black/15 px-2.5 py-2">
+                  <div>
+                    <p class="text-[11px] font-semibold text-white">Booking updates</p>
+                    <p class="text-[10px] text-muted">Status, arrival, and completion alerts.</p>
+                  </div>
+                  <span class="rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-emerald-100">On</span>
+                </div>
+                <div class="flex items-center justify-between gap-3 rounded-xl bg-black/15 px-2.5 py-2">
+                  <div>
+                    <p class="text-[11px] font-semibold text-white">Promotions</p>
+                    <p class="text-[10px] text-muted">Offers, perks, and membership reminders.</p>
+                  </div>
+                  <span class="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white/70">Off</span>
+                </div>
               </div>
-            </section>
+            </div>
 
-            <section class="rounded-[24px] border border-white/8 bg-white/5 p-5">
-              <p class="text-[10px] font-bold uppercase tracking-[0.28em] text-white/45">Booking Defaults</p>
-              <div class="mt-4 grid gap-3 sm:grid-cols-2">
-                <label class="block">
-                  <span class="mb-1 block text-[10px] uppercase tracking-[0.2em] text-muted">Default Vehicle</span>
-                  <select class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition focus:border-emerald-500/60">
-                    <option>Toyota Hilux Double Cab (N 124-883 W)</option>
-                    <option>Sedan / Hatchback</option>
-                    <option>SUV / Double Cab</option>
-                    <option>Motorcycle</option>
-                  </select>
-                </label>
-                <label class="block">
-                  <span class="mb-1 block text-[10px] uppercase tracking-[0.2em] text-muted">Default Location</span>
-                  <select class="w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-white outline-none transition focus:border-emerald-500/60">
-                    <option>Unit 4, Safari Hills, Windhoek</option>
-                    <option>Home</option>
-                    <option>Office</option>
-                  </select>
-                </label>
-              </div>
-            </section>
+            <div class="rounded-xl bg-white/5 p-2.5">
+              <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-white/40">Saved vehicles</p>
+              <div id="account-vehicles" class="mt-2.5 space-y-1.5"></div>
+            </div>
 
-            <div class="flex flex-col gap-3 border-t border-white/8 pt-4 sm:flex-row sm:items-center sm:justify-between">
-              <button id="save-account-btn" class="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-500 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-emerald-400">
-                <i data-lucide="save" class="h-4 w-4"></i>
-                Save Changes
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-[10px] font-bold text-white transition hover:bg-white/10">
+                <i data-lucide="life-buoy" class="h-3 w-3"></i>
+                Support
               </button>
-              <button id="signout-btn" class="inline-flex items-center justify-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-5 py-3 text-sm font-bold text-red-200 transition hover:bg-red-500/15">
-                <i data-lucide="log-out" class="h-4 w-4"></i>
+              <button type="button" class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-[10px] font-bold text-white transition hover:bg-white/10">
+                <i data-lucide="shield" class="h-3 w-3"></i>
+                Privacy
+              </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button id="signout-btn" class="inline-flex items-center justify-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2.5 text-[10px] font-bold text-red-200 transition hover:bg-red-500/15">
+                <i data-lucide="log-out" class="h-3 w-3"></i>
                 Sign Out
+              </button>
+              <button type="button" class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-[10px] font-bold text-white transition hover:bg-white/10">
+                <i data-lucide="settings" class="h-3 w-3"></i>
+                Settings
               </button>
             </div>
           </div>
@@ -578,101 +797,1138 @@
     </div>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/auth.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     lucide.createIcons();
 
-    const map = L.map('map', { zoomControl: false, attributionControl: false }).setView([52.47, 13.40], 10);
+    const DEFAULT_AVATAR = 'https://ui-avatars.com/api/?name=Eco+User&background=1a5f7a&color=fff&size=160';
+    const SECTION_TITLES = {
+      dashboard: 'Dashboard',
+      booking: 'Book a Wash',
+      tracking: 'Services',
+      'eco-impact': 'Eco Impact'
+    };
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19
-    }).addTo(map);
+    let currentUser = null;
+    let userProfile = {};
+    let map = null;
+    let routeLayer = null;
+    let activeDrawer = null;
+    let activeSection = 'dashboard';
+    let profileUnsub = null;
+    let bookingUnsub = null;
+    let notificationsUnsub = null;
+    let currentBooking = null;
+    let notificationItems = [];
+    let accountTheme = 'Midnight';
 
-    const routeCoords = [
-      [52.22, 13.60],
-      [52.30, 13.45],
-      [52.40, 13.35],
-      [52.45, 13.32],
-      [52.50, 13.30]
+    const overlay = document.getElementById('overlay-backdrop');
+    const bookingWizardModal = document.getElementById('booking-wizard-modal');
+    const wizardProgressBar = document.getElementById('wizard-progress-bar');
+    const wizardStepLabel = document.getElementById('wizard-step-label');
+    const wizardStepCaption = document.getElementById('wizard-step-caption');
+    const wizardStage = document.getElementById('wizard-stage');
+    const wizardBackBtn = document.getElementById('wizard-back-btn');
+    const wizardNextBtn = document.getElementById('wizard-next-btn');
+    const wizardVehicles = document.getElementById('wizard-vehicles');
+    const wizardTiers = document.getElementById('wizard-tiers');
+    const wizardAddons = document.getElementById('wizard-addons');
+    const wizardSummary = document.getElementById('wizard-summary');
+    const wizardLocationInput = document.getElementById('wizard-location-input');
+    const bookingWizardBackdrop = document.getElementById('booking-wizard-backdrop');
+    const wizardStepCaptionMap = {
+      1: 'Location',
+      2: 'Vehicle',
+      3: 'Service',
+      4: 'Payment',
+      5: 'Tracking'
+    };
+    const contentPanel = document.getElementById('content-panel');
+    const sectionTitle = document.getElementById('section-title');
+    const notificationsDrawer = document.getElementById('notifications-drawer');
+    const accountModal = document.getElementById('account-modal');
+    const profilePopover = document.getElementById('profile-popover');
+    const startBookingBtn = document.getElementById('start-booking-btn');
+
+    const SERVICE_PACKAGES = [
+      {
+        key: 'silver',
+        label: 'Silver',
+        title: 'Express Exterior Wash',
+        description: 'Exterior wash & tire cleaning',
+        basePrice: 80,
+        accent: 'from-white/5 to-white/10',
+        border: 'border-white/10'
+      },
+      {
+        key: 'gold',
+        label: 'Gold',
+        title: 'Premium Wash',
+        description: 'Exterior, tires & wax finish',
+        basePrice: 150,
+        accent: 'from-amber-500/10 to-white/5',
+        border: 'border-amber-400/30'
+      },
+      {
+        key: 'platinum',
+        label: 'Platinum',
+        title: 'Full Detailing',
+        description: 'Complete interior & exterior',
+        basePrice: 350,
+        accent: 'from-teal-500/10 to-white/5',
+        border: 'border-teal-400/30'
+      }
     ];
 
-    L.polyline(routeCoords, {
-      color: '#b91c1c',
-      weight: 4,
-      dashArray: '5, 8',
-      lineCap: 'round'
-    }).addTo(map);
+    const ADDON_OPTIONS = [
+      {
+        key: 'engine',
+        title: 'Engine Cleaning',
+        description: 'Deep clean for dusty engine bays.',
+        price: 70
+      },
+      {
+        key: 'interior',
+        title: 'Interior Refresh',
+        description: 'Vacuum, dashboard and windows.',
+        price: 45
+      }
+    ];
 
-    const destinationIcon = L.divIcon({
-      html: `
-        <div class="relative -translate-y-1">
-          <div class="pin-pulse absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-red-600 opacity-70"></div>
-          <div class="relative h-4 w-4 rounded-full border-2 border-white bg-red-600 shadow-lg"></div>
-        </div>
-      `,
-      className: 'custom-pin',
-      iconSize: [16, 16],
-      iconAnchor: [8, 8]
-    });
+    let bookingWizardState = null;
+    let currentLocationMarker = null;
+    let currentLocationCoords = null;
 
-    L.marker([52.50, 13.30], { icon: destinationIcon }).addTo(map);
+    const isMobile = () => window.matchMedia('(max-width: 767px)').matches;
 
-    L.marker([52.39, 13.36], {
-      icon: L.divIcon({
-        html: '<div class="h-3 w-3 rounded-full border border-white/60 bg-white/80 shadow"></div>',
+    function formatCoords(coords) {
+      const lat = Number(coords.lat).toFixed(5);
+      const lng = Number(coords.lng).toFixed(5);
+      return `${lat}, ${lng}`;
+    }
+
+    function createCurrentLocationIcon() {
+      return L.divIcon({
+        html: `<div class="relative -translate-y-1">
+          <div class="pin-pulse absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-emerald-500 opacity-70"></div>
+          <div class="relative h-4 w-4 rounded-full border-2 border-white bg-emerald-500 shadow-lg"></div>
+        </div>`,
         className: 'custom-pin',
-        iconSize: [12, 12],
-        iconAnchor: [6, 6]
-      })
-    }).addTo(map);
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
+      });
+    }
 
-    const accountBtn = document.getElementById('account-btn');
-    const accountModal = document.getElementById('account-modal');
-    const closeAccountModal = document.getElementById('close-account-modal');
-    const saveAccountBtn = document.getElementById('save-account-btn');
-    const signoutBtn = document.getElementById('signout-btn');
-    const profileUpload = document.getElementById('profile-upload');
-    const profilePreview = document.getElementById('profile-avatar-preview');
-    const accountAvatar = document.getElementById('account-avatar');
+    function getFallbackMapCenter() {
+      return window.ECOWASH_CONFIG?.countryCenter || { lat: -22.56, lng: 17.47 };
+    }
 
-    const openAccountModal = () => {
-      accountModal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-      lucide.createIcons();
-    };
+    function normalizeTheme(value) {
+      const theme = String(value || 'Midnight').trim().toLowerCase();
+      if (theme === 'ocean') return 'Ocean';
+      if (theme === 'fresh') return 'Fresh';
+      return 'Midnight';
+    }
 
-    const hideAccountModal = () => {
-      accountModal.classList.add('hidden');
-      document.body.style.overflow = 'hidden';
-    };
+    function applyTheme(theme) {
+      document.body.dataset.theme = normalizeTheme(theme);
+    }
 
-    accountBtn?.addEventListener('click', openAccountModal);
-    closeAccountModal?.addEventListener('click', hideAccountModal);
-    accountModal?.addEventListener('click', (event) => {
-      if (event.target?.hasAttribute?.('data-close-account-modal')) hideAccountModal();
-    });
+    function setWizardLocation(value) {
+      if (!bookingWizardState) return;
+      bookingWizardState.location = value || '';
+      if (wizardLocationInput) wizardLocationInput.value = bookingWizardState.location;
+      renderWizardSummary();
+    }
 
-    profileUpload?.addEventListener('change', () => {
-      const file = profileUpload.files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = String(reader.result || '');
-        if (result) {
-          profilePreview.src = result;
-          accountAvatar.src = result;
+    function setMapCurrentLocation(coords, zoom = 15) {
+      if (!map || !coords) return;
+      currentLocationCoords = coords;
+
+      if (currentLocationMarker) {
+        currentLocationMarker.remove();
+      }
+
+      currentLocationMarker = L.marker([coords.lat, coords.lng], {
+        icon: createCurrentLocationIcon()
+      }).addTo(map);
+
+      map.setView([coords.lat, coords.lng], zoom, { animate: true });
+    }
+
+    function requestBrowserLocation({ updateWizard = false, zoom = 15 } = {}) {
+      return new Promise((resolve) => {
+        if (!navigator.geolocation) {
+          resolve(null);
+          return;
         }
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const coords = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            setMapCurrentLocation(coords, zoom);
+            if (updateWizard) {
+              setWizardLocation('My current location');
+            }
+            resolve(coords);
+          },
+          () => {
+            resolve(null);
+          },
+          { enableHighAccuracy: true, timeout: 8000, maximumAge: 30000 }
+        );
+      });
+    }
+
+    function syncPrimaryNavState() {
+      const notificationActive = activeDrawer === 'notifications';
+
+      document.querySelectorAll('[data-section]').forEach((btn) => {
+        const isActive = !notificationActive && btn.dataset.section === activeSection;
+        btn.classList.toggle('active-pill', isActive);
+        btn.classList.toggle('text-muted', !isActive);
+        if (btn.classList.contains('mobile-nav')) {
+          btn.classList.toggle('text-white', isActive);
+        }
+      });
+
+      document.querySelectorAll('[data-drawer="notifications"]:not(.drawer-close)').forEach((btn) => {
+        const isActive = notificationActive;
+        btn.classList.toggle('active-pill', isActive);
+        btn.classList.toggle('drawer-active', isActive);
+        btn.classList.toggle('text-muted', !isActive);
+        if (btn.classList.contains('mobile-nav')) {
+          btn.classList.toggle('text-white', isActive);
+        }
+      });
+    }
+
+    function setAvatarSources(url) {
+      const src = url || DEFAULT_AVATAR;
+      ['sidebar-avatar', 'mobile-avatar', 'profile-avatar-preview'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.src = src;
+      });
+    }
+
+    function formatTierLabel(tier) {
+      return tier ? `${tier} Member` : 'Member';
+    }
+
+    function applyProfileUI(data = {}) {
+      const name = data.name || data.displayName || (data.email ? data.email.split('@')[0] : 'Eco User');
+      const tier = data.membershipTier || data.tier || 'Silver';
+      const email = data.email || currentUser?.email || '—';
+      accountTheme = normalizeTheme(data.theme || data.preferredTheme || accountTheme);
+
+      document.getElementById('profile-name').textContent = name;
+      document.getElementById('profile-email').textContent = email;
+      document.getElementById('profile-tier').textContent = `💎 ${formatTierLabel(tier)}`;
+      document.getElementById('booking-tier-badge').textContent = tier;
+      document.getElementById('profile-theme-badge').textContent = accountTheme;
+      document.getElementById('theme-state').textContent = accountTheme;
+
+      applyTheme(accountTheme);
+      setAvatarSources(data.profilePicture || data.photoURL || currentUser?.photoURL);
+      renderAccountVehicles(data.vehicles || []);
+      updateAccountTheme(accountTheme, false);
+    }
+
+    function renderAccountVehicles(vehicles = []) {
+      const accountVehicles = document.getElementById('account-vehicles');
+      if (!accountVehicles) return;
+
+      const list = Array.isArray(vehicles) ? vehicles.filter(Boolean) : [];
+
+      if (!list.length) {
+        accountVehicles.innerHTML = `
+          <div class="rounded-xl border border-white/6 bg-black/15 px-2.5 py-2 text-[10px] text-muted">
+            No saved vehicles yet.
+          </div>
+        `;
+        return;
+      }
+
+      accountVehicles.innerHTML = list.slice(0, 3).map((vehicle) => {
+        const model = vehicle.model || vehicle.name || 'Vehicle';
+        const plate = vehicle.plate || vehicle.registration || 'N/A';
+        const color = vehicle.color || 'Unknown';
+        return `
+          <div class="flex items-center justify-between gap-3 rounded-xl bg-black/15 px-2.5 py-2">
+            <div class="min-w-0">
+              <p class="truncate text-[11px] font-semibold text-white">${model}</p>
+              <p class="truncate text-[10px] text-muted">${color}</p>
+            </div>
+            <span class="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.14em] text-white/70">${plate}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateAccountTheme(theme, persist = true) {
+      accountTheme = normalizeTheme(theme || 'Midnight');
+      applyTheme(accountTheme);
+      document.getElementById('profile-theme-badge').textContent = accountTheme;
+      document.getElementById('theme-state').textContent = accountTheme;
+
+      document.querySelectorAll('.account-theme-btn').forEach((btn) => {
+        const selected = btn.dataset.theme === accountTheme;
+        btn.classList.toggle('border-emerald-500/35', selected);
+        btn.classList.toggle('bg-emerald-500/15', selected);
+        btn.classList.toggle('text-emerald-100', selected);
+        btn.classList.toggle('border-white/10', !selected);
+        btn.classList.toggle('bg-white/5', !selected);
+        btn.classList.toggle('text-white/70', !selected);
+      });
+
+      if (persist && currentUser) {
+        window.firebaseService.db.collection('users').doc(currentUser.uid).set({
+          theme: accountTheme,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true }).catch((error) => {
+          console.error('Theme save failed:', error);
+        });
+      }
+    }
+
+    function normalizeMembershipTier(value) {
+      const tier = String(value || 'Silver').trim().toLowerCase();
+      if (tier === 'gold' || tier === 'platinum') return tier;
+      return 'silver';
+    }
+
+    function getWizardVehicles() {
+      const saved = Array.isArray(userProfile.vehicles) ? userProfile.vehicles : [];
+      return saved
+        .map((vehicle, index) => ({
+          id: vehicle.id || vehicle.plate || `vehicle-${index + 1}`,
+          model: vehicle.model || vehicle.name || '',
+          color: vehicle.color || '',
+          plate: vehicle.plate || vehicle.registration || ''
+        }))
+        .filter((vehicle) => vehicle.id);
+    }
+
+    function getBookingDefaults() {
+      const membershipTier = normalizeMembershipTier(userProfile.membershipTier || userProfile.tier);
+      return {
+        step: 1,
+        location: '',
+        selectedVehicleId: '',
+        selectedPackage: membershipTier,
+        addons: { engine: false, interior: false },
+        payment: 'arrival',
+        membershipTier,
+        perkWashes: membershipTier === 'gold' ? 1 : membershipTier === 'platinum' ? 2 : 0,
+        perkEngine: membershipTier === 'gold' ? 1 : membershipTier === 'platinum' ? 2 : 0
       };
-      reader.readAsDataURL(file);
-    });
+    }
 
-    saveAccountBtn?.addEventListener('click', () => {
-      hideAccountModal();
-    });
+    function formatMoney(value) {
+      return `N$${value}`;
+    }
 
-    signoutBtn?.addEventListener('click', () => {
-      window.location.href = 'auth.html';
-    });
+    function getSelectedPackage() {
+      return SERVICE_PACKAGES.find((item) => item.key === bookingWizardState.selectedPackage) || SERVICE_PACKAGES[0];
+    }
+
+    function getSelectedVehicle() {
+      const vehicles = getWizardVehicles();
+      return vehicles.find((item) => item.id === bookingWizardState.selectedVehicleId) || vehicles[0] || null;
+    }
+
+    function getPackagePrice(pkg) {
+      if (bookingWizardState.perkWashes > 0 && bookingWizardState.selectedPackage === pkg.key) {
+        return 0;
+      }
+      return pkg.basePrice;
+    }
+
+    function getAddonPrice(addon) {
+      const hasPerk = addon.key === 'engine' && bookingWizardState.perkEngine > 0 && bookingWizardState.addons.engine;
+      return hasPerk ? 0 : (bookingWizardState.addons[addon.key] ? addon.price : 0);
+    }
+
+    function getWizardTotals() {
+      const pkg = getSelectedPackage();
+      const vehicle = getSelectedVehicle();
+      const lineItems = [];
+      const servicePrice = getPackagePrice(pkg);
+      const engineAddon = ADDON_OPTIONS.find((addon) => addon.key === 'engine');
+      const interiorAddon = ADDON_OPTIONS.find((addon) => addon.key === 'interior');
+      const enginePrice = engineAddon ? getAddonPrice(engineAddon) : 0;
+      const interiorPrice = interiorAddon ? getAddonPrice(interiorAddon) : 0;
+      const total = servicePrice + enginePrice + interiorPrice;
+
+      lineItems.push({ label: 'Location', value: bookingWizardState.location || 'Enter your address' });
+      lineItems.push({
+        label: vehicle ? `${vehicle.model || 'Vehicle'}${vehicle.plate ? ` • ${vehicle.plate}` : ''}` : 'Vehicle',
+        value: vehicle ? (vehicle.color || '—') : 'Select a saved vehicle'
+      });
+      lineItems.push({ label: pkg.title, value: servicePrice === 0 ? 'N$0' : formatMoney(servicePrice) });
+
+      if (bookingWizardState.addons.engine) {
+        lineItems.push({ label: engineAddon.title, value: enginePrice === 0 ? 'N$0' : formatMoney(enginePrice) });
+      }
+      if (bookingWizardState.addons.interior) {
+        lineItems.push({ label: interiorAddon.title, value: interiorPrice === 0 ? 'N$0' : formatMoney(interiorPrice) });
+      }
+
+      lineItems.push({ label: 'Payment', value: bookingWizardState.payment === 'arrival' ? 'Pay on Arrival' : 'Online Card' });
+      return { lineItems, total, servicePrice, enginePrice, interiorPrice };
+    }
+
+    function renderWizardVehicles() {
+      if (!wizardVehicles) return;
+      const vehicles = getWizardVehicles();
+      if (!bookingWizardState.selectedVehicleId && vehicles.length) {
+        bookingWizardState.selectedVehicleId = vehicles[0].id;
+      }
+
+      if (!vehicles.length) {
+        wizardVehicles.innerHTML = `
+          <div class="rounded-[1.25rem] border border-white/8 bg-white/5 px-3 py-3 text-sm text-muted">
+            No saved vehicles found in Firestore.
+          </div>
+        `;
+        return;
+      }
+
+      wizardVehicles.innerHTML = vehicles.map((vehicle) => {
+        const isSelected = bookingWizardState.selectedVehicleId === vehicle.id;
+        return `
+          <button type="button" class="wizard-card snap-start min-w-[220px] rounded-[1.5rem] border p-4 text-left ${isSelected ? 'is-selected border-emerald-500/35 bg-emerald-500/10' : 'border-white/10 bg-white/5'}" data-vehicle="${vehicle.id}">
+            <p class="text-[10px] font-bold uppercase tracking-[0.25em] text-white/35">${vehicle.model}</p>
+            <h4 class="mt-2 text-lg font-extrabold text-white">${vehicle.color || 'Vehicle'}</h4>
+            <p class="mt-1 text-sm text-white/70">${vehicle.plate || 'No plate stored'}</p>
+            <div class="mt-3 inline-flex items-center gap-2 rounded-full border ${isSelected ? 'border-emerald-500/25 bg-emerald-500/12 text-emerald-100' : 'border-white/10 bg-white/5 text-white/75'} px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em]">
+              ${isSelected ? 'Selected' : 'Tap to choose'}
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderWizardPackages() {
+      if (!wizardTiers) return;
+
+      wizardTiers.innerHTML = SERVICE_PACKAGES.map((pkg) => {
+        const isSelected = bookingWizardState.selectedPackage === pkg.key;
+        const price = getPackagePrice(pkg);
+        const perkNote = bookingWizardState.perkWashes > 0 && isSelected ? 'Free first wash applied' : pkg.description;
+        return `
+          <button type="button" class="wizard-card rounded-[1.6rem] border p-4 text-left ${isSelected ? 'is-selected' : ''} ${pkg.border} bg-gradient-to-br ${pkg.accent}" data-tier="${pkg.key}">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-[0.25em] text-white/35">${pkg.label}</p>
+                <h4 class="mt-1 text-lg font-extrabold text-white">${pkg.title}</h4>
+              </div>
+              <div class="text-right">
+                <p class="text-[10px] uppercase tracking-[0.22em] text-white/35">Price</p>
+                <p class="mt-1 text-xl font-extrabold text-white">${price === 0 ? 'N$0' : formatMoney(price)}</p>
+              </div>
+            </div>
+            <p class="mt-3 text-xs text-white/70">${perkNote}</p>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderWizardAddons() {
+      if (!wizardAddons) return;
+
+      wizardAddons.innerHTML = ADDON_OPTIONS.map((addon) => {
+        const isSelected = Boolean(bookingWizardState.addons[addon.key]);
+        const price = getAddonPrice(addon);
+        const freeNote = addon.key === 'engine' && bookingWizardState.perkEngine > 0 && isSelected ? 'Free engine clean today' : addon.description;
+        return `
+          <button type="button" class="wizard-addon w-full rounded-[1.45rem] border px-4 py-4 text-left ${isSelected ? 'is-selected border-emerald-500/35 bg-emerald-500/10' : 'border-white/10 bg-white/5'}" data-addon="${addon.key}">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h4 class="text-sm font-bold text-white">${addon.title}</h4>
+                <p class="mt-1 text-xs text-muted">${freeNote}</p>
+              </div>
+              <p class="text-sm font-bold text-white">${price === 0 ? 'N$0' : formatMoney(price)}</p>
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderWizardPayments() {
+      document.querySelectorAll('.wizard-payment-option').forEach((btn) => {
+        const selected = btn.dataset.payment === bookingWizardState.payment;
+        btn.classList.toggle('is-selected', selected);
+        btn.classList.toggle('border-emerald-500/25', selected);
+        btn.classList.toggle('bg-emerald-500/10', selected);
+        btn.classList.toggle('text-emerald-100', selected);
+        btn.classList.toggle('border-white/10', !selected);
+        btn.classList.toggle('bg-white/5', !selected);
+        btn.classList.toggle('text-white/85', !selected);
+      });
+    }
+
+    function renderWizardSummary() {
+      if (!wizardSummary) return;
+      const { lineItems, total } = getWizardTotals();
+      wizardSummary.innerHTML = `
+        ${lineItems.map((item) => `
+          <div class="flex items-center justify-between gap-3 rounded-2xl bg-white/5 px-3 py-2.5">
+            <span class="text-sm text-white/85">${item.label}</span>
+            <span class="text-sm font-semibold text-white">${item.value}</span>
+          </div>
+        `).join('')}
+        <div class="flex items-center justify-between gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-3 py-3">
+          <span class="text-sm font-bold text-emerald-100">Total</span>
+          <span class="text-base font-extrabold text-white">${formatMoney(total)}</span>
+        </div>
+      `;
+    }
+
+    function renderWizardConfirmation() {
+      const titleEl = document.getElementById('wizard-confirmation-title');
+      const statusEl = document.getElementById('wizard-confirmation-status');
+      const vehicleEl = document.getElementById('wizard-confirmation-vehicle');
+      const serviceEl = document.getElementById('wizard-confirmation-service');
+      const locationEl = document.getElementById('wizard-confirmation-location');
+      const totalEl = document.getElementById('wizard-confirmation-total');
+      const paymentEl = document.getElementById('wizard-confirmation-payment');
+      const noteEl = document.getElementById('wizard-confirmation-note');
+
+      if (!titleEl || !statusEl || !vehicleEl || !serviceEl || !locationEl || !totalEl || !paymentEl || !noteEl) return;
+
+      const pkg = getSelectedPackage();
+      const vehicle = getSelectedVehicle();
+      const totals = getWizardTotals();
+      const vehicleLabel = vehicle ? `${vehicle.model || 'Vehicle'}${vehicle.plate ? ` • ${vehicle.plate}` : ''}` : 'Select a vehicle';
+
+      titleEl.textContent = bookingWizardState ? 'Booking draft' : 'No booking selected';
+      statusEl.textContent = bookingWizardState ? 'Draft' : 'Waiting';
+      vehicleEl.textContent = vehicleLabel;
+      serviceEl.textContent = pkg?.title || '—';
+      locationEl.textContent = bookingWizardState?.location || 'Enter a location';
+      totalEl.textContent = formatMoney(totals.total || 0);
+      paymentEl.textContent = bookingWizardState?.payment === 'arrival' ? 'Pay on Arrival' : 'Online Card';
+      noteEl.textContent = bookingWizardState ? 'Ready to submit' : 'Waiting for booking details';
+    }
+
+    function updateWizardFooter() {
+      if (!bookingWizardState) return;
+      const step = bookingWizardState.step;
+
+      if (wizardBackBtn) {
+        wizardBackBtn.textContent = step === 1 ? 'Cancel' : 'Back';
+      }
+
+      if (wizardNextBtn) {
+        wizardNextBtn.textContent = step === 4 ? 'Confirm & Start' : step === 5 ? 'Done' : 'Next';
+      }
+    }
+
+    function formatBookingValue(value, fallback = '—') {
+      if (value == null || value === '') return fallback;
+      return String(value);
+    }
+
+    function formatNotificationTime(value) {
+      const date = value?.toDate ? value.toDate() : (value ? new Date(value) : null);
+      if (!date || Number.isNaN(date.getTime())) return 'Just now';
+      const diff = Date.now() - date.getTime();
+      const minutes = Math.max(1, Math.floor(diff / 60000));
+      if (minutes < 60) return `${minutes}m ago`;
+      const hours = Math.max(1, Math.floor(minutes / 60));
+      if (hours < 24) return `${hours}h ago`;
+      return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    }
+
+    function renderActiveBooking() {
+      const booking = currentBooking;
+      const hasBooking = Boolean(booking);
+      const status = hasBooking ? formatBookingValue(booking.status, 'Active') : 'Waiting';
+      const technician = hasBooking ? formatBookingValue(booking.washerName || booking.technicianName || booking.assignedName, 'Pending assignment') : 'Pending assignment';
+      const plate = hasBooking ? formatBookingValue(booking.vehiclePlate || booking.vehicle?.plate || booking.vehicle || booking.plate, '—') : '—';
+      const service = hasBooking ? formatBookingValue(booking.service || booking.package || booking.serviceName, '—') : '—';
+      const addOn = hasBooking ? formatBookingValue(booking.addon || booking.addons?.engine && 'Engine Cleaning' || booking.addons?.interior && 'Interior Refresh', '—') : '—';
+      const price = hasBooking ? booking.price : null;
+      const arrival = hasBooking ? formatBookingValue(booking.arrivalTime || booking.time || booking.scheduledAt, '—') : '—';
+      const eta = hasBooking ? formatBookingValue(booking.etaText || booking.metrics?.etaText || booking.eta, '—') : '—';
+      const payment = hasBooking ? formatBookingValue(booking.payment === 'arrival' ? 'Pay on Arrival' : booking.payment === 'card' ? 'Online Card' : booking.payment, '—') : '—';
+      const supportName = hasBooking ? formatBookingValue(booking.supportName || booking.washerSupportName || booking.helperName, 'No support assigned') : 'No support assigned';
+      const supportInitial = supportName && supportName !== 'No support assigned' ? supportName.charAt(0).toUpperCase() : '—';
+      const avatar = booking?.washerPhotoURL || booking?.technicianPhotoURL || booking?.supportPhotoURL || '';
+
+      const bookingLabel = booking.bookingNo || booking.id || '';
+      document.getElementById('active-booking-title').textContent = hasBooking ? (bookingLabel ? `Booking ${bookingLabel}` : 'Active booking') : 'No active booking';
+      document.getElementById('active-booking-status').textContent = status;
+      document.getElementById('active-booking-status').className = hasBooking
+        ? 'rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] text-emerald-100'
+        : 'rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] text-white/70';
+      document.getElementById('active-booking-technician').textContent = technician;
+      document.getElementById('active-booking-role').textContent = hasBooking ? formatBookingValue(booking.role || 'Technician', 'Technician') : 'Technician';
+      document.getElementById('active-booking-rating').textContent = hasBooking ? formatBookingValue(booking.rating || booking.score, '—') : '—';
+      document.getElementById('active-booking-plate').textContent = plate;
+      document.getElementById('active-booking-service').textContent = service;
+      document.getElementById('active-booking-addon').textContent = addOn;
+      document.getElementById('active-booking-price').textContent = price == null ? '—' : formatMoney(price);
+      document.getElementById('active-booking-arrival').textContent = arrival;
+      document.getElementById('active-booking-eta').textContent = eta;
+      document.getElementById('active-booking-payment').textContent = payment;
+      document.getElementById('active-booking-support').textContent = supportName;
+      document.getElementById('active-booking-support-initial').textContent = supportInitial;
+
+      const avatarEl = document.getElementById('active-booking-avatar');
+      if (avatarEl) {
+        avatarEl.src = avatar || DEFAULT_AVATAR;
+        avatarEl.alt = technician;
+      }
+    }
+
+    function renderNotifications() {
+      const listEl = document.getElementById('notifications-list');
+      const emptyEl = document.getElementById('notifications-empty');
+      if (!listEl || !emptyEl) return;
+
+      const items = Array.isArray(notificationItems) ? notificationItems : [];
+      if (!items.length) {
+        listEl.querySelectorAll('[data-notification-id]').forEach((node) => node.remove());
+        emptyEl.classList.remove('hidden');
+        return;
+      }
+
+      emptyEl.classList.add('hidden');
+      listEl.querySelectorAll('[data-notification-id]').forEach((node) => node.remove());
+
+      const html = items.map((item) => {
+        const icon = item.icon || (item.type === 'success' ? 'check-circle' : item.type === 'warning' ? 'alert-triangle' : 'bell');
+        const iconClass = item.type === 'success'
+          ? 'bg-emerald-500/15 text-emerald-200'
+          : item.type === 'warning'
+            ? 'bg-amber-500/15 text-amber-200'
+            : 'bg-teal-500/15 text-teal-200';
+        const title = item.title || item.message || 'Notification';
+        const body = item.body || item.description || '';
+        return `
+          <div class="rounded-3xl bg-white/5 px-4 py-4 border border-white/6" data-notification-id="${item.id}">
+            <div class="flex items-start gap-3">
+              <div class="grid h-10 w-10 shrink-0 place-items-center rounded-2xl ${iconClass}">
+                <i data-lucide="${icon}" class="w-4 h-4"></i>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="min-w-0">
+                    <p class="text-sm font-semibold text-white">${title}</p>
+                    ${body ? `<p class="mt-1 text-xs text-muted">${body}</p>` : ''}
+                    <p class="mt-2 text-[10px] uppercase tracking-[0.2em] text-white/35">${formatNotificationTime(item.createdAt)}</p>
+                  </div>
+                  <button type="button" class="notification-delete grid h-8 w-8 shrink-0 place-items-center rounded-xl border border-white/10 bg-black/20 text-white/70 transition hover:bg-red-500/15 hover:text-red-100" data-notification-delete="${item.id}" aria-label="Delete notification">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      listEl.insertAdjacentHTML('afterbegin', html);
+      lucide.createIcons();
+    }
+
+    function subscribeToUserBookings(uid) {
+      if (!uid || bookingUnsub) return;
+
+      bookingUnsub = window.firebaseService.db.collection('bookings')
+        .where('customerId', '==', uid)
+        .onSnapshot((snapshot) => {
+          const bookings = snapshot.docs
+            .map((doc) => ({ id: doc.id, ...doc.data() }))
+            .sort((a, b) => (b.createdAt?.toMillis?.() || 0) - (a.createdAt?.toMillis?.() || 0));
+          const activeStatuses = new Set(['Waiting', 'Searching', 'Assigned', 'EnRoute', 'Arrived', 'Washing']);
+          currentBooking = bookings.find((item) => activeStatuses.has(String(item.status || '').trim())) || bookings[0] || null;
+          renderActiveBooking();
+        }, (error) => {
+          console.error('Booking listener error:', error);
+        });
+    }
+
+    function subscribeToNotifications(uid) {
+      if (!uid || notificationsUnsub) return;
+
+      notificationsUnsub = window.firebaseService.db.collection('users').doc(uid).collection('notifications')
+        .orderBy('createdAt', 'desc')
+        .limit(20)
+        .onSnapshot((snapshot) => {
+          notificationItems = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          renderNotifications();
+          document.getElementById('notif-dot')?.classList.toggle('hidden', notificationItems.length === 0);
+          document.querySelectorAll('.mobile-notif-dot').forEach((el) => el.classList.toggle('hidden', notificationItems.length === 0));
+        }, (error) => {
+          console.error('Notification listener error:', error);
+        });
+    }
+
+    async function deleteNotification(notificationId) {
+      if (!currentUser || !notificationId) return;
+      try {
+        await window.firebaseService.db.collection('users').doc(currentUser.uid).collection('notifications').doc(notificationId).delete();
+      } catch (error) {
+        console.error('Delete notification failed:', error);
+      }
+    }
+
+    function renderWizardStepClasses() {
+      const step = bookingWizardState.step;
+      document.querySelectorAll('[data-wizard-step]').forEach((panel) => {
+        const panelStep = Number(panel.dataset.wizardStep);
+        panel.classList.toggle('is-active', panelStep === step);
+        panel.classList.toggle('is-prev', panelStep < step);
+        panel.classList.toggle('is-next', panelStep > step);
+      });
+
+      if (wizardProgressBar) {
+        wizardProgressBar.style.width = `${20 + ((step - 1) * 20)}%`;
+      }
+      if (wizardStepLabel) {
+        wizardStepLabel.textContent = `Step ${step} of 5`;
+      }
+      if (wizardStepCaption) {
+        wizardStepCaption.textContent = wizardStepCaptionMap[step] || 'Location';
+      }
+
+      updateWizardFooter();
+    }
+
+    function renderBookingWizard() {
+      renderWizardVehicles();
+      renderWizardPackages();
+      renderWizardAddons();
+      renderWizardPayments();
+      renderWizardSummary();
+      renderWizardConfirmation();
+      renderWizardStepClasses();
+      lucide.createIcons();
+    }
+
+    function openBookingWizard() {
+      closeDrawers();
+      closeProfileModal();
+      overlay.classList.remove('is-open');
+      bookingWizardState = getBookingDefaults();
+      if (wizardLocationInput) wizardLocationInput.value = bookingWizardState.location;
+      bookingWizardModal.classList.remove('hidden');
+      bookingWizardModal.classList.add('flex');
+      bookingWizardModal.classList.add('items-center');
+      bookingWizardModal.classList.add('justify-center');
+      bookingWizardModal.style.display = 'flex';
+      renderBookingWizard();
+    }
+
+    function closeBookingWizard() {
+      bookingWizardState = null;
+      bookingWizardModal.classList.add('hidden');
+      bookingWizardModal.classList.remove('flex');
+      bookingWizardModal.classList.remove('items-center');
+      bookingWizardModal.classList.remove('justify-center');
+      bookingWizardModal.style.display = 'none';
+    }
+
+    function goToWizardStep(nextStep) {
+      if (!bookingWizardState) return;
+      const current = bookingWizardState.step;
+      const step = Math.max(1, Math.min(5, nextStep));
+      bookingWizardState.step = step;
+
+      const direction = step > current ? 'next' : 'back';
+      document.querySelectorAll('[data-wizard-step]').forEach((panel) => {
+        const panelStep = Number(panel.dataset.wizardStep);
+        panel.classList.remove('is-active', 'is-prev', 'is-next');
+        if (panelStep === step) {
+          panel.classList.add('is-active');
+        } else if (panelStep < step) {
+          panel.classList.add('is-prev');
+        } else {
+          panel.classList.add('is-next');
+        }
+      });
+
+      if (wizardProgressBar) {
+        wizardProgressBar.style.width = `${20 + ((step - 1) * 20)}%`;
+      }
+      if (wizardStepLabel) {
+        wizardStepLabel.textContent = `Step ${step} of 5`;
+      }
+      if (wizardStepCaption) {
+        wizardStepCaption.textContent = wizardStepCaptionMap[step] || 'Location';
+      }
+
+      updateWizardFooter();
+      renderBookingWizard();
+
+      if (direction === 'next') {
+        document.querySelector(`[data-wizard-step="${step}"]`)?.classList.add('is-next');
+      } else {
+        document.querySelector(`[data-wizard-step="${step}"]`)?.classList.add('is-prev');
+      }
+    }
+
+    function compressImage(file, maxSize = 320, quality = 0.82) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = reject;
+          img.src = String(reader.result || '');
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function initAuth() {
+      await window.firebaseService.initializeSystem();
+      const result = await window.authService.getCurrentUser();
+      if (!result.success || !result.user) {
+        window.location.href = 'auth.html';
+        return;
+      }
+
+      currentUser = result.user;
+      userProfile = result.data || {};
+
+      if (result.role === 'admin') {
+        window.location.href = 'admin.html';
+        return;
+      }
+      if (result.role === 'worker') {
+        window.location.href = 'worker.html';
+        return;
+      }
+
+      subscribeToProfile(currentUser.uid);
+      initMap();
+      bindUI();
+      showSection('dashboard', false);
+    }
+
+    function subscribeToProfile(uid) {
+      if (profileUnsub) profileUnsub();
+      profileUnsub = window.firebaseService.db.collection('users').doc(uid).onSnapshot((doc) => {
+        if (!doc.exists) return;
+        userProfile = { ...userProfile, ...doc.data() };
+        applyProfileUI(userProfile);
+        if (!bookingUnsub) subscribeToUserBookings(uid);
+        if (!notificationsUnsub) subscribeToNotifications(uid);
+      }, (err) => console.error('Profile listener error:', err));
+    }
+
+    function initMap() {
+      const fallbackCenter = getFallbackMapCenter();
+      map = L.map('map', { zoomControl: false, attributionControl: false }).setView([fallbackCenter.lat, fallbackCenter.lng], 12);
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+
+      const routeCoords = [
+        [-22.57, 17.08],
+        [-22.56, 17.12],
+        [-22.555, 17.16],
+        [-22.55, 17.20],
+        [-22.545, 17.24]
+      ];
+
+      routeLayer = L.polyline(routeCoords, {
+        color: '#6dbb6d',
+        weight: 4,
+        dashArray: '6, 10',
+        lineCap: 'round'
+      }).addTo(map);
+
+      const routeEndpointIcon = L.divIcon({
+        html: '<div class="h-4 w-4 rounded-full border-2 border-white bg-emerald-500 shadow-lg"></div>',
+        className: 'custom-pin',
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
+      });
+      L.marker(routeCoords[routeCoords.length - 1], { icon: routeEndpointIcon }).addTo(map);
+
+      L.marker(routeCoords[2], {
+        icon: L.divIcon({
+          html: '<div class="h-3 w-3 rounded-full border border-white/60 bg-white/80 shadow"></div>',
+          className: 'custom-pin',
+          iconSize: [12, 12],
+          iconAnchor: [6, 6]
+        })
+      }).addTo(map);
+
+      map.fitBounds(routeLayer.getBounds(), { padding: [48, 48] });
+
+      setTimeout(() => map.invalidateSize(), 300);
+    }
+
+    function showSection(section, openSheetOnMobile = true) {
+      activeSection = section;
+      document.querySelectorAll('[data-panel]').forEach((panel) => {
+        panel.classList.toggle('hidden', panel.dataset.panel !== section);
+      });
+
+      const navBtn = document.querySelector(`[data-section="${section}"]`);
+      sectionTitle.textContent = navBtn?.dataset.title || SECTION_TITLES[section] || 'Dashboard';
+
+      syncPrimaryNavState();
+
+      if (isMobile() && openSheetOnMobile) {
+        contentPanel.classList.add('is-open');
+      }
+    }
+
+    function openDrawer(name) {
+      if (name !== 'notifications') return;
+      if (activeDrawer === name) {
+        closeDrawers();
+        return;
+      }
+      closeDrawers(false);
+      activeDrawer = name;
+
+      notificationsDrawer?.classList.add('is-open');
+      overlay.classList.add('is-open');
+      syncPrimaryNavState();
+      lucide.createIcons();
+    }
+
+    function closeDrawers(clearActive = true) {
+      notificationsDrawer?.classList.remove('is-open');
+      if (accountModal.classList.contains('hidden')) {
+        overlay.classList.remove('is-open');
+      }
+      if (clearActive) activeDrawer = null;
+      syncPrimaryNavState();
+    }
+
+    function openProfileModal() {
+      closeDrawers();
+      accountModal.classList.remove('hidden');
+      overlay.classList.add('is-open');
+      requestAnimationFrame(() => profilePopover.classList.add('is-open'));
+      lucide.createIcons();
+    }
+
+    function closeProfileModal() {
+      profilePopover.classList.remove('is-open');
+      setTimeout(() => {
+        accountModal.classList.add('hidden');
+        if (!activeDrawer) overlay.classList.remove('is-open');
+      }, 180);
+    }
+
+    async function saveProfilePicture(dataUrl) {
+      if (!currentUser || !dataUrl) return;
+      const statusEl = document.getElementById('upload-status');
+      statusEl.classList.remove('hidden');
+      statusEl.textContent = 'Saving photo…';
+
+      try {
+        await window.firebaseService.db.collection('users').doc(currentUser.uid).update({
+          profilePicture: dataUrl,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        setAvatarSources(dataUrl);
+        statusEl.textContent = 'Profile picture updated.';
+        setTimeout(() => statusEl.classList.add('hidden'), 2200);
+      } catch (error) {
+        console.error('Save failed:', error);
+        statusEl.textContent = 'Save failed. Try a smaller image.';
+      }
+    }
+
+    function bindUI() {
+      document.querySelectorAll('[data-section]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          closeDrawers();
+          closeBookingWizard();
+          showSection(btn.dataset.section);
+        });
+      });
+
+      document.querySelectorAll('[data-drawer]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (btn.classList.contains('drawer-close')) return;
+          openDrawer(btn.dataset.drawer);
+        });
+      });
+
+      document.querySelectorAll('.drawer-close').forEach((btn) => {
+        btn.addEventListener('click', () => closeDrawers());
+      });
+
+      overlay.addEventListener('click', () => {
+        closeDrawers();
+        closeProfileModal();
+        closeBookingWizard();
+        if (isMobile()) contentPanel.classList.remove('is-open');
+      });
+
+      bookingWizardBackdrop?.addEventListener('click', closeBookingWizard);
+      bookingWizardModal?.querySelector('[data-close-booking]')?.addEventListener('click', closeBookingWizard);
+      document.getElementById('close-booking-wizard')?.addEventListener('click', closeBookingWizard);
+
+      document.getElementById('close-content-sheet')?.addEventListener('click', () => {
+        contentPanel.classList.remove('is-open');
+      });
+
+      startBookingBtn?.addEventListener('click', openBookingWizard);
+
+      document.getElementById('account-btn')?.addEventListener('click', openProfileModal);
+      document.getElementById('mobile-account-btn')?.addEventListener('click', openProfileModal);
+      document.getElementById('close-account-modal')?.addEventListener('click', closeProfileModal);
+      accountModal.querySelector('[data-close-profile]')?.addEventListener('click', closeProfileModal);
+      document.querySelectorAll('.account-theme-btn').forEach((btn) => {
+        btn.addEventListener('click', () => updateAccountTheme(btn.dataset.theme || 'Midnight'));
+      });
+      updateAccountTheme(accountTheme, false);
+
+      wizardBackBtn?.addEventListener('click', () => {
+        if (!bookingWizardState) return;
+        if (bookingWizardState.step === 1) {
+          closeBookingWizard();
+          return;
+        }
+        goToWizardStep(bookingWizardState.step - 1);
+      });
+
+      wizardNextBtn?.addEventListener('click', () => {
+        if (!bookingWizardState) return;
+        if (bookingWizardState.step === 4) {
+          goToWizardStep(5);
+          return;
+        }
+        if (bookingWizardState.step === 5) {
+          closeBookingWizard();
+          return;
+        }
+        goToWizardStep(bookingWizardState.step + 1);
+      });
+
+      wizardLocationInput?.addEventListener('input', (e) => {
+        if (!bookingWizardState) return;
+        setWizardLocation(e.target.value);
+      });
+
+      wizardStage?.addEventListener('click', (event) => {
+        const suggestion = event.target.closest('.wizard-suggestion');
+        if (suggestion && bookingWizardState) {
+          setWizardLocation(suggestion.dataset.location || '');
+          document.querySelectorAll('.wizard-suggestion').forEach((el) => el.classList.remove('is-selected'));
+          suggestion.classList.add('is-selected');
+        }
+
+        if (event.target.closest('#wizard-gps-btn') && bookingWizardState) {
+          if (currentLocationCoords) {
+            setMapCurrentLocation(currentLocationCoords);
+            setWizardLocation('My current location');
+            return;
+          }
+
+          requestBrowserLocation({ updateWizard: true, zoom: 15 }).then((coords) => {
+            if (!coords) {
+              setWizardLocation('Current location unavailable');
+            }
+          });
+        }
+      });
+
+      wizardVehicles?.addEventListener('click', (event) => {
+        const card = event.target.closest('[data-vehicle]');
+        if (!card || !bookingWizardState) return;
+        bookingWizardState.selectedVehicleId = card.dataset.vehicle;
+        renderBookingWizard();
+      });
+
+      wizardTiers?.addEventListener('click', (event) => {
+        const card = event.target.closest('[data-tier]');
+        if (!card || !bookingWizardState) return;
+        bookingWizardState.selectedPackage = card.dataset.tier;
+        renderBookingWizard();
+      });
+
+      wizardAddons?.addEventListener('click', (event) => {
+        const card = event.target.closest('[data-addon]');
+        if (!card || !bookingWizardState) return;
+        const addon = card.dataset.addon;
+        bookingWizardState.addons[addon] = !bookingWizardState.addons[addon];
+        renderBookingWizard();
+      });
+
+      document.querySelectorAll('.wizard-payment-option').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          if (!bookingWizardState) return;
+          bookingWizardState.payment = btn.dataset.payment || 'arrival';
+          renderBookingWizard();
+        });
+      });
+
+      wizardSummary?.addEventListener('click', () => {
+        if (!bookingWizardState) return;
+        goToWizardStep(4);
+      });
+
+      document.getElementById('notifications-list')?.addEventListener('click', (event) => {
+        const deleteBtn = event.target.closest('[data-notification-delete]');
+        if (!deleteBtn) return;
+        event.stopPropagation();
+        deleteNotification(deleteBtn.dataset.notificationDelete);
+      });
+
+      const profileUpload = document.getElementById('profile-upload');
+      profileUpload?.addEventListener('change', async () => {
+        const file = profileUpload.files?.[0];
+        if (!file) return;
+        try {
+          const dataUrl = await compressImage(file);
+          setAvatarSources(dataUrl);
+          await saveProfilePicture(dataUrl);
+        } catch (error) {
+          console.error('Image processing failed:', error);
+        }
+        profileUpload.value = '';
+      });
+
+      document.getElementById('signout-btn')?.addEventListener('click', async () => {
+        await window.authService.logoutUser();
+        window.location.href = 'auth.html';
+      });
+
+      document.getElementById('map-zoom-in')?.addEventListener('click', () => map?.zoomIn());
+      document.getElementById('map-zoom-out')?.addEventListener('click', () => map?.zoomOut());
+      document.getElementById('map-fit')?.addEventListener('click', () => {
+        if (map && routeLayer) map.fitBounds(routeLayer.getBounds(), { padding: [48, 48] });
+      });
+
+      window.addEventListener('resize', () => {
+        map?.invalidateSize();
+        if (!isMobile()) contentPanel.classList.remove('is-open');
+      });
+    }
+
+    initAuth();
   </script>
 </body>
 </html>
