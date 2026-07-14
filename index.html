@@ -132,6 +132,165 @@
     article.group:hover .card-image-zoom {
       transform: scale(1.08);
     }
+    @media (max-width: 640px) {
+      .glass-panel:hover,
+      .metric-card:hover,
+      .timeline-node:hover,
+      .footer-field:hover,
+      article.group:hover,
+      .premium-button:hover {
+        transform: none;
+      }
+    }
+    @media (max-width: 430px) {
+      body {
+        font-size: 14px;
+      }
+      nav .max-w-7xl {
+        padding-left: 0.875rem;
+        padding-right: 0.875rem;
+      }
+      nav img {
+        width: 3rem;
+        height: 3rem;
+      }
+      nav button {
+        min-height: 40px;
+        padding: 0.4rem;
+      }
+      nav .glass-strong {
+        padding: 0.85rem;
+      }
+      section {
+        scroll-margin-top: 5.5rem;
+      }
+      body > section:first-of-type {
+        min-height: auto !important;
+        padding-top: 5.75rem !important;
+        padding-bottom: 1.5rem !important;
+      }
+      .section-shell {
+        overflow-x: clip;
+      }
+      .max-w-7xl {
+        padding-left: 0.875rem;
+        padding-right: 0.875rem;
+      }
+      .max-w-4xl, .max-w-3xl, .max-w-2xl, .max-w-xl {
+        max-width: 100%;
+      }
+      h1 {
+        font-size: 2rem !important;
+        line-height: 1.02 !important;
+      }
+      h2 {
+        font-size: 1.45rem !important;
+        line-height: 1.08 !important;
+      }
+      h3 {
+        font-size: 1.1rem !important;
+        line-height: 1.15 !important;
+      }
+      p, li, a, span {
+        font-size: 0.92rem;
+      }
+      .text-xs {
+        font-size: 0.68rem !important;
+      }
+      .text-sm {
+        font-size: 0.8rem !important;
+      }
+      .text-base {
+        font-size: 0.92rem !important;
+      }
+      .text-xl {
+        font-size: 1.05rem !important;
+      }
+      .text-2xl {
+        font-size: 1.25rem !important;
+      }
+      .text-3xl {
+        font-size: 1.45rem !important;
+      }
+      .text-4xl {
+        font-size: 1.65rem !important;
+      }
+      .px-7, .px-8 {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
+      .py-4 {
+        padding-top: 0.8rem !important;
+        padding-bottom: 0.8rem !important;
+      }
+      .py-20 {
+        padding-top: 3rem !important;
+        padding-bottom: 3rem !important;
+      }
+      .pt-28 {
+        padding-top: 6rem !important;
+      }
+      .gap-10, .gap-12 {
+        gap: 1rem !important;
+      }
+      .gap-8 {
+        gap: 0.875rem !important;
+      }
+      .space-y-8 > * + * {
+        margin-top: 1rem !important;
+      }
+      .space-y-6 > * + * {
+        margin-top: 0.85rem !important;
+      }
+      .space-y-5 > * + * {
+        margin-top: 0.7rem !important;
+      }
+      .space-y-4 > * + * {
+        margin-top: 0.7rem !important;
+      }
+      .space-y-3 > * + * {
+        margin-top: 0.55rem !important;
+      }
+      .rounded-3xl,
+      .rounded-2xl {
+        border-radius: 1rem;
+      }
+      .glass-panel,
+      .metric-card,
+      article.group,
+      .timeline-node {
+        box-shadow: 0 12px 30px rgba(0,0,0,0.22);
+      }
+      .glass-panel,
+      .metric-card,
+      .timeline-node,
+      article.group {
+        padding-left: 0.85rem !important;
+        padding-right: 0.85rem !important;
+        padding-top: 0.85rem !important;
+        padding-bottom: 0.85rem !important;
+      }
+      .premium-button {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+      }
+      .grid {
+        gap: 0.875rem;
+      }
+      .card-image-zoom {
+        transform: none !important;
+      }
+      .glass-panel:hover .card-image-zoom,
+      .metric-card:hover .card-image-zoom,
+      article.group:hover .card-image-zoom {
+        transform: none !important;
+      }
+      .whitespace-nowrap {
+        white-space: normal !important;
+      }
+    }
   </style>
 </head>
 <body id="top" class="bg-slate-950 text-gray-100">
@@ -139,7 +298,7 @@
   <!-- NAVBAR COMPONENT -->
   <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-white/5 transition-all duration-500" style="padding-top: env(safe-area-inset-top);">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-18">
+      <div class="flex items-center justify-between py-3 sm:py-4">
         <!-- Logo -->
         <a href="index.html" class="flex items-center gap-4 group">
           <div class="relative">
@@ -183,7 +342,7 @@
   </nav>
 
   <!-- HERO SECTION -->
-  <section class="relative min-h-screen flex items-start overflow-hidden pt-28 sm:pt-32 section-shell">
+  <section class="relative min-h-[100svh] flex items-start overflow-hidden pt-28 sm:pt-32 section-shell">
     <div class="absolute inset-0 opacity-90">
       <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(109,187,109,0.12),transparent_24%),radial-gradient(circle_at_80%_20%,rgba(35,121,156,0.12),transparent_22%),linear-gradient(180deg,rgba(5,7,12,0.2),rgba(5,7,12,0.94))]"></div>
       <div class="absolute inset-0 grid-bg opacity-20"></div>
@@ -192,10 +351,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <div class="grid lg:grid-cols-[1.15fr_0.85fr] gap-8 lg:gap-12 items-start">
         <div class="max-w-2xl space-y-6 lg:pr-4">
-          <h1 class="font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-[0.92] tracking-tight text-white">
+          <h1 class="font-display text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-[0.92] tracking-tight text-white">
             We Come to You. <span class="text-emerald-400">Anytime.</span> Anywhere.
           </h1>
-          <h2 class="font-display text-2xl sm:text-3xl font-semibold text-gray-200 leading-snug">
+          <h2 class="font-display text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-200 leading-snug">
             Premium Mobile Car Wash at Your Home, Office, or Business.
           </h2>
           <div class="pt-1 flex flex-wrap items-center gap-3">
@@ -208,7 +367,7 @@
           </div>
         </div>
         <div class="lg:pl-4 flex flex-col items-center lg:items-start lg:-ml-8">
-          <div class="relative w-full max-w-[480px]">
+          <div class="relative w-full max-w-[320px] sm:max-w-[420px] lg:max-w-[480px]">
             <img src="assets/images/icon.png" alt="EcoShine mobile car care hero visual" class="card-image-zoom w-full h-auto object-contain">
             <div class="absolute right-4 top-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-slate-950/75 px-4 py-2 text-sm font-semibold text-emerald-300 backdrop-blur-md">
               <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
@@ -221,15 +380,15 @@
   </section>
 
   <!-- ABOUT US / MISSION SECTION -->
-  <section id="mission" class="relative py-24 sm:py-28 section-shell">
+  <section id="mission" class="relative py-20 sm:py-28 section-shell">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <div class="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-start">
         <div class="space-y-8">
           <div class="space-y-5">
-            <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[0.95] tracking-tight text-white max-w-3xl md:whitespace-nowrap md:max-w-none" style="margin-top: -2cm;">
+            <h2 class="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[0.95] tracking-tight text-white max-w-3xl md:whitespace-nowrap md:max-w-none mt-0 lg:-mt-8">
               Redefining Car Care for a Greener Tomorrow
             </h2>
-            <div class="grid gap-4 sm:grid-cols-3 mt-[7cm]">
+            <div class="grid gap-4 sm:grid-cols-3 mt-8 sm:mt-10 lg:mt-12">
               <div class="glass-panel rounded-2xl overflow-hidden min-h-[140px]">
                 <img src="assets/images/car%20washing.png" alt="Car washing" class="card-image-zoom h-full w-full object-cover">
               </div>
@@ -285,7 +444,7 @@
   </section>
 
   <!-- PRICING SECTION -->
-  <section id="pricing" class="relative py-24 sm:py-28 section-shell">
+  <section id="pricing" class="relative py-20 sm:py-28 section-shell">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <div class="max-w-4xl space-y-4 mb-12">
         <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[0.96] tracking-tight text-white">
@@ -451,7 +610,7 @@
   </section>
 
   <!-- SUBSCRIPTIONS SECTION -->
-  <section id="subscriptions" class="relative py-24 sm:py-28 section-shell">
+  <section id="subscriptions" class="relative py-20 sm:py-28 section-shell">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <div class="grid lg:grid-cols-[0.95fr_1.05fr] gap-10 lg:gap-12 items-start">
         <div class="space-y-6">
@@ -546,7 +705,7 @@
   </section>
 
   <!-- SMART BOOKING SECTION -->
-  <section id="smart-booking" class="relative py-24 sm:py-28 section-shell">
+  <section id="smart-booking" class="relative py-20 sm:py-28 section-shell">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-12 items-start">
         <div class="space-y-5">
@@ -667,7 +826,7 @@
   </section>
 
   <!-- CONTACT SECTION -->
-  <section id="contact" class="relative py-24 sm:py-28 section-shell">
+  <section id="contact" class="relative py-20 sm:py-28 section-shell">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
       <div class="max-w-4xl space-y-4 mb-10">
         <p class="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-300">Contact Us</p>
@@ -729,7 +888,7 @@
             </a>
             <a href="mailto:ecoshinegreentechnolgy@gmail.com" class="flex items-start gap-3 transition-colors hover:text-emerald-300">
               <i class="fas fa-envelope mt-1 text-emerald-400 text-[11px]"></i>
-              <span>ecoshinegreentechnolgy@gmail.com</span>
+              <span class="break-all">ecoshinegreentechnolgy@gmail.com</span>
             </a>
           </div>
         </div>
@@ -744,7 +903,7 @@
         <p class="text-xs sm:text-sm text-gray-400">
           EcoShine Car Wash cc
         </p>
-        <div class="flex items-center gap-5 text-gray-300">
+        <div class="flex flex-wrap items-center gap-4 text-gray-300">
           <a href="https://www.instagram.com/ecoshine_na?igsh=cGVmdzZ0dTUxdGlo" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs sm:text-sm transition-colors hover:text-emerald-300">
             <i class="fab fa-instagram text-emerald-400 text-xs sm:text-sm"></i>
             <span>Instagram</span>
@@ -797,6 +956,7 @@
       updateActive();
     })();
   </script>
+  <script src="js/app.js"></script>
 
 </body>
 </html>
