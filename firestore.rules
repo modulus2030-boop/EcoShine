@@ -25,6 +25,32 @@ service cloud.firestore {
       );
     }
 
+    function isAssignedWorker(bookingData) {
+      return isWorker() && bookingData.washerId == request.auth.uid;
+    }
+
+    function bookingStatusRank(status) {
+      return status == 'Assigned' ? 1
+        : status == 'EnRoute' ? 2
+        : status == 'Arrived' ? 3
+        : status == 'Washing' ? 4
+        : status == 'Completed' ? 5
+        : 0;
+    }
+
+    function isWorkerBookingUpdate() {
+      let changedKeys = request.resource.data.diff(resource.data).affectedKeys();
+      return changedKeys.hasOnly([
+          'status', 'arrivedAt', 'startedExteriorPrepAt', 'interiorWorkAt',
+          'qualityCheckAt', 'lastStatusAt', 'updatedAt'
+        ])
+        && request.resource.data.customerId == resource.data.customerId
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.washerId == resource.data.washerId
+        && bookingStatusRank(request.resource.data.status) >= bookingStatusRank(resource.data.status)
+        && request.resource.data.status in ['Assigned', 'EnRoute', 'Arrived', 'Washing', 'Completed'];
+    }
+
     match /users/{userId} {
       function isBootstrapAdmin() {
         return request.auth.uid == userId
@@ -73,6 +99,8 @@ service cloud.firestore {
         request.resource.data.customerId == request.auth.uid || request.resource.data.userId == request.auth.uid
       );
       allow update: if isAdmin() || (
+        isAssignedWorker(resource.data) && isWorkerBookingUpdate()
+      ) || (
         isBookingOwner(resource.data) &&
         request.resource.data.status == 'Cancelled' &&
         request.resource.data.customerId == resource.data.customerId &&

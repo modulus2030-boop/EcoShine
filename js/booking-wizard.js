@@ -50,7 +50,7 @@ class BookingWizard {
     const country = (window.ECOWASH_CONFIG && window.ECOWASH_CONFIG.countryCenter) || { lat: -22.56, lng: 17.47 };
     const countryZoom = (window.ECOWASH_CONFIG && window.ECOWASH_CONFIG.countryZoom) || 6;
 
-    // Initialize map centered on the country by default (not Windhoek).
+    // Initialize map centered on the country by default.
     // minZoom keeps the view focused on Namibia and prevents zooming out
     // to the wider world scale.
     this.map = L.map('map', {
@@ -235,7 +235,7 @@ class BookingWizard {
         
         const addressInput = document.getElementById('booking-address');
         if (addressInput && !addressInput.value) {
-          addressInput.value = coords.name + ', Windhoek';
+          addressInput.value = coords.name;
         }
       }
     });

@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoShine Worker Console</title>
+  <meta name="description" content="Operational worker dashboard for EcoShine cleaning specialists.">
+  <link rel="icon" type="image/png" href="assets/images/icon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emerald: { 500: '#6dbb6d', 600: '#5da85d', 400: '#8cc88c' },
+            teal: { 700: '#1a5f7a', 600: '#1e6b8a', 500: '#23799c' },
+            slate: { 950: '#07090f', 900: '#0a0f1a', 850: '#0d1320' },
+            brandDark: '#141414',
+            brandSidebar: '#0a0a0a',
+            brandCard: '#1c1c1c',
+            muted: '#8a8a8a'
+          },
+          boxShadow: {
+            soft: '0 18px 50px rgba(0,0,0,0.35)'
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: #141414;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      color: #f3f4f6;
+      background:
+        radial-gradient(circle at top, rgba(109, 187, 109, 0.08), transparent 32%),
+        radial-gradient(circle at 85% 15%, rgba(35, 121, 156, 0.10), transparent 28%),
+        linear-gradient(180deg, #05070c 0%, #070b13 35%, #05070c 100%);
+    }
+
+    .panel {
+      background: rgba(10, 15, 26, 0.76);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    }
+
+    .panel-strong {
+      background: rgba(10, 15, 26, 0.92);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    }
+
+    .nav-btn {
+      transition: transform 180ms ease, background-color 180ms ease, color 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .nav-btn.is-active {
+      background: rgba(109, 187, 109, 0.16);
+      border-color: rgba(109, 187, 109, 0.35);
+      color: #edfdf1;
+      box-shadow: 0 0 0 1px rgba(109, 187, 109, 0.12);
+    }
+
+    .toggle-track {
+      transition: background-color 180ms ease, border-color 180ms ease;
+    }
+
+    .toggle-knob {
+      transition: transform 180ms ease, background-color 180ms ease;
+    }
+
+    .task-check {
+      accent-color: #6dbb6d;
+    }
+
+    .worker-sheet {
+      transform: translateX(110%);
+      transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .worker-sheet.is-open {
+      transform: translateX(0);
+    }
+
+    .overlay-backdrop {
+      background: rgba(3, 5, 10, 0.62);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+    }
+
+    .overlay-backdrop.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .toast-stack {
+      pointer-events: none;
+    }
+
+    .toast-item {
+      animation: toast-in 180ms ease;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .leaflet-container {
+      background: #07090f !important;
+      font-family: inherit;
+    }
+
+    .leaflet-control-container {
+      display: none;
+    }
+
+    .map-shell {
+      background:
+        radial-gradient(circle at 25% 20%, rgba(109, 187, 109, 0.14), transparent 22%),
+        radial-gradient(circle at 78% 30%, rgba(35, 121, 156, 0.14), transparent 22%),
+        linear-gradient(180deg, rgba(5,7,12,0.95), rgba(7,11,19,0.95));
+    }
+
+    .map-overlay-card {
+      background: rgba(10, 15, 26, 0.72);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="text-gray-100">
+  <div class="fixed inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,rgba(109,187,109,0.06),transparent_32%),radial-gradient(circle_at_85%_15%,rgba(35,121,156,0.08),transparent_28%)]"></div>
+
+  <div id="app-shell" class="relative z-10 h-dvh overflow-hidden md:grid md:grid-cols-[22rem_minmax(0,1fr)]">
+    <aside class="hidden min-h-0 md:flex md:flex-col gap-4 p-4">
+      <div class="panel rounded-3xl p-4">
+        <div>
+          <p class="text-[10px] font-semibold uppercase tracking-[0.3em] text-emerald-300/75">EcoShine Worker</p>
+          <h1 class="mt-2 text-2xl font-black tracking-tight text-white">Wash Console</h1>
+          <p class="mt-1 text-sm text-gray-300">Operational tools for the current shift.</p>
+        </div>
+
+        <div class="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-white/8 bg-black/15 px-3 py-3">
+          <div>
+            <p class="text-[10px] font-semibold uppercase tracking-[0.24em] text-white/35">Availability</p>
+            <p class="mt-1 text-sm font-semibold text-white">Go online or offline</p>
+          </div>
+          <button id="online-toggle-desktop" type="button" class="toggle-track relative inline-flex h-10 w-20 items-center rounded-full border border-emerald-500/25 bg-emerald-500/10 p-1" aria-pressed="true">
+            <span class="sr-only">Go online or offline</span>
+            <span id="toggle-knob-desktop" class="toggle-knob inline-flex h-8 w-8 translate-x-10 items-center justify-center rounded-full bg-emerald-400 text-slate-950 shadow-lg">
+              <i class="fa-solid fa-circle-check text-[12px]"></i>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <nav class="panel rounded-3xl p-2">
+        <button class="nav-btn is-active flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold text-white" data-nav="jobs">
+          <span class="grid h-11 w-11 place-items-center rounded-2xl bg-white/5 text-emerald-300"><i class="fa-solid fa-calendar-check text-lg"></i></span>
+          <span>
+            <span class="block text-sm font-semibold text-white">My Jobs</span>
+            <span class="block text-xs text-gray-400">Active queue and live task</span>
+          </span>
+        </button>
+        <button class="nav-btn mt-2 flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold text-gray-300 hover:bg-white/5" data-nav="earnings">
+          <span class="grid h-11 w-11 place-items-center rounded-2xl bg-white/5 text-emerald-300"><i class="fa-solid fa-wallet text-lg"></i></span>
+          <span>
+            <span class="block text-sm font-semibold text-white">My Earnings</span>
+            <span class="block text-xs text-gray-400">Wallet and payouts</span>
+          </span>
+        </button>
+        <button class="nav-btn mt-2 flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold text-gray-300 hover:bg-white/5" data-nav="inventory">
+          <span class="grid h-11 w-11 place-items-center rounded-2xl bg-white/5 text-emerald-300"><i class="fa-solid fa-box-open text-lg"></i></span>
+          <span>
+            <span class="block text-sm font-semibold text-white">Inventory</span>
+            <span class="block text-xs text-gray-400">Soap, cloths, battery</span>
+          </span>
+        </button>
+        <button class="nav-btn mt-2 flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold text-gray-300 hover:bg-white/5" data-nav="support">
+          <span class="grid h-11 w-11 place-items-center rounded-2xl bg-white/5 text-emerald-300"><i class="fa-solid fa-phone-volume text-lg"></i></span>
+          <span>
+            <span class="block text-sm font-semibold text-white">Dispatch Support</span>
+            <span class="block text-xs text-gray-400">SOS and admin contact</span>
+          </span>
+        </button>
+      </nav>
+
+      <div id="desktop-panel" class="panel flex min-h-0 flex-1 flex-col overflow-y-auto rounded-3xl p-4"></div>
+      <div class="mt-auto flex items-end justify-start">
+        <button id="account-btn" type="button" class="group flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition hover:border-emerald-500/30 hover:bg-emerald-500/10" aria-label="Open account">
+          <span class="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-sm font-black text-slate-950 shadow-lg">
+            <i class="fa-solid fa-user"></i>
+          </span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="relative min-w-0">
+      <header class="md:hidden relative z-20 flex items-center justify-between gap-3 border-b border-white/8 bg-slate-950/75 px-4 py-3 backdrop-blur-xl">
+        <div>
+          <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-emerald-300/75">EcoShine Worker</p>
+          <h1 class="text-lg font-extrabold text-white">Wash Console</h1>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="online-toggle-mobile" type="button" class="toggle-track relative inline-flex h-9 w-20 items-center rounded-full border border-emerald-500/25 bg-emerald-500/10 p-1" aria-pressed="true">
+            <span class="sr-only">Go online or offline</span>
+            <span id="toggle-knob-mobile" class="toggle-knob inline-flex h-7 w-7 translate-x-9 items-center justify-center rounded-full bg-emerald-400 text-slate-950 shadow-lg">
+              <i class="fa-solid fa-circle-check text-[11px]"></i>
+            </span>
+          </button>
+          <button id="open-panel" type="button" class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white shadow-soft">
+            <i class="fa-solid fa-layer-group mr-2 text-emerald-300"></i>Tasks
+          </button>
+        </div>
+      </header>
+
+      <section class="relative h-[calc(100dvh-57px)] md:h-dvh overflow-hidden map-shell">
+        <div id="worker-live-map" class="absolute inset-0"></div>
+
+        <div class="absolute left-4 top-4 z-10 max-w-[min(100%-2rem,24rem)] space-y-3 md:left-6 md:top-6">
+          <div class="map-overlay-card rounded-3xl px-4 py-3">
+            <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-white/35">Map Sync</p>
+            <p id="map-status" class="mt-2 text-sm font-semibold text-white">Waiting for live data...</p>
+          </div>
+          <div class="map-overlay-card rounded-3xl px-4 py-3">
+            <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-white/35">Live location</p>
+            <p id="worker-location-label" class="mt-2 text-sm font-semibold text-white">No GPS update yet</p>
+          </div>
+        </div>
+      </section>
+
+      <div id="content-panel" class="worker-sheet fixed inset-y-0 right-0 z-40 w-[min(92vw,24rem)] panel-strong md:hidden">
+        <div class="flex h-full flex-col">
+          <div class="flex items-center justify-between gap-3 border-b border-white/8 px-4 py-3">
+            <div>
+              <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-emerald-300/70">Worker Panel</p>
+              <h2 class="text-base font-extrabold text-white">Tasks and tools</h2>
+            </div>
+            <button id="close-panel" type="button" class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div id="mobile-panel" class="min-h-0 flex-1 overflow-y-auto p-4"></div>
+        </div>
+      </div>
+
+      <nav class="md:hidden fixed inset-x-0 bottom-0 z-50 border-t border-white/8 bg-slate-950/92 px-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2 backdrop-blur-xl">
+        <div class="grid grid-cols-4 gap-2">
+          <button class="nav-btn is-active flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[10px] font-semibold text-white" data-nav="jobs">
+            <i class="fa-solid fa-calendar-check text-base text-emerald-300"></i>
+            Jobs
+          </button>
+          <button class="nav-btn flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[10px] font-semibold text-gray-400" data-nav="earnings">
+            <i class="fa-solid fa-wallet text-base text-emerald-300"></i>
+            Earnings
+          </button>
+          <button class="nav-btn flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[10px] font-semibold text-gray-400" data-nav="inventory">
+            <i class="fa-solid fa-box-open text-base text-emerald-300"></i>
+            Inventory
+          </button>
+          <button class="nav-btn flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[10px] font-semibold text-gray-400" data-nav="support">
+            <i class="fa-solid fa-phone-volume text-base text-emerald-300"></i>
+            Support
+          </button>
+        </div>
+      </nav>
+    </main>
+  </div>
+
+  <div id="overlay" class="overlay-backdrop fixed inset-0 z-30"></div>
+  <div id="completion-modal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <div class="absolute inset-0 bg-black/65 backdrop-blur-sm"></div>
+    <div class="panel relative z-10 w-full max-w-md rounded-[2rem] p-5">
+      <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-300/75">Service update</p>
+      <h3 class="mt-2 text-2xl font-black text-white">Service complete!</h3>
+      <p id="completion-message" class="mt-3 text-sm leading-6 text-gray-300"></p>
+      <div class="mt-5 flex items-center justify-end gap-3">
+        <button id="completion-close" type="button" class="rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white">Close</button>
+      </div>
+    </div>
+  </div>
+  <div id="task-modal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <div class="absolute inset-0 bg-black/65 backdrop-blur-sm"></div>
+    <div class="panel relative z-10 w-full max-w-2xl max-h-[88dvh] overflow-hidden rounded-[2rem]">
+      <div class="flex items-center justify-between gap-3 border-b border-white/8 px-5 py-4">
+        <div>
+          <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-300/75">Active Task</p>
+          <h3 class="mt-1 text-xl font-black text-white">Centered work sheet</h3>
+        </div>
+        <button id="task-modal-close" type="button" class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="task-modal-body" class="max-h-[calc(88dvh-4.75rem)] overflow-y-auto p-5"></div>
+    </div>
+  </div>
+  <div id="info-modal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <div class="absolute inset-0 bg-black/65 backdrop-blur-sm"></div>
+    <div class="panel relative z-10 w-full max-w-xl max-h-[88dvh] overflow-hidden rounded-[2rem]">
+      <div class="flex items-center justify-between gap-3 border-b border-white/8 px-5 py-4">
+        <div>
+          <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-300/75">Worker Panel</p>
+          <h3 id="info-modal-title" class="mt-1 text-xl font-black text-white">Details</h3>
+        </div>
+        <button id="info-modal-close" type="button" class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="info-modal-body" class="max-h-[calc(88dvh-4.75rem)] overflow-y-auto p-5"></div>
+    </div>
+  </div>
+  <div id="tools-modal" class="worker-sheet fixed inset-y-0 right-0 z-50 hidden w-[min(92vw,24rem)] panel-strong">
+    <div class="flex h-full flex-col">
+      <div class="flex items-center justify-between gap-3 border-b border-white/8 px-4 py-3">
+        <div>
+          <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-300/75">Worker Tools</p>
+          <h3 id="tools-modal-title" class="mt-1 text-xl font-black text-white">Tools</h3>
+        </div>
+        <button id="tools-modal-close" type="button" class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="tools-modal-body" class="min-h-0 flex-1 overflow-y-auto p-4"></div>
+    </div>
+  </div>
+  <div id="account-modal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+    <div class="absolute inset-0 bg-black/65 backdrop-blur-sm"></div>
+    <div class="panel relative z-10 w-full max-w-md rounded-[2rem] p-5">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-300/75">Account</p>
+          <h3 class="mt-2 text-2xl font-black text-white" id="account-modal-name">Worker</h3>
+        </div>
+        <button id="account-modal-close" type="button" class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="mt-4 space-y-3">
+        <div class="rounded-2xl border border-white/8 bg-white/5 px-4 py-3">
+          <p class="text-[10px] uppercase tracking-[0.22em] text-white/35">Email</p>
+          <p id="account-modal-email" class="mt-1 text-sm font-semibold text-white"></p>
+        </div>
+        <div class="rounded-2xl border border-white/8 bg-white/5 px-4 py-3">
+          <p class="text-[10px] uppercase tracking-[0.22em] text-white/35">Status</p>
+          <p id="account-modal-status" class="mt-1 text-sm font-semibold text-white"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="toast-root" class="toast-stack fixed right-4 top-4 z-50 flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/matching.js"></script>
+  <script>
+    const STATUS = {
+      ASSIGNED: 'Assigned',
+      EN_ROUTE: 'EnRoute',
+      ARRIVED: 'Arrived',
+      WASHING: 'Washing',
+      COMPLETED: 'Completed'
+    };
+
+    const ACTIVE_STATUSES = [STATUS.ASSIGNED, STATUS.EN_ROUTE, STATUS.ARRIVED, STATUS.WASHING];
+    const money = (value) => `N$${Number(value || 0).toLocaleString('en-US')}`;
+
+    const state = {
+      currentUser: null,
+      profile: {},
+      washerDoc: {},
+      liveLocation: null,
+      activeJobs: [],
+      activeView: 'jobs',
+      panelOpen: false,
+      online: true,
+      locationWatchId: null,
+      map: null,
+      workerMarker: null,
+      customerMarker: null,
+      routeLine: null,
+      lastRenderedJobId: null,
+      checklist: { arrived: false, exterior: false, interior: false, quality: false }
+    };
+
+    const els = {
+      desktopPanel: document.getElementById('desktop-panel'),
+      mobilePanel: document.getElementById('mobile-panel'),
+      contentPanel: document.getElementById('content-panel'),
+      overlay: document.getElementById('overlay'),
+      completionModal: document.getElementById('completion-modal'),
+      completionMessage: document.getElementById('completion-message'),
+      taskModal: document.getElementById('task-modal'),
+      taskModalBody: document.getElementById('task-modal-body'),
+      infoModal: document.getElementById('info-modal'),
+      infoModalTitle: document.getElementById('info-modal-title'),
+      infoModalBody: document.getElementById('info-modal-body'),
+      toolsModal: document.getElementById('tools-modal'),
+      toolsModalTitle: document.getElementById('tools-modal-title'),
+      toolsModalBody: document.getElementById('tools-modal-body'),
+      accountModal: document.getElementById('account-modal'),
+      accountModalName: document.getElementById('account-modal-name'),
+      accountModalEmail: document.getElementById('account-modal-email'),
+      accountModalStatus: document.getElementById('account-modal-status'),
+      mapStatus: document.getElementById('map-status'),
+      workerLocationLabel: document.getElementById('worker-location-label'),
+      toggleKnobDesktop: document.getElementById('toggle-knob-desktop'),
+      toggleKnobMobile: document.getElementById('toggle-knob-mobile'),
+      toggleDesktop: document.getElementById('online-toggle-desktop'),
+      toggleMobile: document.getElementById('online-toggle-mobile'),
+      accountBtn: document.getElementById('account-btn'),
+      toastRoot: document.getElementById('toast-root')
+    };
+
+    function showToast(message, tone = 'default') {
+      const node = document.createElement('div');
+      const toneClasses = tone === 'success'
+        ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-50'
+        : tone === 'warning'
+          ? 'border-amber-500/30 bg-amber-500/10 text-amber-50'
+          : 'border-white/10 bg-slate-950/90 text-white';
+      node.className = `toast-item panel rounded-2xl px-4 py-3 text-sm ${toneClasses}`;
+      node.textContent = message;
+      els.toastRoot.appendChild(node);
+      setTimeout(() => {
+        node.style.opacity = '0';
+        node.style.transform = 'translateY(8px)';
+        node.style.transition = 'all 180ms ease';
+        setTimeout(() => node.remove(), 220);
+      }, 2600);
+    }
+
+    function setPanelOpen(open) {
+      state.panelOpen = open;
+      els.contentPanel.classList.toggle('is-open', open);
+      els.overlay.classList.toggle('is-open', open);
+    }
+
+    function getCoords(location) {
+      if (!location) return null;
+      const lat = location.latitude ?? location.lat;
+      const lng = location.longitude ?? location.lng;
+      if (lat == null || lng == null) return null;
+      return { lat: Number(lat), lng: Number(lng) };
+    }
+
+    function getPrimaryJob() {
+      return state.activeJobs[0] || null;
+    }
+
+    function splitLocationText(text) {
+      const parts = String(text || '').split(',').map((part) => part.trim()).filter(Boolean);
+      return {
+        primary: parts[0] || 'Unknown location',
+        secondary: parts.slice(1).join(', ')
+      };
+    }
+
+    function renderTaskCard() {
+      const job = getPrimaryJob();
+      const progress = job
+        ? Math.max(20, Math.min(100, [STATUS.ASSIGNED, STATUS.EN_ROUTE, STATUS.ARRIVED, STATUS.WASHING, STATUS.COMPLETED].indexOf(job.status) * 25 + 25))
+        : 0;
+      const ready = state.checklist.arrived && state.checklist.exterior && state.checklist.interior && state.checklist.quality;
+      const locationText = job ? (job.address || splitLocationText(job.customerLocationText || '').primary) : 'Awaiting dispatch';
+      const vehicleText = job ? (job.vehicle || job.vehicleName || 'Vehicle not set') : 'No active vehicle';
+      const statusText = job ? job.status : 'No active job';
+
+      return `
+        <div class="space-y-4">
+          <div class="rounded-3xl border border-white/8 bg-black/15 p-4">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-300/70">Active Task</p>
+                <h3 class="mt-2 text-xl font-black leading-tight text-white">${job ? (job.clientName || job.customerName || 'Customer job') : 'No active job'}</h3>
+                <p class="mt-1 text-sm text-gray-300">${vehicleText}</p>
+              </div>
+              <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-white/75">${statusText}</span>
+            </div>
+
+            <div class="mt-4 grid grid-cols-2 gap-2">
+              <div class="rounded-2xl border border-white/8 bg-white/5 px-3 py-2.5">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-white/35">Location</p>
+                <p class="mt-1 text-sm font-semibold text-white">${locationText}</p>
+              </div>
+              <div class="rounded-2xl border border-white/8 bg-white/5 px-3 py-2.5">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-white/35">ETA / Total</p>
+                <p class="mt-1 text-sm font-semibold text-white">${job?.etaMinutes ? `${job.etaMinutes} min` : '--'} &middot; ${money(job?.price || 0)}</p>
+              </div>
+            </div>
+
+            <div class="mt-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/8 px-3 py-3">
+              <div class="flex items-center justify-between gap-3">
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-emerald-100/70">Checklist progress</p>
+                <p class="text-sm font-bold text-white">${progress}%</p>
+              </div>
+              <div class="mt-2 h-2 overflow-hidden rounded-full bg-white/8">
+                <div class="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all" style="width:${progress}%"></div>
+              </div>
+            </div>
+
+            <div class="mt-4 space-y-2">
+              <label class="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/15 px-3 py-3">
+                <input class="task-check mt-1 h-4 w-4 rounded border-white/20 bg-transparent" type="checkbox" data-check="arrived" ${state.checklist.arrived ? 'checked' : ''} ${job ? '' : 'disabled'}>
+                <span>
+                  <span class="block text-sm font-semibold text-white">Arrived On-Site</span>
+                  <span class="block text-xs text-gray-400">Sends an arrival alert to dispatch and the customer.</span>
+                </span>
+              </label>
+              <label class="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/15 px-3 py-3">
+                <input class="task-check mt-1 h-4 w-4 rounded border-white/20 bg-transparent" type="checkbox" data-check="exterior" ${state.checklist.exterior ? 'checked' : ''} ${job ? '' : 'disabled'}>
+                <span>
+                  <span class="block text-sm font-semibold text-white">Exterior Waterless Prep Completed</span>
+                  <span class="block text-xs text-gray-400">Prep, surface lift, and panel wipe completed.</span>
+                </span>
+              </label>
+              <label class="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/15 px-3 py-3">
+                <input class="task-check mt-1 h-4 w-4 rounded border-white/20 bg-transparent" type="checkbox" data-check="interior" ${state.checklist.interior ? 'checked' : ''} ${job ? '' : 'disabled'}>
+                <span>
+                  <span class="block text-sm font-semibold text-white">Interior Vacuuming &amp; Detail Completed</span>
+                  <span class="block text-xs text-gray-400">Vacuum, dash, mats, and glass finished.</span>
+                </span>
+              </label>
+              <label class="flex items-start gap-3 rounded-2xl border border-white/8 bg-black/15 px-3 py-3">
+                <input class="task-check mt-1 h-4 w-4 rounded border-white/20 bg-transparent" type="checkbox" data-check="quality" ${state.checklist.quality ? 'checked' : ''} ${job ? '' : 'disabled'}>
+                <span>
+                  <span class="block text-sm font-semibold text-white">Quality Check &amp; Complete Wash</span>
+                  <span class="block text-xs text-gray-400">Enables the complete action when all steps are done.</span>
+                </span>
+              </label>
+            </div>
+
+            <button data-action="complete-task" ${ready && job ? '' : 'disabled'} class="mt-4 w-full rounded-2xl px-4 py-3.5 text-sm font-extrabold tracking-[0.16em] transition ${ready && job ? 'bg-emerald-400 text-slate-950 hover:bg-emerald-300' : 'cursor-not-allowed bg-white/10 text-white/40'}">
+              COMPLETE ACTIVE TASK
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDispatchStatusCard() {
+      const job = getPrimaryJob();
+      const current = job ? (job.status || 'Assigned') : 'No active job';
+      const queueCount = state.activeJobs.length;
+      return `
+        <div class="space-y-4">
+          <div class="rounded-3xl border border-white/8 bg-black/15 p-4">
+            <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-300/70">Dispatch Status</p>
+            <p class="mt-2 text-sm font-semibold text-white">${state.online ? 'Accepting new jobs' : 'Offline - not receiving new dispatches'}</p>
+            <div class="mt-3 grid grid-cols-2 gap-2">
+              <div class="rounded-2xl border border-white/8 bg-white/5 px-3 py-2.5">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-white/35">Queue</p>
+                <p class="mt-1 text-sm font-semibold text-white">${queueCount}</p>
+              </div>
+              <div class="rounded-2xl border border-white/8 bg-white/5 px-3 py-2.5">
+                <p class="text-[10px] uppercase tracking-[0.2em] text-white/35">Current</p>
+                <p class="mt-1 text-sm font-semibold text-white">${current}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLiveFeedCard() {
+      return `
+        <div class="space-y-4">
+          <div class="rounded-3xl border border-white/8 bg-black/15 p-4">
+            <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-300/70">Live Feed</p>
+            <p class="mt-2 text-sm font-semibold text-white">Recent dispatch and job updates</p>
+            <div class="mt-4 space-y-2 text-xs leading-5 text-gray-300">
+              <div class="rounded-2xl border border-white/6 bg-white/5 px-3 py-2">Worker console ready.</div>
+              <div class="rounded-2xl border border-white/6 bg-white/5 px-3 py-2">${getPrimaryJob() ? `Tracking ${getPrimaryJob().clientName || getPrimaryJob().customerName || 'current job'}.` : 'No active booking assigned yet.'}</div>
+              <div class="rounded-2xl border border-white/6 bg-white/5 px-3 py-2">GPS and booking state are syncing from Firestore.</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openTaskModal() {
+      if (!getPrimaryJob()) {
+        showToast('No active job available right now.', 'warning');
+        return;
+      }
+      els.taskModalBody.innerHTML = renderTaskCard();
+      els.taskModal.classList.remove('hidden');
+      els.taskModal.classList.add('flex');
+    }
+
+    function closeTaskModal() {
+      els.taskModal.classList.add('hidden');
+      els.taskModal.classList.remove('flex');
+      els.taskModalBody.innerHTML = '';
+    }
+
+    function openInfoModal(title, bodyHtml) {
+      els.infoModalTitle.textContent = title;
+      els.infoModalBody.innerHTML = bodyHtml;
+      els.infoModal.classList.remove('hidden');
+      els.infoModal.classList.add('flex');
+    }
+
+    function closeInfoModal() {
+      els.infoModal.classList.add('hidden');
+      els.infoModal.classList.remove('flex');
+      els.infoModalBody.innerHTML = '';
+    }
+
+    function openToolsModal() {
+      els.toolsModal.classList.remove('hidden');
+      els.toolsModal.classList.add('flex');
+    }
+
+    function closeToolsModal() {
+      els.toolsModal.classList.add('hidden');
+      els.toolsModal.classList.remove('flex');
+    }
+
+    function openAccountModal() {
+      const profile = state.profile || {};
+      els.accountModalName.textContent = profile.name || profile.displayName || 'Worker';
+      els.accountModalEmail.textContent = profile.email || state.currentUser?.email || '';
+      els.accountModalStatus.textContent = state.online ? 'Online and accepting jobs' : 'Offline and unavailable';
+      els.accountModal.classList.remove('hidden');
+      els.accountModal.classList.add('flex');
+    }
+
+    function closeAccountModal() {
+      els.accountModal.classList.add('hidden');
+      els.accountModal.classList.remove('flex');
+    }
+
+    function renderJobsView() {
+      return `
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <button data-action="open-tools" class="w-full rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-left">
+              <p class="text-[10px] font-semibold uppercase tracking-[0.24em] text-emerald-100/70">Worker Tools</p>
+              <p class="mt-1 text-sm font-semibold text-white">Open task, dispatch, and feed panels</p>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderEarningsView() {
+      const earnings = Number(state.profile.earnings || 0);
+      const jobsCompleted = Number(state.profile.jobsCompleted || 0);
+      return `
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-2">
+            <div class="rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-3 py-3">
+              <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-100/65">Wallet balance</p>
+              <p class="mt-1 text-2xl font-black text-white">${money(earnings)}</p>
+            </div>
+            <div class="rounded-2xl border border-white/8 bg-white/5 px-3 py-3">
+              <p class="text-[10px] uppercase tracking-[0.2em] text-white/35">Completed jobs</p>
+              <p class="mt-1 text-2xl font-black text-white">${jobsCompleted}</p>
+            </div>
+          </div>
+          <div class="rounded-[1.5rem] border border-white/8 bg-white/5 p-4">
+            <p class="text-sm font-semibold text-white">Daily payouts</p>
+            <p class="mt-2 text-xs leading-6 text-gray-400">Payouts and tips are synced to the worker document in Firestore.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderInventoryView() {
+      return `
+        <div class="space-y-3">
+          <div class="rounded-[1.5rem] border border-white/8 bg-white/5 p-4">
+            <p class="text-[10px] font-semibold uppercase tracking-[0.24em] text-emerald-300/70">Truck stock</p>
+            <div class="mt-4 space-y-3">
+              <div class="rounded-2xl border border-white/8 bg-black/15 px-3 py-3">
+                <div class="flex items-center justify-between gap-3">
+                  <p class="text-sm font-semibold text-white">Waterless Spray</p>
+                  <p class="text-sm font-bold text-white">86%</p>
+                </div>
+              </div>
+              <div class="rounded-2xl border border-white/8 bg-black/15 px-3 py-3">
+                <div class="flex items-center justify-between gap-3">
+                  <p class="text-sm font-semibold text-white">Microfiber Cloths</p>
+                  <p class="text-sm font-bold text-white">71%</p>
+                </div>
+              </div>
+              <div class="rounded-2xl border border-white/8 bg-black/15 px-3 py-3">
+                <div class="flex items-center justify-between gap-3">
+                  <p class="text-sm font-semibold text-white">Vacuum Battery</p>
+                  <p class="text-sm font-bold text-white">64%</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button data-action="restock" class="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-left text-sm font-semibold text-white">Request restock</button>
+        </div>
+      `;
+    }
+
+    function renderSupportView() {
+      return `
+        <div class="space-y-3">
+          <button data-action="call-admin" class="rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-3 py-3 text-left">
+            <p class="text-sm font-semibold text-white">Call Dispatch Admin</p>
+            <p class="mt-1 text-xs text-gray-300">Urgent issue or customer escalation</p>
+          </button>
+          <button data-action="call-customer" class="rounded-2xl border border-white/8 bg-black/15 px-3 py-3 text-left">
+            <p class="text-sm font-semibold text-white">Call customer</p>
+            <p class="mt-1 text-xs text-gray-400">Confirm arrival or access instructions</p>
+          </button>
+          <button data-action="sos" class="rounded-2xl border border-red-500/25 bg-red-500/10 px-3 py-3 text-left">
+            <p class="text-sm font-semibold text-white">SOS / Incident Alert</p>
+            <p class="mt-1 text-xs text-gray-300">Send urgent help request to admin</p>
+          </button>
+        </div>
+      `;
+    }
+
+    function renderSection(view) {
+      return view === 'jobs'
+        ? renderJobsView()
+        : view === 'earnings'
+          ? renderEarningsView()
+          : view === 'inventory'
+            ? renderInventoryView()
+            : renderSupportView();
+    }
+
+    function renderPanels() {
+      const activeSection = renderSection(state.activeView);
+      const desktopHtml = `<div class="space-y-4">${activeSection}</div>`;
+      const mobileHtml = `<div class="space-y-4">${activeSection}</div>`;
+      els.desktopPanel.innerHTML = desktopHtml;
+      els.mobilePanel.innerHTML = mobileHtml;
+      if (!els.taskModal.classList.contains('hidden')) {
+        els.taskModalBody.innerHTML = renderTaskCard();
+      }
+      document.querySelectorAll('[data-nav]').forEach((btn) => {
+        btn.classList.toggle('is-active', btn.dataset.nav === state.activeView);
+      });
+    }
+
+    function setToggleUI(online) {
+      state.online = online;
+      [els.toggleDesktop, els.toggleMobile].forEach((track) => {
+        track.classList.toggle('border-emerald-500/25', online);
+        track.classList.toggle('bg-emerald-500/10', online);
+        track.classList.toggle('border-white/10', !online);
+        track.classList.toggle('bg-white/5', !online);
+        track.setAttribute('aria-pressed', String(online));
+      });
+      [els.toggleKnobDesktop, els.toggleKnobMobile].forEach((knob) => {
+        knob.classList.toggle('translate-x-10', online);
+        knob.classList.toggle('translate-x-0', !online);
+        knob.classList.toggle('bg-emerald-400', online);
+        knob.classList.toggle('bg-amber-400', !online);
+        knob.innerHTML = online
+          ? '<i class="fa-solid fa-circle-check text-[12px]"></i>'
+          : '<i class="fa-solid fa-circle-pause text-[12px]"></i>';
+      });
+    }
+
+    function showCompletion(message) {
+      els.completionMessage.textContent = message;
+      els.completionModal.classList.remove('hidden');
+      els.completionModal.classList.add('flex');
+    }
+
+    function hideCompletion() {
+      els.completionModal.classList.add('hidden');
+      els.completionModal.classList.remove('flex');
+    }
+
+    function renderMapStatus() {
+      const job = getPrimaryJob();
+      const coords = getCoords(state.liveLocation);
+      els.workerLocationLabel.textContent = coords
+        ? `Lat ${coords.lat.toFixed(4)}, Lng ${coords.lng.toFixed(4)}`
+        : 'No GPS update yet';
+      els.mapStatus.textContent = job
+        ? `${job.clientName || job.customerName || 'Customer'} · ${job.status || 'Assigned'}`
+        : 'Waiting for active booking assignment';
+    }
+
+    function syncChecklistFromJob(job) {
+      if (!job) {
+        state.checklist = { arrived: false, exterior: false, interior: false, quality: false };
+        return;
+      }
+
+      state.checklist = {
+        arrived: job.status === STATUS.ARRIVED || job.status === STATUS.WASHING || job.status === STATUS.COMPLETED,
+        exterior: job.status === STATUS.WASHING || job.status === STATUS.COMPLETED,
+        interior: job.status === STATUS.WASHING || job.status === STATUS.COMPLETED,
+        quality: job.status === STATUS.WASHING || job.status === STATUS.COMPLETED
+      };
+    }
+
+    function clearMapLayers() {
+      if (!state.map) return;
+      if (state.routeLine) {
+        try { state.map.removeLayer(state.routeLine); } catch (e) {}
+        state.routeLine = null;
+      }
+      if (state.workerMarker) {
+        try { state.map.removeLayer(state.workerMarker); } catch (e) {}
+        state.workerMarker = null;
+      }
+      if (state.customerMarker) {
+        try { state.map.removeLayer(state.customerMarker); } catch (e) {}
+        state.customerMarker = null;
+      }
+    }
+
+    function initMap() {
+      if (state.map || !window.L) return;
+      const center = window.ECOWASH_CONFIG?.countryCenter || { lat: -22.56, lng: 17.47 };
+      state.map = L.map('worker-live-map', {
+        zoomControl: false,
+        attributionControl: false,
+        preferCanvas: true
+      }).setView([center.lat, center.lng], 7);
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        subdomains: 'abcd',
+        maxZoom: 20,
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+      }).addTo(state.map);
+
+      state.map.whenReady(() => {
+        setTimeout(() => state.map.invalidateSize(), 150);
+      });
+    }
+
+    function updateMap() {
+      if (!state.map) return;
+      clearMapLayers();
+      const job = getPrimaryJob();
+      const workerCoords = getCoords(state.liveLocation);
+      const customerCoords = getCoords(job?.customerLocation || job?.customerLoc || job?.location);
+
+      if (workerCoords) {
+        state.workerMarker = L.marker([workerCoords.lat, workerCoords.lng], {
+          icon: L.divIcon({
+            className: '',
+            html: '<div style="width:22px;height:22px;background:#23799c;border:3px solid #fff;border-radius:50%;box-shadow:0 0 18px rgba(35,121,156,0.8);"></div>',
+            iconSize: [22, 22],
+            iconAnchor: [11, 11]
+          })
+        }).addTo(state.map).bindPopup('<b>Your live location</b>');
+      }
+
+      if (customerCoords) {
+        state.customerMarker = L.marker([customerCoords.lat, customerCoords.lng], {
+          icon: L.divIcon({
+            className: '',
+            html: '<div style="width:22px;height:22px;background:#6dbb6d;border:3px solid #fff;border-radius:50%;box-shadow:0 0 18px rgba(109,187,109,0.85);"></div>',
+            iconSize: [22, 22],
+            iconAnchor: [11, 11]
+          })
+        }).addTo(state.map);
+      }
+
+      if (workerCoords && customerCoords) {
+        state.routeLine = L.polyline([[workerCoords.lat, workerCoords.lng], [customerCoords.lat, customerCoords.lng]], {
+          color: '#6dbb6d',
+          weight: 4,
+          opacity: 0.95,
+          dashArray: '8 10',
+          lineCap: 'round'
+        }).addTo(state.map);
+        state.map.fitBounds([[workerCoords.lat, workerCoords.lng], [customerCoords.lat, customerCoords.lng]], {
+          padding: [40, 40],
+          maxZoom: 15,
+          animate: true
+        });
+      } else if (customerCoords) {
+        state.map.setView([customerCoords.lat, customerCoords.lng], 15, { animate: true });
+      } else if (workerCoords) {
+        state.map.setView([workerCoords.lat, workerCoords.lng], 14, { animate: true });
+      }
+    }
+
+    async function saveWorkerPresence(nextOnline) {
+      if (!state.currentUser) return;
+      await window.firebaseService.db.collection('washers').doc(state.currentUser.uid).set({
+        status: nextOnline ? 'available' : 'offline',
+        activeBookingId: getPrimaryJob()?.id || null,
+        lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+      await window.firebaseService.db.collection('liveLocations').doc(state.currentUser.uid).set({
+        available: nextOnline,
+        online: nextOnline,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    }
+
+    function startLocationStream() {
+      if (!state.currentUser || !navigator.geolocation) return;
+      if (state.locationWatchId != null) return;
+
+      state.locationWatchId = navigator.geolocation.watchPosition(async (position) => {
+        const coords = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          heading: position.coords.heading || 0,
+          available: state.online,
+          online: state.online,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        state.liveLocation = coords;
+        await window.firebaseService.db.collection('liveLocations').doc(state.currentUser.uid).set(coords, { merge: true });
+        updateMap();
+        renderMapStatus();
+      }, (error) => {
+        console.error('Location stream error:', error);
+      }, {
+        enableHighAccuracy: true,
+        maximumAge: 10000,
+        timeout: 15000
+      });
+    }
+
+    function stopLocationStream() {
+      if (state.locationWatchId == null) return;
+      navigator.geolocation.clearWatch(state.locationWatchId);
+      state.locationWatchId = null;
+    }
+
+    async function loadWorkerProfile() {
+      const doc = await window.firebaseService.db.collection('users').doc(state.currentUser.uid).get();
+      if (doc.exists) {
+        state.profile = doc.data() || {};
+      }
+    }
+
+    async function loadWorkerOps() {
+      const washerDoc = await window.firebaseService.db.collection('washers').doc(state.currentUser.uid).get();
+      if (washerDoc.exists) {
+        state.washerDoc = washerDoc.data() || {};
+        state.online = state.washerDoc.status !== 'offline';
+      }
+
+      const liveDoc = await window.firebaseService.db.collection('liveLocations').doc(state.currentUser.uid).get();
+      if (liveDoc.exists) {
+        state.liveLocation = liveDoc.data() || null;
+      }
+    }
+
+    function bindListeners() {
+      document.querySelectorAll('[data-nav]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          state.activeView = btn.dataset.nav;
+          renderPanels();
+          if (window.matchMedia('(max-width: 767px)').matches) setPanelOpen(true);
+        });
+      });
+
+      document.addEventListener('change', async (event) => {
+        const checkbox = event.target.closest('[data-check]');
+        if (!checkbox) return;
+        const job = getPrimaryJob();
+        if (!job) return;
+
+        const key = checkbox.dataset.check;
+        state.checklist[key] = checkbox.checked;
+
+        if (key === 'arrived' && checkbox.checked) {
+          const message = 'Notification sent to John D.: Your wash specialist has arrived!';
+          console.log(message);
+          alert(message);
+          showToast(message, 'success');
+          await window.EcoWash.updateBookingStatus(job.id, STATUS.ARRIVED, {
+            arrivedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+
+        if (key === 'exterior' && checkbox.checked) {
+          await window.EcoWash.updateBookingStatus(job.id, STATUS.WASHING, {
+            startedExteriorPrepAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+
+        if (key === 'interior' && checkbox.checked) {
+          await window.EcoWash.updateBookingStatus(job.id, STATUS.WASHING, {
+            interiorWorkAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+
+        if (key === 'quality' && checkbox.checked) {
+          await window.EcoWash.updateBookingStatus(job.id, STATUS.WASHING, {
+            qualityCheckAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+
+        renderPanels();
+      });
+
+      document.addEventListener('click', async (event) => {
+        const actionBtn = event.target.closest('[data-action]');
+        if (actionBtn) {
+          const action = actionBtn.dataset.action;
+          const job = getPrimaryJob();
+
+          if (action === 'open-task') {
+            closeToolsModal();
+            openTaskModal();
+            return;
+          }
+
+          if (action === 'open-dispatch') {
+            closeToolsModal();
+            openInfoModal('Dispatch Status', renderDispatchStatusCard());
+            return;
+          }
+
+          if (action === 'open-feed') {
+            closeToolsModal();
+            openInfoModal('Live Feed', renderLiveFeedCard());
+            return;
+          }
+
+          if (action === 'open-tools') {
+            openToolsModal();
+            return;
+          }
+
+          if (action === 'complete-task') {
+            if (!job || !(state.checklist.arrived && state.checklist.exterior && state.checklist.interior && state.checklist.quality)) return;
+            const result = await window.EcoWash.completeBooking(job.id);
+            const message = 'Service complete! Payment receipt generated and sent to customer.';
+            console.log(message, result);
+            showCompletion(message);
+            showToast(message, 'success');
+            state.checklist = { arrived: false, exterior: false, interior: false, quality: false };
+            await reloadData();
+          } else if (action === 'restock') {
+            showToast('Restock request sent to dispatch.', 'success');
+          } else if (action === 'call-admin') {
+            showToast('Dialing dispatch admin...', 'success');
+          } else if (action === 'call-customer') {
+            showToast('Calling customer...', 'success');
+          } else if (action === 'sos') {
+            const message = 'SOS sent to dispatch. Admin has been notified immediately.';
+            console.log(message);
+            showToast(message, 'warning');
+          }
+          return;
+        }
+
+        if (event.target.closest('#open-panel')) {
+          setPanelOpen(true);
+        }
+        if (event.target.closest('#close-panel') || event.target === els.overlay) {
+          setPanelOpen(false);
+        }
+        if (event.target.closest('#account-btn')) {
+          openAccountModal();
+        }
+      });
+
+      document.getElementById('completion-close')?.addEventListener('click', hideCompletion);
+      els.completionModal.addEventListener('click', (event) => {
+        if (event.target === els.completionModal) hideCompletion();
+      });
+      document.getElementById('task-modal-close')?.addEventListener('click', closeTaskModal);
+      els.taskModal.addEventListener('click', (event) => {
+        if (event.target === els.taskModal) closeTaskModal();
+      });
+      document.getElementById('info-modal-close')?.addEventListener('click', closeInfoModal);
+      els.infoModal.addEventListener('click', (event) => {
+        if (event.target === els.infoModal) closeInfoModal();
+      });
+      document.getElementById('tools-modal-close')?.addEventListener('click', closeToolsModal);
+      els.toolsModal.addEventListener('click', (event) => {
+        if (event.target === els.toolsModal) closeToolsModal();
+      });
+      document.getElementById('account-modal-close')?.addEventListener('click', closeAccountModal);
+      els.accountModal.addEventListener('click', (event) => {
+        if (event.target === els.accountModal) closeAccountModal();
+      });
+
+      [els.toggleDesktop, els.toggleMobile].forEach((button) => {
+        button.addEventListener('click', async () => {
+          const nextOnline = !state.online;
+          setToggleUI(nextOnline);
+          await saveWorkerPresence(nextOnline);
+          if (nextOnline) {
+            startLocationStream();
+            showToast('You are online and ready to accept jobs.', 'success');
+          } else {
+            stopLocationStream();
+            showToast('You are offline. No new jobs will be assigned.', 'warning');
+          }
+          renderPanels();
+          renderMapStatus();
+        });
+      });
+
+      window.addEventListener('resize', () => {
+        state.map?.invalidateSize();
+        if (!window.matchMedia('(max-width: 767px)').matches) setPanelOpen(false);
+      });
+    }
+
+    async function reloadData() {
+      if (!state.currentUser) return;
+
+      const activeSnap = await window.firebaseService.db.collection('bookings')
+        .where('washerId', '==', state.currentUser.uid)
+        .where('status', 'in', ACTIVE_STATUSES)
+        .get();
+
+      state.activeJobs = activeSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      state.activeJobs.sort((a, b) => {
+        const order = [STATUS.ASSIGNED, STATUS.EN_ROUTE, STATUS.ARRIVED, STATUS.WASHING];
+        return order.indexOf(a.status) - order.indexOf(b.status);
+      });
+      syncChecklistFromJob(state.activeJobs[0]);
+      renderPanels();
+      renderMapStatus();
+      updateMap();
+    }
+
+    async function initRealtime() {
+      if (!state.currentUser) return;
+
+      window.firebaseService.db.collection('users').doc(state.currentUser.uid).onSnapshot((doc) => {
+        if (doc.exists) {
+          state.profile = doc.data() || {};
+          renderPanels();
+        }
+      });
+
+      window.firebaseService.db.collection('washers').doc(state.currentUser.uid).onSnapshot((doc) => {
+        if (doc.exists) {
+          state.washerDoc = doc.data() || {};
+          const onlineNow = state.washerDoc.status !== 'offline';
+          if (state.online !== onlineNow) {
+            setToggleUI(onlineNow);
+          }
+        }
+      });
+
+      window.firebaseService.db.collection('liveLocations').doc(state.currentUser.uid).onSnapshot((doc) => {
+        if (doc.exists) {
+          state.liveLocation = doc.data();
+          renderMapStatus();
+          updateMap();
+        }
+      });
+
+      window.firebaseService.db.collection('bookings')
+        .where('washerId', '==', state.currentUser.uid)
+        .where('status', 'in', ACTIVE_STATUSES)
+        .onSnapshot((snapshot) => {
+          state.activeJobs = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          state.activeJobs.sort((a, b) => {
+            const order = [STATUS.ASSIGNED, STATUS.EN_ROUTE, STATUS.ARRIVED, STATUS.WASHING];
+            return order.indexOf(a.status) - order.indexOf(b.status);
+          });
+          syncChecklistFromJob(state.activeJobs[0]);
+          renderPanels();
+          renderMapStatus();
+          updateMap();
+        }, (error) => console.error('Worker bookings listener error:', error));
+    }
+
+    async function bootstrap() {
+      await window.firebaseService.initializeSystem();
+      const result = await window.authService.getCurrentUser();
+      if (!result.success || !result.user) {
+        window.location.href = 'auth.html';
+        return;
+      }
+
+      if (result.role !== 'worker') {
+        window.location.href = 'dashboard.html';
+        return;
+      }
+
+      state.currentUser = result.user;
+      await loadWorkerProfile();
+      await loadWorkerOps();
+      initMap();
+      setToggleUI(state.online);
+      renderPanels();
+      renderMapStatus();
+      bindListeners();
+      await reloadData();
+      initRealtime();
+      if (state.online) startLocationStream();
+      showToast('Worker console loaded. Ready for the shift.', 'success');
+    }
+
+    bootstrap().catch((error) => {
+      console.error('Worker console failed to initialize:', error);
+      showToast('Unable to load the worker console.', 'warning');
+    });
+  </script>
+</body>
+</html>

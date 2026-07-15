@@ -24,14 +24,21 @@ class WorkerPortal {
 
   async checkAuth() {
     const result = await window.authService.getCurrentUser();
-    if (!result.success || result.role !== 'worker') {
+    const loginGate = document.getElementById('worker-login-gate');
+    const portal = document.getElementById('worker-portal');
+
+    if (!result.success || !result.user) {
+      if (loginGate) loginGate.classList.remove('hidden');
+      if (portal) portal.classList.add('hidden');
+      return;
+    }
+
+    if (result.role !== 'worker') {
       window.location.href = 'auth.html';
       return;
     }
-    
+
     this.currentUser = result.user;
-    const loginGate = document.getElementById('worker-login-gate');
-    const portal = document.getElementById('worker-portal');
     if (loginGate) loginGate.classList.add('hidden');
     if (portal) portal.classList.remove('hidden');
     const nameDisplay = document.getElementById('worker-display-name');

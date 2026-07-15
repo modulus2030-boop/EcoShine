@@ -214,6 +214,14 @@
       transform: translateX(18px);
     }
 
+    .wizard-step-inner {
+      min-height: 100%;
+    }
+
+    .wizard-result-list {
+      scrollbar-width: thin;
+    }
+
     .wizard-card,
     .wizard-addon,
     .wizard-payment-option,
@@ -468,7 +476,7 @@
           <button id="map-zoom-out" class="map-btn grid h-10 w-10 place-items-center rounded-2xl text-white/70 transition hover:text-white" aria-label="Zoom out">
             <i data-lucide="minus" class="w-4 h-4"></i>
           </button>
-          <button id="map-fit" class="map-btn grid h-10 w-10 place-items-center rounded-2xl text-white/70 transition hover:text-white" aria-label="Fit route">
+          <button id="map-fit" class="map-btn grid h-10 w-10 place-items-center rounded-2xl text-white/70 transition hover:text-white" aria-label="Center map on my location">
             <i data-lucide="maximize" class="w-4 h-4"></i>
           </button>
         </div>
@@ -533,50 +541,36 @@
 
           <div id="wizard-stage" class="relative flex-1 min-h-0 overflow-hidden">
             <section data-wizard-step="1" class="wizard-step absolute inset-0 p-4 md:p-5">
-              <div class="space-y-3">
+              <div class="wizard-step-inner mx-auto flex h-full w-full max-w-[320px] flex-col items-center justify-start gap-2 pt-2 text-center sm:pt-4">
                 <div>
                   <h3 class="text-lg font-extrabold text-white sm:text-xl">Where is your car?</h3>
-                  <p class="mt-1 text-xs text-muted sm:text-sm">Use a real address or one of the examples below.</p>
+                  <p class="mt-1 text-xs text-muted sm:text-sm">Type your area and choose from live suggestions.</p>
                 </div>
-                <label class="block">
-                  <span class="sr-only">Location search</span>
-                  <div class="flex items-center gap-3 rounded-2xl border border-[#334155] bg-[#111827] px-3.5 py-2.5 text-white shadow-inner shadow-black/20">
-                    <i data-lucide="search" class="h-4 w-4 text-white/45"></i>
-                    <input id="wizard-location-input" type="text" value="" placeholder="Enter your current address..." class="w-full bg-transparent text-sm text-white placeholder:text-white/35 outline-none sm:text-[15px]" />
-                  </div>
+                <div class="relative w-full">
+                  <label class="block">
+                    <span class="sr-only">Location search</span>
+                    <div class="flex items-center gap-3 rounded-2xl border border-[#334155] bg-[#111827] px-3.5 py-2.5 text-white shadow-inner shadow-black/20">
+                      <i data-lucide="search" class="h-4 w-4 text-white/45"></i>
+                      <input id="wizard-location-input" type="text" value="" placeholder="Search your area" autocomplete="off" spellcheck="false" class="w-full bg-transparent text-sm text-white placeholder:text-white/35 outline-none sm:text-[15px]" />
+                    </div>
+                  </label>
+                  <div id="wizard-location-results" class="wizard-result-list absolute left-0 right-0 top-full z-20 mt-2 hidden max-h-56 overflow-y-auto rounded-3xl border border-white/8 bg-slate-950/96 p-2 shadow-2xl shadow-black/30"></div>
+                </div>
+
+                <label class="block w-full mt-auto pt-4 text-left">
+                  <span class="mb-2 block text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35">Area details</span>
+                  <textarea id="wizard-location-notes" rows="3" placeholder="Apartment, gate code, landmark, building name, or any extra directions" class="w-full resize-none rounded-2xl border border-white/8 bg-white/5 px-3.5 py-3 text-sm text-white outline-none placeholder:text-white/35 transition focus:border-emerald-500/30 focus:bg-white/7"></textarea>
                 </label>
-
-                <div class="space-y-2">
-                  <button type="button" class="wizard-suggestion w-full rounded-2xl border border-white/5 bg-white/5 px-3.5 py-2.5 text-left transition hover:border-emerald-500/25 hover:bg-white/8" data-location="123 Sam Nujoma Drive, Example City">
-                    <p class="text-sm font-semibold text-white">123 Sam Nujoma Drive, Example City</p>
-                    <p class="mt-1 text-[11px] text-muted">Example address</p>
-                  </button>
-                  <button type="button" class="wizard-suggestion w-full rounded-2xl border border-white/5 bg-white/5 px-3.5 py-2.5 text-left transition hover:border-emerald-500/25 hover:bg-white/8" data-location="35 Independence Ave, Example City">
-                    <p class="text-sm font-semibold text-white">35 Independence Ave, Example City</p>
-                    <p class="mt-1 text-[11px] text-muted">Fallback office</p>
-                  </button>
-                  <button type="button" class="wizard-suggestion w-full rounded-2xl border border-white/5 bg-white/5 px-3.5 py-2.5 text-left transition hover:border-emerald-500/25 hover:bg-white/8" data-location="Unit 4, Safari Hills, Example City">
-                    <p class="text-sm font-semibold text-white">Unit 4, Safari Hills, Example City</p>
-                    <p class="mt-1 text-[11px] text-muted">Fallback apartment</p>
-                  </button>
-                </div>
-
-                <button type="button" id="wizard-gps-btn" class="inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3.5 py-2.5 text-xs font-semibold text-emerald-200 transition hover:bg-emerald-400/15 sm:text-sm">
-                  <span class="grid h-6 w-6 place-items-center rounded-full bg-emerald-500 text-slate-950 shadow-lg sm:h-7 sm:w-7">
-                    <i data-lucide="map-pin" class="h-4 w-4"></i>
-                  </span>
-                  Use My Location
-                </button>
               </div>
             </section>
 
             <section data-wizard-step="2" class="wizard-step absolute inset-0 p-4 md:p-5">
-              <div class="space-y-3">
+              <div class="wizard-step-inner mx-auto flex h-full w-full max-w-[320px] flex-col items-center justify-start gap-2 pt-3 text-center sm:pt-5">
                 <div>
                   <h3 class="text-lg font-extrabold text-white sm:text-xl">Choose a vehicle</h3>
-                  <p class="mt-1 text-xs text-muted sm:text-sm">Swipe through saved cars or add a new one.</p>
+                  <p class="mt-1 text-xs text-muted sm:text-sm">Pick the closest match from the compact vehicle cards.</p>
                 </div>
-                <div id="wizard-vehicles" class="flex gap-3 overflow-x-auto pb-2 thin-scroll snap-x snap-mandatory"></div>
+                <div id="wizard-vehicles" class="grid w-full grid-cols-2 gap-2 sm:grid-cols-3"></div>
                 <button type="button" class="w-full rounded-2xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">
                   + Add New Vehicle
                 </button>
@@ -584,23 +578,23 @@
             </section>
 
             <section data-wizard-step="3" class="wizard-step absolute inset-0 p-4 md:p-5">
-              <div class="space-y-3">
+              <div class="wizard-step-inner mx-auto flex h-full w-full max-w-[320px] flex-col items-center justify-start gap-2 pt-3 text-center sm:pt-5">
                 <div>
-                  <h3 class="text-lg font-extrabold text-white sm:text-xl">Select service & add-ons</h3>
-                  <p class="mt-1 text-xs text-muted sm:text-sm">Gold members can unlock free washes and engine cleans.</p>
+                  <h3 class="text-base font-extrabold text-white sm:text-lg">Select service & add-ons</h3>
+                  <p class="mt-1 text-[11px] text-muted sm:text-xs">Gold members can unlock free washes and engine cleans.</p>
                 </div>
-                <div id="wizard-tiers" class="grid gap-3"></div>
-                <div id="wizard-addons" class="space-y-3"></div>
+                <div id="wizard-tiers" class="grid w-full gap-3"></div>
+                <div id="wizard-addons" class="w-full space-y-3"></div>
               </div>
             </section>
 
             <section data-wizard-step="4" class="wizard-step absolute inset-0 p-4 md:p-5">
-              <div class="space-y-3">
+              <div class="wizard-step-inner mx-auto flex h-full w-full max-w-[320px] flex-col items-center justify-center gap-3 text-center">
                 <div>
                   <h3 class="text-lg font-extrabold text-white sm:text-xl">Payment</h3>
                   <p class="mt-1 text-xs text-muted sm:text-sm">Quick pay on arrival or card checkout.</p>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid w-full grid-cols-2 gap-3">
                   <button type="button" class="wizard-payment-option rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-3.5 py-3 text-left text-sm font-semibold text-emerald-100" data-payment="arrival">
                     Pay on Arrival
                   </button>
@@ -608,7 +602,7 @@
                     Online Card
                   </button>
                 </div>
-                <div class="rounded-[1.6rem] border border-white/8 bg-black/20 p-3.5 sm:p-4">
+                <div class="w-full rounded-[1.6rem] border border-white/8 bg-black/20 p-3.5 sm:p-4">
                   <p class="text-[10px] uppercase tracking-[0.25em] text-white/35">Summary</p>
                   <div id="wizard-summary" class="mt-2.5 space-y-2 text-sm"></div>
                 </div>
@@ -616,13 +610,13 @@
             </section>
 
             <section data-wizard-step="5" class="wizard-step absolute inset-0 p-4 md:p-5">
-              <div class="space-y-3">
+              <div class="wizard-step-inner mx-auto flex h-full w-full max-w-[320px] flex-col items-center justify-center gap-3 text-center">
                 <div>
                   <h3 class="text-lg font-extrabold text-white sm:text-xl">Booking ready</h3>
                   <p class="mt-1 text-xs text-muted sm:text-sm">Review the booking summary before you send it.</p>
                 </div>
-                <article class="panel rounded-[1rem] border border-emerald-500/20 bg-[rgba(10,15,26,0.92)] p-3.5 sm:p-4">
-                  <div class="flex items-center justify-between gap-3">
+                <article class="panel w-full rounded-[1rem] border border-emerald-500/20 bg-[rgba(10,15,26,0.92)] p-3.5 sm:p-4">
+                  <div class="flex items-center justify-between gap-3 text-left">
                     <div>
                       <p class="text-[10px] font-bold uppercase tracking-[0.28em] text-red-100/70">Summary</p>
                       <h4 id="wizard-confirmation-title" class="mt-1 text-base font-extrabold text-white sm:text-lg">No booking selected</h4>
@@ -630,7 +624,7 @@
                     <span id="wizard-confirmation-status" class="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.22em] text-white/70">Draft</span>
                   </div>
 
-                  <div class="mt-3.5 grid grid-cols-2 gap-2">
+                  <div class="mt-3.5 grid grid-cols-2 gap-2 text-left">
                     <div class="rounded-3xl bg-black/15 px-3 py-2.5">
                       <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Vehicle</p>
                       <p id="wizard-confirmation-vehicle" class="mt-1 text-sm font-bold text-white">—</p>
@@ -649,7 +643,7 @@
                     </div>
                   </div>
 
-                  <div class="mt-3.5 grid grid-cols-2 gap-2">
+                  <div class="mt-3.5 grid grid-cols-2 gap-2 text-left">
                     <div class="rounded-3xl bg-black/15 px-3 py-2.5">
                       <p class="text-[10px] uppercase tracking-[0.2em] text-emerald-200/60">Payment</p>
                       <p id="wizard-confirmation-payment" class="mt-1 text-sm font-bold text-white">—</p>
@@ -817,7 +811,6 @@
     let currentUser = null;
     let userProfile = {};
     let map = null;
-    let routeLayer = null;
     let activeDrawer = null;
     let activeSection = 'dashboard';
     let profileUnsub = null;
@@ -840,6 +833,8 @@
     const wizardAddons = document.getElementById('wizard-addons');
     const wizardSummary = document.getElementById('wizard-summary');
     const wizardLocationInput = document.getElementById('wizard-location-input');
+    const wizardLocationNotes = document.getElementById('wizard-location-notes');
+    const wizardLocationResults = document.getElementById('wizard-location-results');
     const bookingWizardBackdrop = document.getElementById('booking-wizard-backdrop');
     const wizardStepCaptionMap = {
       1: 'Location',
@@ -900,9 +895,50 @@
       }
     ];
 
+    const VEHICLE_OPTIONS = [
+      {
+        id: 'taxi',
+        label: 'Taxi',
+        description: 'City cab',
+        icon: `<svg class="h-6 w-6" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 24h40l-3-8H18l-6 8Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M20 14h18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M18 24h28" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="20" cy="30" r="4" stroke="currentColor" stroke-width="2.4"/><circle cx="44" cy="30" r="4" stroke="currentColor" stroke-width="2.4"/><path d="M24 20h8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M46 11h6v5h-6z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg>`
+      },
+      {
+        id: 'sedan',
+        label: 'Sedan',
+        description: 'Standard car',
+        icon: `<svg class="h-6 w-6" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10 24h44l-2-6H17l-7 6Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M18 18h16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="20" cy="30" r="4" stroke="currentColor" stroke-width="2.4"/><circle cx="44" cy="30" r="4" stroke="currentColor" stroke-width="2.4"/><path d="M18 24h30" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`
+      },
+      {
+        id: 'suv',
+        label: 'SUV',
+        description: 'Higher ride',
+        icon: `<svg class="h-6 w-6" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M9 24h46l-3-9H20l-8 9Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M19 15h13" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="20" cy="30" r="4" stroke="currentColor" stroke-width="2.4"/><circle cx="44" cy="30" r="4" stroke="currentColor" stroke-width="2.4"/><path d="M16 24h33" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`
+      },
+      {
+        id: 'bakkie',
+        label: 'Bakkie',
+        description: 'Pickup truck',
+        icon: `<svg class="h-6 w-6" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M10 24h22V14H14l-4 10Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M32 14h13l5 10H32V14Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><circle cx="20" cy="30" r="4" stroke="currentColor" stroke-width="2.4"/><circle cx="45" cy="30" r="4" stroke="currentColor" stroke-width="2.4"/><path d="M13 24h38" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`
+      },
+      {
+        id: 'van',
+        label: 'Van',
+        description: 'Family van',
+        icon: `<svg class="h-6 w-6" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M11 24h41V14H18l-7 10Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M20 14v10M30 14v10M40 14v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="20" cy="30" r="4" stroke="currentColor" stroke-width="2.4"/><circle cx="44" cy="30" r="4" stroke="currentColor" stroke-width="2.4"/></svg>`
+      },
+      {
+        id: 'hatchback',
+        label: 'Hatchback',
+        description: 'Compact ride',
+        icon: `<svg class="h-6 w-6" viewBox="0 0 64 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M11 24h43l-2-7H22l-11 7Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M22 17h10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="20" cy="30" r="4" stroke="currentColor" stroke-width="2.4"/><circle cx="43" cy="30" r="4" stroke="currentColor" stroke-width="2.4"/><path d="M17 24h29" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>`
+      }
+    ];
+
     let bookingWizardState = null;
     let currentLocationMarker = null;
     let currentLocationCoords = null;
+    let locationSearchTimer = null;
+    let locationSearchRequestId = 0;
 
     const isMobile = () => window.matchMedia('(max-width: 767px)').matches;
 
@@ -959,6 +995,19 @@
       }).addTo(map);
 
       map.setView([coords.lat, coords.lng], zoom, { animate: true });
+    }
+
+    async function focusMapOnCurrentVisitorLocation() {
+      const coords = await requestBrowserLocation({ updateWizard: false, zoom: 16 });
+      if (coords) {
+        setMapCurrentLocation(coords, 16);
+        return;
+      }
+
+      const fallbackCenter = getFallbackMapCenter();
+      if (map) {
+        map.setView([fallbackCenter.lat, fallbackCenter.lng], 7, { animate: true });
+      }
     }
 
     function requestBrowserLocation({ updateWizard = false, zoom = 15 } = {}) {
@@ -1106,15 +1155,7 @@
     }
 
     function getWizardVehicles() {
-      const saved = Array.isArray(userProfile.vehicles) ? userProfile.vehicles : [];
-      return saved
-        .map((vehicle, index) => ({
-          id: vehicle.id || vehicle.plate || `vehicle-${index + 1}`,
-          model: vehicle.model || vehicle.name || '',
-          color: vehicle.color || '',
-          plate: vehicle.plate || vehicle.registration || ''
-        }))
-        .filter((vehicle) => vehicle.id);
+      return VEHICLE_OPTIONS;
     }
 
     function getBookingDefaults() {
@@ -1122,6 +1163,7 @@
       return {
         step: 1,
         location: '',
+        locationDetail: '',
         selectedVehicleId: '',
         selectedPackage: membershipTier,
         addons: { engine: false, interior: false },
@@ -1134,6 +1176,130 @@
 
     function formatMoney(value) {
       return `N$${value}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[char]);
+    }
+
+    function splitLocationText(displayName) {
+      const parts = String(displayName || '').split(',').map((part) => part.trim()).filter(Boolean);
+      return {
+        primary: parts[0] || String(displayName || '').trim() || 'Location result',
+        secondary: parts.slice(1, 3).join(', ')
+      };
+    }
+
+    function hideWizardLocationResults() {
+      if (!wizardLocationResults) return;
+      wizardLocationResults.classList.add('hidden');
+      wizardLocationResults.innerHTML = '';
+    }
+
+    function renderWizardLocationResults(items, query) {
+      if (!wizardLocationResults) return;
+
+      const trimmed = String(query || '').trim();
+      if (!trimmed) {
+        hideWizardLocationResults();
+        return;
+      }
+
+      if (!items.length) {
+        wizardLocationResults.innerHTML = `
+          <div class="rounded-2xl border border-white/6 bg-white/5 px-3 py-3 text-left">
+            <p class="text-sm font-semibold text-white">No matches yet</p>
+            <p class="mt-1 text-xs text-muted">Try a nearby area, street, or landmark.</p>
+          </div>
+        `;
+        wizardLocationResults.classList.remove('hidden');
+        return;
+      }
+
+      wizardLocationResults.innerHTML = items.map((item, index) => {
+        const parts = splitLocationText(item.display_name);
+        const coords = `${item.lat},${item.lon}`;
+        return `
+          <button type="button" class="wizard-location-result wizard-suggestion w-full rounded-2xl border border-white/5 bg-white/5 px-3 py-2.5 text-left transition hover:border-emerald-500/25 hover:bg-white/8 ${index > 0 ? 'mt-2' : ''}" data-location="${escapeHtml(item.display_name)}" data-location-coords="${coords}">
+            <p class="text-sm font-semibold text-white">${escapeHtml(parts.primary)}</p>
+            ${parts.secondary ? `<p class="mt-1 text-[11px] text-muted">${escapeHtml(parts.secondary)}</p>` : ''}
+          </button>
+        `;
+      }).join('');
+      wizardLocationResults.classList.remove('hidden');
+    }
+
+    async function searchWizardLocations(query) {
+      if (!wizardLocationResults) return;
+
+      const trimmed = String(query || '').trim();
+      if (trimmed.length < 3) {
+        hideWizardLocationResults();
+        return;
+      }
+
+      const searchId = ++locationSearchRequestId;
+      wizardLocationResults.innerHTML = `
+        <div class="rounded-2xl border border-white/6 bg-white/5 px-3 py-3 text-left">
+          <p class="text-sm font-semibold text-white">Searching areas...</p>
+          <p class="mt-1 text-xs text-muted">Checking nearby matches.</p>
+        </div>
+      `;
+      wizardLocationResults.classList.remove('hidden');
+
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=5&q=${encodeURIComponent(`${trimmed}, Namibia`)}`);
+        const data = await response.json();
+        if (searchId !== locationSearchRequestId) return;
+        renderWizardLocationResults(Array.isArray(data) ? data : [], trimmed);
+      } catch (error) {
+        if (searchId !== locationSearchRequestId) return;
+        wizardLocationResults.innerHTML = `
+          <div class="rounded-2xl border border-white/6 bg-white/5 px-3 py-3 text-left">
+            <p class="text-sm font-semibold text-white">Search unavailable</p>
+            <p class="mt-1 text-xs text-muted">Please try again in a moment.</p>
+          </div>
+        `;
+        wizardLocationResults.classList.remove('hidden');
+      }
+    }
+
+    async function reverseGeocodeLocation(coords) {
+      if (!coords) return '';
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&lat=${encodeURIComponent(coords.lat)}&lon=${encodeURIComponent(coords.lng)}`);
+        const data = await response.json();
+        return data?.display_name || '';
+      } catch (error) {
+        return '';
+      }
+    }
+
+    function selectWizardLocationResult(item) {
+      if (!bookingWizardState || !item) return;
+
+      const parts = splitLocationText(item.display_name);
+      bookingWizardState.location = parts.primary;
+      if (wizardLocationInput) wizardLocationInput.value = parts.primary;
+      hideWizardLocationResults();
+      renderWizardSummary();
+      renderWizardConfirmation();
+    }
+
+    function setWizardLocationDetail(value) {
+      if (!bookingWizardState) return;
+      bookingWizardState.locationDetail = String(value || '');
+      if (wizardLocationNotes && wizardLocationNotes.value !== bookingWizardState.locationDetail) {
+        wizardLocationNotes.value = bookingWizardState.locationDetail;
+      }
+      renderWizardSummary();
+      renderWizardConfirmation();
     }
 
     function getSelectedPackage() {
@@ -1484,6 +1650,159 @@
       }
     }
 
+    function getWizardTotals() {
+      const pkg = getSelectedPackage();
+      const vehicle = getSelectedVehicle();
+      const lineItems = [];
+      const servicePrice = getPackagePrice(pkg);
+      const engineAddon = ADDON_OPTIONS.find((addon) => addon.key === 'engine');
+      const interiorAddon = ADDON_OPTIONS.find((addon) => addon.key === 'interior');
+      const enginePrice = engineAddon ? getAddonPrice(engineAddon) : 0;
+      const interiorPrice = interiorAddon ? getAddonPrice(interiorAddon) : 0;
+      const total = servicePrice + enginePrice + interiorPrice;
+
+      lineItems.push({ label: 'Location', value: bookingWizardState.location || 'Enter your address' });
+      if (bookingWizardState.locationDetail) {
+        lineItems.push({ label: 'Area notes', value: bookingWizardState.locationDetail });
+      }
+      lineItems.push({
+        label: vehicle ? vehicle.label || 'Vehicle' : 'Vehicle',
+        value: vehicle ? (vehicle.description || 'Selected') : 'Select a vehicle'
+      });
+      lineItems.push({ label: pkg.title, value: servicePrice === 0 ? 'N$0' : formatMoney(servicePrice) });
+
+      if (bookingWizardState.addons.engine) {
+        lineItems.push({ label: engineAddon.title, value: enginePrice === 0 ? 'N$0' : formatMoney(enginePrice) });
+      }
+      if (bookingWizardState.addons.interior) {
+        lineItems.push({ label: interiorAddon.title, value: interiorPrice === 0 ? 'N$0' : formatMoney(interiorPrice) });
+      }
+
+      lineItems.push({ label: 'Payment', value: bookingWizardState.payment === 'arrival' ? 'Pay on Arrival' : 'Online Card' });
+      return { lineItems, total, servicePrice, enginePrice, interiorPrice };
+    }
+
+    function renderWizardVehicles() {
+      if (!wizardVehicles || !bookingWizardState) return;
+      const vehicles = getWizardVehicles();
+      if (!bookingWizardState.selectedVehicleId && vehicles.length) {
+        bookingWizardState.selectedVehicleId = vehicles[0].id;
+      }
+
+      wizardVehicles.innerHTML = vehicles.map((vehicle) => {
+        const isSelected = bookingWizardState.selectedVehicleId === vehicle.id;
+        return `
+          <button type="button" class="wizard-card rounded-[1rem] border p-2.5 text-left ${isSelected ? 'is-selected border-emerald-500/35 bg-emerald-500/10' : 'border-white/10 bg-white/5'}" data-vehicle="${vehicle.id}">
+            <div class="flex items-start justify-between gap-2">
+              <div class="grid h-9 w-9 shrink-0 place-items-center rounded-2xl border border-white/10 bg-black/15 ${isSelected ? 'text-emerald-200' : 'text-white/70'}">
+                ${vehicle.icon}
+              </div>
+              <span class="rounded-full border ${isSelected ? 'border-emerald-500/25 bg-emerald-500/12 text-emerald-100' : 'border-white/10 bg-white/5 text-white/70'} px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.18em]">
+                ${isSelected ? 'Selected' : 'Tap'}
+              </span>
+            </div>
+            <div class="mt-2">
+              <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-white/35">${vehicle.label}</p>
+              <p class="mt-0.5 text-[10px] text-white/70">${vehicle.description}</p>
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderWizardPackages() {
+      if (!wizardTiers || !bookingWizardState) return;
+
+      wizardTiers.innerHTML = SERVICE_PACKAGES.map((pkg) => {
+        const isSelected = bookingWizardState.selectedPackage === pkg.key;
+        const price = getPackagePrice(pkg);
+        const perkNote = bookingWizardState.perkWashes > 0 && isSelected ? 'Free first wash applied' : pkg.description;
+        return `
+          <button type="button" class="wizard-card rounded-[1.2rem] border p-3 text-center ${isSelected ? 'is-selected' : ''} ${pkg.border} bg-gradient-to-br ${pkg.accent}" data-tier="${pkg.key}">
+            <div class="flex items-start justify-between gap-3">
+              <div class="text-left">
+                <p class="text-[9px] font-bold uppercase tracking-[0.22em] text-white/35">${pkg.label}</p>
+                <h4 class="mt-1 text-base font-extrabold text-white">${pkg.title}</h4>
+              </div>
+              <div class="text-right">
+                <p class="text-[9px] uppercase tracking-[0.2em] text-white/35">Price</p>
+                <p class="mt-1 text-base font-extrabold text-white">${price === 0 ? 'N$0' : formatMoney(price)}</p>
+              </div>
+            </div>
+            <p class="mt-2 text-[11px] text-white/70">${perkNote}</p>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderWizardAddons() {
+      if (!wizardAddons || !bookingWizardState) return;
+
+      wizardAddons.innerHTML = ADDON_OPTIONS.map((addon) => {
+        const isSelected = Boolean(bookingWizardState.addons[addon.key]);
+        const price = getAddonPrice(addon);
+        const freeNote = addon.key === 'engine' && bookingWizardState.perkEngine > 0 && isSelected ? 'Free engine clean today' : addon.description;
+        return `
+          <button type="button" class="wizard-addon w-full rounded-[1.15rem] border px-3 py-3 text-center ${isSelected ? 'is-selected border-emerald-500/35 bg-emerald-500/10' : 'border-white/10 bg-white/5'}" data-addon="${addon.key}">
+            <div class="flex items-start justify-between gap-3">
+              <div class="text-left">
+                <h4 class="text-xs font-bold text-white">${addon.title}</h4>
+                <p class="mt-1 text-[11px] text-muted">${freeNote}</p>
+              </div>
+              <p class="text-xs font-bold text-white">${price === 0 ? 'N$0' : formatMoney(price)}</p>
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderWizardSummary() {
+      if (!wizardSummary || !bookingWizardState) return;
+      const { lineItems, total } = getWizardTotals();
+      wizardSummary.innerHTML = `
+        ${lineItems.map((item) => `
+          <div class="flex items-center justify-between gap-3 rounded-2xl bg-white/5 px-3 py-2.5">
+            <span class="text-sm text-white/85">${escapeHtml(item.label)}</span>
+            <span class="text-sm font-semibold text-white">${escapeHtml(item.value)}</span>
+          </div>
+        `).join('')}
+        <div class="flex items-center justify-between gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-3 py-3">
+          <span class="text-sm font-bold text-emerald-100">Total</span>
+          <span class="text-base font-extrabold text-white">${formatMoney(total)}</span>
+        </div>
+      `;
+    }
+
+    function renderWizardConfirmation() {
+      const titleEl = document.getElementById('wizard-confirmation-title');
+      const statusEl = document.getElementById('wizard-confirmation-status');
+      const vehicleEl = document.getElementById('wizard-confirmation-vehicle');
+      const serviceEl = document.getElementById('wizard-confirmation-service');
+      const locationEl = document.getElementById('wizard-confirmation-location');
+      const totalEl = document.getElementById('wizard-confirmation-total');
+      const paymentEl = document.getElementById('wizard-confirmation-payment');
+      const noteEl = document.getElementById('wizard-confirmation-note');
+
+      if (!titleEl || !statusEl || !vehicleEl || !serviceEl || !locationEl || !totalEl || !paymentEl || !noteEl) return;
+
+      const pkg = getSelectedPackage();
+      const vehicle = getSelectedVehicle();
+      const totals = getWizardTotals();
+      const vehicleLabel = vehicle ? vehicle.label : 'Select a vehicle';
+      const locationLabel = bookingWizardState?.location
+        ? (bookingWizardState.locationDetail ? `${bookingWizardState.location} | ${bookingWizardState.locationDetail}` : bookingWizardState.location)
+        : 'Enter a location';
+
+      titleEl.textContent = bookingWizardState ? 'Booking draft' : 'No booking selected';
+      statusEl.textContent = bookingWizardState ? 'Draft' : 'Waiting';
+      vehicleEl.textContent = vehicleLabel;
+      serviceEl.textContent = pkg?.title || '—';
+      locationEl.textContent = locationLabel;
+      totalEl.textContent = formatMoney(totals.total || 0);
+      paymentEl.textContent = bookingWizardState?.payment === 'arrival' ? 'Pay on Arrival' : 'Online Card';
+      noteEl.textContent = bookingWizardState ? 'Ready to submit' : 'Waiting for booking details';
+    }
+
     function renderWizardStepClasses() {
       const step = bookingWizardState.step;
       document.querySelectorAll('[data-wizard-step]').forEach((panel) => {
@@ -1507,6 +1826,14 @@
     }
 
     function renderBookingWizard() {
+      if (bookingWizardState) {
+        if (wizardLocationInput && wizardLocationInput.value !== bookingWizardState.location) {
+          wizardLocationInput.value = bookingWizardState.location;
+        }
+        if (wizardLocationNotes && wizardLocationNotes.value !== bookingWizardState.locationDetail) {
+          wizardLocationNotes.value = bookingWizardState.locationDetail;
+        }
+      }
       renderWizardVehicles();
       renderWizardPackages();
       renderWizardAddons();
@@ -1523,6 +1850,8 @@
       overlay.classList.remove('is-open');
       bookingWizardState = getBookingDefaults();
       if (wizardLocationInput) wizardLocationInput.value = bookingWizardState.location;
+      if (wizardLocationNotes) wizardLocationNotes.value = bookingWizardState.locationDetail;
+      hideWizardLocationResults();
       bookingWizardModal.classList.remove('hidden');
       bookingWizardModal.classList.add('flex');
       bookingWizardModal.classList.add('items-center');
@@ -1533,6 +1862,8 @@
 
     function closeBookingWizard() {
       bookingWizardState = null;
+      clearTimeout(locationSearchTimer);
+      hideWizardLocationResults();
       bookingWizardModal.classList.add('hidden');
       bookingWizardModal.classList.remove('flex');
       bookingWizardModal.classList.remove('items-center');
@@ -1617,13 +1948,13 @@
         return;
       }
       if (result.role === 'worker') {
-        window.location.href = 'worker.html';
-        return;
+        // Workers now use the same dashboard surface as customers.
+        // Keep them on this page instead of redirecting to a separate portal.
       }
 
       subscribeToProfile(currentUser.uid);
-      initMap();
       bindUI();
+      initMap();
       showSection('dashboard', false);
     }
 
@@ -1639,46 +1970,21 @@
     }
 
     function initMap() {
+      if (map) return;
       const fallbackCenter = getFallbackMapCenter();
-      map = L.map('map', { zoomControl: false, attributionControl: false }).setView([fallbackCenter.lat, fallbackCenter.lng], 12);
+      map = L.map('map', { zoomControl: false, attributionControl: false, preferCanvas: true }).setView([fallbackCenter.lat, fallbackCenter.lng], 7);
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
-
-      const routeCoords = [
-        [-22.57, 17.08],
-        [-22.56, 17.12],
-        [-22.555, 17.16],
-        [-22.55, 17.20],
-        [-22.545, 17.24]
-      ];
-
-      routeLayer = L.polyline(routeCoords, {
-        color: '#6dbb6d',
-        weight: 4,
-        dashArray: '6, 10',
-        lineCap: 'round'
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        maxZoom: 20,
+        subdomains: 'abcd',
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
       }).addTo(map);
 
-      const routeEndpointIcon = L.divIcon({
-        html: '<div class="h-4 w-4 rounded-full border-2 border-white bg-emerald-500 shadow-lg"></div>',
-        className: 'custom-pin',
-        iconSize: [16, 16],
-        iconAnchor: [8, 8]
+      map.whenReady(() => {
+        setTimeout(() => map.invalidateSize(), 150);
       });
-      L.marker(routeCoords[routeCoords.length - 1], { icon: routeEndpointIcon }).addTo(map);
 
-      L.marker(routeCoords[2], {
-        icon: L.divIcon({
-          html: '<div class="h-3 w-3 rounded-full border border-white/60 bg-white/80 shadow"></div>',
-          className: 'custom-pin',
-          iconSize: [12, 12],
-          iconAnchor: [6, 6]
-        })
-      }).addTo(map);
-
-      map.fitBounds(routeLayer.getBounds(), { padding: [48, 48] });
-
-      setTimeout(() => map.invalidateSize(), 300);
+      focusMapOnCurrentVisitorLocation();
     }
 
     function showSection(section, openSheetOnMobile = true) {
@@ -1830,28 +2136,54 @@
       wizardLocationInput?.addEventListener('input', (e) => {
         if (!bookingWizardState) return;
         setWizardLocation(e.target.value);
+        clearTimeout(locationSearchTimer);
+        locationSearchTimer = setTimeout(() => searchWizardLocations(e.target.value), 250);
+      });
+
+      wizardLocationInput?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const firstResult = wizardLocationResults?.querySelector('.wizard-location-result');
+          if (firstResult) {
+            firstResult.click();
+          } else {
+            searchWizardLocations(wizardLocationInput.value);
+          }
+        }
+      });
+
+      wizardLocationInput?.addEventListener('focus', () => {
+        if (bookingWizardState?.location && wizardLocationInput?.value) {
+          searchWizardLocations(wizardLocationInput.value);
+        }
+      });
+
+      wizardLocationNotes?.addEventListener('input', (e) => {
+        setWizardLocationDetail(e.target.value);
       });
 
       wizardStage?.addEventListener('click', (event) => {
         const suggestion = event.target.closest('.wizard-suggestion');
         if (suggestion && bookingWizardState) {
           setWizardLocation(suggestion.dataset.location || '');
+          const coordsText = suggestion.dataset.locationCoords || '';
+          const [latRaw, lngRaw] = coordsText.split(',');
+          const lat = Number(latRaw);
+          const lng = Number(lngRaw);
+          if (Number.isFinite(lat) && Number.isFinite(lng)) {
+            setMapCurrentLocation({ lat, lng }, 15);
+          }
           document.querySelectorAll('.wizard-suggestion').forEach((el) => el.classList.remove('is-selected'));
           suggestion.classList.add('is-selected');
+          hideWizardLocationResults();
         }
 
-        if (event.target.closest('#wizard-gps-btn') && bookingWizardState) {
-          if (currentLocationCoords) {
-            setMapCurrentLocation(currentLocationCoords);
-            setWizardLocation('My current location');
-            return;
-          }
+      });
 
-          requestBrowserLocation({ updateWizard: true, zoom: 15 }).then((coords) => {
-            if (!coords) {
-              setWizardLocation('Current location unavailable');
-            }
-          });
+      document.addEventListener('click', (event) => {
+        if (!bookingWizardModal || bookingWizardModal.classList.contains('hidden')) return;
+        if (wizardLocationResults && !wizardLocationResults.contains(event.target) && !wizardLocationInput?.contains(event.target)) {
+          hideWizardLocationResults();
         }
       });
 
@@ -1919,7 +2251,14 @@
       document.getElementById('map-zoom-in')?.addEventListener('click', () => map?.zoomIn());
       document.getElementById('map-zoom-out')?.addEventListener('click', () => map?.zoomOut());
       document.getElementById('map-fit')?.addEventListener('click', () => {
-        if (map && routeLayer) map.fitBounds(routeLayer.getBounds(), { padding: [48, 48] });
+        if (map && currentLocationCoords) {
+          setMapCurrentLocation(currentLocationCoords, Math.max(map.getZoom(), 16));
+          return;
+        }
+        if (map) {
+          const fallbackCenter = getFallbackMapCenter();
+          map.setView([fallbackCenter.lat, fallbackCenter.lng], 7, { animate: true });
+        }
       });
 
       window.addEventListener('resize', () => {
