@@ -695,7 +695,7 @@ class BookingWizard {
 
 document.addEventListener('DOMContentLoaded', () => {
   // This wizard is a legacy/standalone implementation.
-  // The real customer booking wizard lives in dashboard.html and uses
+  // The real customer booking wizard lives in users.html and uses
   // a different Leaflet container (#booking-wizard-map-instance).
   // Guard against double-initialization/conflicting DOM assumptions.
   if (document.getElementById('booking-wizard-map-instance')) return;

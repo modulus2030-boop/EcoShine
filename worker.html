@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoShine Worker Console</title>
   <meta name="description" content="Operational worker dashboard for EcoShine cleaning specialists.">
-  <link rel="icon" type="image/png" href="assets/images/icon.png">
+  <link class="icon" type="image/png" href="assets/images/icon.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -46,6 +46,10 @@
         radial-gradient(circle at top, rgba(109, 187, 109, 0.08), transparent 32%),
         radial-gradient(circle at 85% 15%, rgba(35, 121, 156, 0.10), transparent 28%),
         linear-gradient(180deg, #05070c 0%, #070b13 35%, #05070c 100%);
+    }
+
+    #app-shell {
+      isolation: isolate;
     }
 
     .panel {
@@ -89,13 +93,50 @@
       accent-color: #6dbb6d;
     }
 
+    /* Restructured Sheet Animation Strategy */
     .worker-sheet {
-      transform: translateX(110%);
-      transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+      transform: translateX(100%);
+      pointer-events: none;
+      opacity: 0;
+      transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1), opacity 250ms ease;
     }
 
     .worker-sheet.is-open {
       transform: translateX(0);
+      pointer-events: auto;
+      opacity: 1;
+    }
+
+    .phone-drawer {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(calc(100% + 1rem));
+      transition:
+        transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 220ms ease;
+      will-change: transform, opacity;
+    }
+
+    .phone-drawer.is-open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .desktop-drawer {
+      opacity: 1;
+      pointer-events: auto;
+      transform: none;
+      transition:
+        transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 220ms ease;
+      will-change: transform, opacity;
+    }
+
+    .desktop-drawer.is-open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: none;
     }
 
     .overlay-backdrop {
@@ -151,8 +192,8 @@
 <body class="text-gray-100">
   <div class="fixed inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,rgba(109,187,109,0.06),transparent_32%),radial-gradient(circle_at_85%_15%,rgba(35,121,156,0.08),transparent_28%)]"></div>
 
-  <div id="app-shell" class="relative z-10 h-dvh overflow-hidden md:grid md:grid-cols-[22rem_minmax(0,1fr)]">
-    <aside class="hidden min-h-0 md:flex md:flex-col gap-4 p-4">
+  <div id="app-shell" class="relative z-[30] h-dvh overflow-hidden md:grid md:grid-cols-[22rem_minmax(0,1fr)]">
+    <aside class="hidden relative z-0 min-h-0 md:flex md:flex-col gap-4 p-4">
       <div class="panel rounded-3xl p-4">
         <div>
           <p class="text-[10px] font-semibold uppercase tracking-[0.3em] text-emerald-300/75">EcoShine Worker</p>
@@ -197,26 +238,19 @@
           </span>
         </button>
         <button class="nav-btn mt-2 flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold text-gray-300 hover:bg-white/5" data-nav="support">
-          <span class="grid h-11 w-11 place-items-center rounded-2xl bg-white/5 text-emerald-300"><i class="fa-solid fa-phone-volume text-lg"></i></span>
+          <span class="grid h-11 w-11 place-items-center rounded-2xl bg-white/5 text-emerald-300"><i class="fa-solid fa-user-circle text-lg"></i></span>
           <span>
-            <span class="block text-sm font-semibold text-white">Dispatch Support</span>
-            <span class="block text-xs text-gray-400">SOS and admin contact</span>
+            <span class="block text-sm font-semibold text-white">Profile</span>
+            <span class="block text-xs text-gray-400">Account, settings and logout</span>
           </span>
         </button>
       </nav>
 
-      <div id="desktop-panel" class="panel flex min-h-0 flex-1 flex-col overflow-y-auto rounded-3xl p-4"></div>
-      <div class="mt-auto flex items-end justify-start">
-        <button id="account-btn" type="button" class="group flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition hover:border-emerald-500/30 hover:bg-emerald-500/10" aria-label="Open account">
-          <span class="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-sm font-black text-slate-950 shadow-lg">
-            <i class="fa-solid fa-user"></i>
-          </span>
-        </button>
-      </div>
+      <div id="desktop-panel" class="desktop-drawer panel md:fixed md:inset-y-4 md:right-4 md:z-[60] md:flex md:w-[28rem] md:max-w-[calc(100vw-24rem-2rem)] md:flex-col md:overflow-y-auto rounded-[2rem] p-4 shadow-2xl"></div>
     </aside>
 
-    <main class="relative min-w-0">
-      <header class="md:hidden relative z-20 flex items-center justify-between gap-3 border-b border-white/8 bg-slate-950/75 px-4 py-3 backdrop-blur-xl">
+    <main class="relative z-0 min-w-0">
+      <header class="md:hidden relative z-[65] flex items-center justify-between gap-3 border-b border-white/8 bg-slate-950/75 px-4 py-3 backdrop-blur-xl">
         <div>
           <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-emerald-300/75">EcoShine Worker</p>
           <h1 class="text-lg font-extrabold text-white">Wash Console</h1>
@@ -234,22 +268,22 @@
         </div>
       </header>
 
-      <section class="relative h-[calc(100dvh-57px)] md:h-dvh overflow-hidden map-shell">
-        <div id="worker-live-map" class="absolute inset-0"></div>
+      <section class="relative z-0 h-[calc(100dvh-57px)] md:h-dvh overflow-hidden map-shell">
+        <div id="worker-live-map" class="absolute inset-0 z-0"></div>
 
         <div class="absolute left-4 top-4 z-10 max-w-[min(100%-2rem,24rem)] space-y-3 md:left-6 md:top-6">
           <div class="map-overlay-card rounded-3xl px-4 py-3">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-white/35">Map Sync</p>
-            <p id="map-status" class="mt-2 text-sm font-semibold text-white">Waiting for live data...</p>
+            <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-white/35">Live location</p>
+            <p id="worker-location-label" class="mt-2 text-sm font-semibold text-white">Current location</p>
           </div>
           <div class="map-overlay-card rounded-3xl px-4 py-3">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-white/35">Live location</p>
-            <p id="worker-location-label" class="mt-2 text-sm font-semibold text-white">No GPS update yet</p>
+            <p class="text-[10px] font-semibold uppercase tracking-[0.26em] text-white/35">Status</p>
+            <p id="map-status" class="mt-2 text-sm font-semibold text-white">Waiting for live data...</p>
           </div>
         </div>
       </section>
 
-      <div id="content-panel" class="worker-sheet fixed inset-y-0 right-0 z-40 w-[min(92vw,24rem)] panel-strong md:hidden">
+      <div id="content-panel" class="phone-drawer fixed inset-x-3 bottom-[5rem] z-[70] max-h-[calc(100dvh-9rem)] w-[calc(100vw-1.5rem)] overflow-hidden rounded-[2rem] panel-strong md:hidden shadow-2xl">
         <div class="flex h-full flex-col">
           <div class="flex items-center justify-between gap-3 border-b border-white/8 px-4 py-3">
             <div>
@@ -264,7 +298,7 @@
         </div>
       </div>
 
-      <nav class="md:hidden fixed inset-x-0 bottom-0 z-50 border-t border-white/8 bg-slate-950/92 px-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2 backdrop-blur-xl">
+      <nav class="md:hidden fixed inset-x-0 bottom-0 z-[75] border-t border-white/8 bg-slate-950/92 px-2 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2 backdrop-blur-xl">
         <div class="grid grid-cols-4 gap-2">
           <button class="nav-btn is-active flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[10px] font-semibold text-white" data-nav="jobs">
             <i class="fa-solid fa-calendar-check text-base text-emerald-300"></i>
@@ -285,10 +319,25 @@
         </div>
       </nav>
     </main>
+
+    <div id="tools-modal" class="worker-sheet fixed inset-y-0 right-0 z-[85] flex w-[min(92vw,24rem)] flex-col panel-strong">
+      <div class="flex h-full flex-col">
+        <div class="flex items-center justify-between gap-3 border-b border-white/8 px-4 py-3">
+          <div>
+            <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-300/75">Worker Tools</p>
+            <h3 id="tools-modal-title" class="mt-1 text-xl font-black text-white">Tools</h3>
+          </div>
+          <button id="tools-modal-close" type="button" class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div id="tools-modal-body" class="min-h-0 flex-1 overflow-y-auto p-4"></div>
+      </div>
+    </div>
   </div>
 
-  <div id="overlay" class="overlay-backdrop fixed inset-0 z-30"></div>
-  <div id="completion-modal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+  <div id="overlay" class="overlay-backdrop fixed inset-0 z-[20]"></div>
+  <div id="completion-modal" class="fixed inset-0 z-[80] hidden items-center justify-center px-4">
     <div class="absolute inset-0 bg-black/65 backdrop-blur-sm"></div>
     <div class="panel relative z-10 w-full max-w-md rounded-[2rem] p-5">
       <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-300/75">Service update</p>
@@ -299,7 +348,7 @@
       </div>
     </div>
   </div>
-  <div id="task-modal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+  <div id="task-modal" class="fixed inset-0 z-[80] hidden items-center justify-center px-4">
     <div class="absolute inset-0 bg-black/65 backdrop-blur-sm"></div>
     <div class="panel relative z-10 w-full max-w-2xl max-h-[88dvh] overflow-hidden rounded-[2rem]">
       <div class="flex items-center justify-between gap-3 border-b border-white/8 px-5 py-4">
@@ -314,7 +363,7 @@
       <div id="task-modal-body" class="max-h-[calc(88dvh-4.75rem)] overflow-y-auto p-5"></div>
     </div>
   </div>
-  <div id="info-modal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+  <div id="info-modal" class="fixed inset-0 z-[80] hidden items-center justify-center px-4">
     <div class="absolute inset-0 bg-black/65 backdrop-blur-sm"></div>
     <div class="panel relative z-10 w-full max-w-xl max-h-[88dvh] overflow-hidden rounded-[2rem]">
       <div class="flex items-center justify-between gap-3 border-b border-white/8 px-5 py-4">
@@ -329,21 +378,7 @@
       <div id="info-modal-body" class="max-h-[calc(88dvh-4.75rem)] overflow-y-auto p-5"></div>
     </div>
   </div>
-  <div id="tools-modal" class="worker-sheet fixed inset-y-0 right-0 z-50 hidden w-[min(92vw,24rem)] panel-strong">
-    <div class="flex h-full flex-col">
-      <div class="flex items-center justify-between gap-3 border-b border-white/8 px-4 py-3">
-        <div>
-          <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-300/75">Worker Tools</p>
-          <h3 id="tools-modal-title" class="mt-1 text-xl font-black text-white">Tools</h3>
-        </div>
-        <button id="tools-modal-close" type="button" class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      <div id="tools-modal-body" class="min-h-0 flex-1 overflow-y-auto p-4"></div>
-    </div>
-  </div>
-  <div id="account-modal" class="fixed inset-0 z-50 hidden items-center justify-center px-4">
+  <div id="account-modal" class="fixed inset-0 z-[80] hidden items-center justify-center px-4">
     <div class="absolute inset-0 bg-black/65 backdrop-blur-sm"></div>
     <div class="panel relative z-10 w-full max-w-md rounded-[2rem] p-5">
       <div class="flex items-start justify-between gap-3">
@@ -367,7 +402,7 @@
       </div>
     </div>
   </div>
-  <div id="toast-root" class="toast-stack fixed right-4 top-4 z-50 flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2"></div>
+  <div id="toast-root" class="toast-stack fixed right-4 top-4 z-[90] flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -394,6 +429,8 @@
       profile: {},
       washerDoc: {},
       liveLocation: null,
+      liveLocationLabel: '',
+      liveLocationLabelCoords: null,
       activeJobs: [],
       activeView: 'jobs',
       panelOpen: false,
@@ -457,6 +494,7 @@
     function setPanelOpen(open) {
       state.panelOpen = open;
       els.contentPanel.classList.toggle('is-open', open);
+      els.desktopPanel.classList.toggle('is-open', open);
       els.overlay.classList.toggle('is-open', open);
     }
 
@@ -478,6 +516,46 @@
         primary: parts[0] || 'Unknown location',
         secondary: parts.slice(1).join(', ')
       };
+    }
+
+    function formatCoords(coords) {
+      if (!coords) return '';
+      return `Lat ${Number(coords.lat).toFixed(4)}, Lng ${Number(coords.lng).toFixed(4)}`;
+    }
+
+    async function reverseGeocodeWorkerLocation(coords) {
+      if (!coords) return '';
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&lat=${encodeURIComponent(coords.lat)}&lon=${encodeURIComponent(coords.lng)}`);
+        const data = await response.json();
+        return data?.display_name || '';
+      } catch (error) {
+        return '';
+      }
+    }
+
+    async function updateWorkerLocationLabel(coords = getCoords(state.liveLocation)) {
+      if (!coords) {
+        state.liveLocationLabel = '';
+        state.liveLocationLabelCoords = null;
+        renderMapStatus();
+        return;
+      }
+
+      const roundedKey = `${coords.lat.toFixed(3)},${coords.lng.toFixed(3)}`;
+      if (state.liveLocationLabelCoords && `${state.liveLocationLabelCoords.lat.toFixed(3)},${state.liveLocationLabelCoords.lng.toFixed(3)}` === roundedKey && state.liveLocationLabel) {
+        renderMapStatus();
+        return;
+      }
+
+      state.liveLocationLabelCoords = { lat: coords.lat, lng: coords.lng };
+      state.liveLocationLabel = 'Resolving location...';
+      renderMapStatus();
+
+      const displayName = await reverseGeocodeWorkerLocation(coords);
+      const parts = splitLocationText(displayName || 'Current location');
+      state.liveLocationLabel = displayName ? parts.primary : '';
+      renderMapStatus();
     }
 
     function renderTaskCard() {
@@ -602,6 +680,33 @@
       `;
     }
 
+    function renderSettingsCard() {
+      return `
+        <div class="space-y-4">
+          <div class="rounded-3xl border border-white/8 bg-black/15 p-4">
+            <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-300/70">Settings</p>
+            <p class="mt-2 text-sm font-semibold text-white">Worker preferences and account controls</p>
+            <div class="mt-4 space-y-2 text-xs leading-5 text-gray-300">
+              <div class="rounded-2xl border border-white/6 bg-white/5 px-3 py-2">Availability updates follow your online switch.</div>
+              <div class="rounded-2xl border border-white/6 bg-white/5 px-3 py-2">Live location sync is tied to active bookings.</div>
+              <div class="rounded-2xl border border-white/6 bg-white/5 px-3 py-2">Use the account card for profile details.</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <button data-action="open-account" class="rounded-2xl border border-white/8 bg-white/5 px-3 py-3 text-left">
+              <p class="text-sm font-semibold text-white">Account</p>
+              <p class="mt-1 text-xs text-gray-400">Email and status</p>
+            </button>
+            <button data-action="logout" class="rounded-2xl border border-red-500/25 bg-red-500/10 px-3 py-3 text-left">
+              <p class="text-sm font-semibold text-white">Logout</p>
+              <p class="mt-1 text-xs text-gray-300">Sign out of the console</p>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
     function openTaskModal() {
       if (!getPrimaryJob()) {
         showToast('No active job available right now.', 'warning');
@@ -631,14 +736,19 @@
       els.infoModalBody.innerHTML = '';
     }
 
+    /* RESTRUCTURED JAVASCRIPT ANIMATION LIFECYCLE MECHANICS */
     function openToolsModal() {
-      els.toolsModal.classList.remove('hidden');
-      els.toolsModal.classList.add('flex');
+      // Access layout height immediately to clear the browser's paint buffer thread
+      els.toolsModal.offsetHeight; 
+      
+      // Hardware accelerated viewport transition applied cleanly 
+      els.toolsModal.classList.add('is-open');
+      els.overlay.classList.add('is-open'); 
     }
 
     function closeToolsModal() {
-      els.toolsModal.classList.add('hidden');
-      els.toolsModal.classList.remove('flex');
+      els.toolsModal.classList.remove('is-open');
+      els.overlay.classList.remove('is-open');
     }
 
     function openAccountModal() {
@@ -725,17 +835,30 @@
     function renderSupportView() {
       return `
         <div class="space-y-3">
-          <button data-action="call-admin" class="rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-3 py-3 text-left">
+          <div class="rounded-3xl border border-white/8 bg-black/15 p-4">
+            <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-300/70">Profile</p>
+            <p class="mt-2 text-sm font-semibold text-white">${state.profile.name || state.profile.displayName || state.currentUser?.email || 'Worker'}</p>
+            <p class="mt-1 text-xs text-gray-400">${state.profile.email || state.currentUser?.email || ''}</p>
+          </div>
+
+          <button data-action="open-account" class="rounded-2xl border border-white/8 bg-white/5 px-3 py-3 text-left">
+            <p class="text-sm font-semibold text-white">Open account card</p>
+            <p class="mt-1 text-xs text-gray-400">View email and account status</p>
+          </button>
+
+          <button data-action="open-settings" class="rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-3 py-3 text-left">
+            <p class="text-sm font-semibold text-white">Settings</p>
+            <p class="mt-1 text-xs text-gray-300">App preferences and profile options</p>
+          </button>
+
+          <button data-action="logout" class="rounded-2xl border border-red-500/25 bg-red-500/10 px-3 py-3 text-left">
+            <p class="text-sm font-semibold text-white">Logout</p>
+            <p class="mt-1 text-xs text-gray-300">Sign out of the worker console</p>
+          </button>
+
+          <button data-action="call-admin" class="rounded-2xl border border-white/8 bg-black/15 px-3 py-3 text-left">
             <p class="text-sm font-semibold text-white">Call Dispatch Admin</p>
             <p class="mt-1 text-xs text-gray-300">Urgent issue or customer escalation</p>
-          </button>
-          <button data-action="call-customer" class="rounded-2xl border border-white/8 bg-black/15 px-3 py-3 text-left">
-            <p class="text-sm font-semibold text-white">Call customer</p>
-            <p class="mt-1 text-xs text-gray-400">Confirm arrival or access instructions</p>
-          </button>
-          <button data-action="sos" class="rounded-2xl border border-red-500/25 bg-red-500/10 px-3 py-3 text-left">
-            <p class="text-sm font-semibold text-white">SOS / Incident Alert</p>
-            <p class="mt-1 text-xs text-gray-300">Send urgent help request to admin</p>
           </button>
         </div>
       `;
@@ -753,7 +876,18 @@
 
     function renderPanels() {
       const activeSection = renderSection(state.activeView);
-      const desktopHtml = `<div class="space-y-4">${activeSection}</div>`;
+      const desktopHtml = `
+        <div class="flex items-center justify-between gap-3 border-b border-white/8 pb-3">
+          <div>
+            <p class="text-[10px] font-semibold uppercase tracking-[0.28em] text-emerald-300/75">Worker Panel</p>
+            <h2 class="mt-1 text-base font-extrabold text-white">Tasks and tools</h2>
+          </div>
+          <button id="close-desktop-panel" type="button" class="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="space-y-4 pt-4">${activeSection}</div>
+      `;
       const mobileHtml = `<div class="space-y-4">${activeSection}</div>`;
       els.desktopPanel.innerHTML = desktopHtml;
       els.mobilePanel.innerHTML = mobileHtml;
@@ -763,6 +897,7 @@
       document.querySelectorAll('[data-nav]').forEach((btn) => {
         btn.classList.toggle('is-active', btn.dataset.nav === state.activeView);
       });
+      document.getElementById('close-desktop-panel')?.addEventListener('click', () => setPanelOpen(false));
     }
 
     function setToggleUI(online) {
@@ -798,10 +933,8 @@
 
     function renderMapStatus() {
       const job = getPrimaryJob();
-      const coords = getCoords(state.liveLocation);
-      els.workerLocationLabel.textContent = coords
-        ? `Lat ${coords.lat.toFixed(4)}, Lng ${coords.lng.toFixed(4)}`
-        : 'No GPS update yet';
+      const locationName = state.liveLocationLabel || 'Current location';
+      els.workerLocationLabel.textContent = locationName;
       els.mapStatus.textContent = job
         ? `${job.clientName || job.customerName || 'Customer'} · ${job.status || 'Assigned'}`
         : 'Waiting for active booking assignment';
@@ -846,7 +979,7 @@
         preferCanvas: true
       }).setView([center.lat, center.lng], 7);
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png', {
         subdomains: 'abcd',
         maxZoom: 20,
         attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
@@ -937,6 +1070,7 @@
         state.liveLocation = coords;
         await window.firebaseService.db.collection('liveLocations').doc(state.currentUser.uid).set(coords, { merge: true });
         updateMap();
+        updateWorkerLocationLabel(coords);
         renderMapStatus();
       }, (error) => {
         console.error('Location stream error:', error);
@@ -970,6 +1104,7 @@
       const liveDoc = await window.firebaseService.db.collection('liveLocations').doc(state.currentUser.uid).get();
       if (liveDoc.exists) {
         state.liveLocation = liveDoc.data() || null;
+        updateWorkerLocationLabel(getCoords(state.liveLocation));
       }
     }
 
@@ -978,7 +1113,7 @@
         btn.addEventListener('click', () => {
           state.activeView = btn.dataset.nav;
           renderPanels();
-          if (window.matchMedia('(max-width: 767px)').matches) setPanelOpen(true);
+          setPanelOpen(true);
         });
       });
 
@@ -1051,6 +1186,16 @@
             return;
           }
 
+          if (action === 'open-account') {
+            openAccountModal();
+            return;
+          }
+
+          if (action === 'open-settings') {
+            openInfoModal('Settings', renderSettingsCard());
+            return;
+          }
+
           if (action === 'complete-task') {
             if (!job || !(state.checklist.arrived && state.checklist.exterior && state.checklist.interior && state.checklist.quality)) return;
             const result = await window.EcoWash.completeBooking(job.id);
@@ -1070,18 +1215,24 @@
             const message = 'SOS sent to dispatch. Admin has been notified immediately.';
             console.log(message);
             showToast(message, 'warning');
+          } else if (action === 'logout') {
+            await window.authService.logoutUser();
+            window.location.href = 'auth.html';
           }
           return;
+        }
+
+        // Overlay click handling to close tools panel seamlessly
+        if (event.target === els.overlay) {
+          closeToolsModal();
+          setPanelOpen(false);
         }
 
         if (event.target.closest('#open-panel')) {
           setPanelOpen(true);
         }
-        if (event.target.closest('#close-panel') || event.target === els.overlay) {
+        if (event.target.closest('#close-panel')) {
           setPanelOpen(false);
-        }
-        if (event.target.closest('#account-btn')) {
-          openAccountModal();
         }
       });
 
@@ -1098,9 +1249,7 @@
         if (event.target === els.infoModal) closeInfoModal();
       });
       document.getElementById('tools-modal-close')?.addEventListener('click', closeToolsModal);
-      els.toolsModal.addEventListener('click', (event) => {
-        if (event.target === els.toolsModal) closeToolsModal();
-      });
+
       document.getElementById('account-modal-close')?.addEventListener('click', closeAccountModal);
       els.accountModal.addEventListener('click', (event) => {
         if (event.target === els.accountModal) closeAccountModal();
@@ -1125,7 +1274,7 @@
 
       window.addEventListener('resize', () => {
         state.map?.invalidateSize();
-        if (!window.matchMedia('(max-width: 767px)').matches) setPanelOpen(false);
+        setPanelOpen(!window.matchMedia('(max-width: 767px)').matches);
       });
     }
 
@@ -1171,6 +1320,7 @@
       window.firebaseService.db.collection('liveLocations').doc(state.currentUser.uid).onSnapshot((doc) => {
         if (doc.exists) {
           state.liveLocation = doc.data();
+          updateWorkerLocationLabel(getCoords(state.liveLocation));
           renderMapStatus();
           updateMap();
         }
@@ -1201,7 +1351,7 @@
       }
 
       if (result.role !== 'worker') {
-        window.location.href = 'dashboard.html';
+        window.location.href = 'users.html';
         return;
       }
 
@@ -1215,6 +1365,7 @@
       bindListeners();
       await reloadData();
       initRealtime();
+      setPanelOpen(!window.matchMedia('(max-width: 767px)').matches);
       if (state.online) startLocationStream();
       showToast('Worker console loaded. Ready for the shift.', 'success');
     }

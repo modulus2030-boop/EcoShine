@@ -324,7 +324,7 @@
         } else if (result.role === 'worker') {
           window.location.href = 'worker.html';
         } else {
-          window.location.href = 'dashboard.html';
+          window.location.href = 'users.html';
         }
       }
     }
@@ -346,7 +346,7 @@
         } else if (result.role === 'worker') {
           window.location.href = 'worker.html';
         } else {
-          window.location.href = 'dashboard.html';
+          window.location.href = 'users.html';
         }
       } else {
         showError(result.error || 'Login failed. Please check your credentials.');
@@ -378,7 +378,7 @@
 
       if (result.success) {
         showSuccess('Account created! Redirecting...');
-        window.location.href = 'dashboard.html';
+        window.location.href = 'users.html';
       } else {
         showError(result.error || 'Registration failed. Please try again.');
         btn.disabled = false;

@@ -153,6 +153,10 @@ async function submitBooking(bookingData, userId) {
       userId: userId || null,
       customerId: userId || null,
       customerLoc: bookingData.customerLoc || null,
+      customerLocation: bookingData.customerLocation || null,
+      customerLocationName: bookingData.customerLocationName || '',
+      customerLocationLabel: bookingData.customerLocationLabel || '',
+      customerLocationDetail: bookingData.customerLocationDetail || '',
       metrics: { distance: 0, eta: 0, basePrice: 0, totalPaid: 0, discount: 0 },
       trackingHistory: [],
       createdAt: firebase.firestore.FieldValue.serverTimestamp()

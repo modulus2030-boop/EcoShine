@@ -79,6 +79,9 @@ const EcoWash = (() => {
   async function createBooking({
     customerId,
     customerLocation, // { lat, lng }
+    customerLocationName = '',
+    customerLocationLabel = '',
+    customerLocationDetail = '',
     service,
     vehicle = '',
     address = '',
@@ -102,6 +105,9 @@ const EcoWash = (() => {
         customerId,
         customerLoc: { lat: customerLocation.lat, lng: customerLocation.lng },
         customerLocation: new GeoPoint(customerLocation.lat, customerLocation.lng),
+        customerLocationName,
+        customerLocationLabel,
+        customerLocationDetail,
         washerLoc: null,
         washerLocation: null,
         washerId: null,

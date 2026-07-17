@@ -288,13 +288,11 @@
           <i data-lucide="bell" class="w-5 h-5"></i>
           <span id="notif-dot" class="absolute right-1 top-1 h-2 w-2 rounded-full bg-emerald-500 hidden"></span>
         </button>
+        <button id="account-btn" class="nav-item sidebar-icon text-muted hover:text-white" aria-label="Open profile">
+          <i data-lucide="user-circle-2" class="w-5 h-5"></i>
+        </button>
       </nav>
 
-      <div class="relative mt-auto pb-2">
-        <button id="account-btn" class="grid place-items-center rounded-full transition hover:ring-2 hover:ring-emerald-500/40" aria-label="Open account">
-          <img id="sidebar-avatar" alt="User profile" class="w-10 h-10 rounded-full border border-white/10 object-cover" src="">
-        </button>
-      </div>
     </aside>
 
     <!-- Main column: content panel + map -->
@@ -939,6 +937,7 @@
     let currentLocationCoords = null;
     let locationSearchTimer = null;
     let locationSearchRequestId = 0;
+    let bookingSubmissionInFlight = false;
 
     const isMobile = () => window.matchMedia('(max-width: 767px)').matches;
 
@@ -975,11 +974,19 @@
       document.body.dataset.theme = normalizeTheme(theme);
     }
 
-    function setWizardLocation(value) {
+    function formatLocationCoords(coords) {
+      if (!coords) return '';
+      return `${Number(coords.lat).toFixed(5)}, ${Number(coords.lng).toFixed(5)}`;
+    }
+
+    function setWizardLocation(value, coords = null, label = '') {
       if (!bookingWizardState) return;
       bookingWizardState.location = value || '';
+      bookingWizardState.locationLabel = label || value || '';
+      bookingWizardState.locationCoords = coords ? { lat: Number(coords.lat), lng: Number(coords.lng) } : bookingWizardState.locationCoords || null;
       if (wizardLocationInput) wizardLocationInput.value = bookingWizardState.location;
       renderWizardSummary();
+      renderWizardConfirmation();
     }
 
     function setMapCurrentLocation(coords, zoom = 15) {
@@ -1018,14 +1025,16 @@
         }
 
         navigator.geolocation.getCurrentPosition(
-          (position) => {
+          async (position) => {
             const coords = {
               lat: position.coords.latitude,
               lng: position.coords.longitude
             };
             setMapCurrentLocation(coords, zoom);
             if (updateWizard) {
-              setWizardLocation('My current location');
+              const displayName = await reverseGeocodeLocation(coords);
+              const parts = splitLocationText(displayName || 'My current location');
+              setWizardLocation(parts.primary, coords, displayName || parts.primary);
             }
             resolve(coords);
           },
@@ -1164,13 +1173,17 @@
         step: 1,
         location: '',
         locationDetail: '',
+        locationLabel: '',
+        locationCoords: null,
         selectedVehicleId: '',
         selectedPackage: membershipTier,
         addons: { engine: false, interior: false },
         payment: 'arrival',
         membershipTier,
         perkWashes: membershipTier === 'gold' ? 1 : membershipTier === 'platinum' ? 2 : 0,
-        perkEngine: membershipTier === 'gold' ? 1 : membershipTier === 'platinum' ? 2 : 0
+        perkEngine: membershipTier === 'gold' ? 1 : membershipTier === 'platinum' ? 2 : 0,
+        submitted: false,
+        bookingId: null
       };
     }
 
@@ -1285,8 +1298,12 @@
       if (!bookingWizardState || !item) return;
 
       const parts = splitLocationText(item.display_name);
-      bookingWizardState.location = parts.primary;
-      if (wizardLocationInput) wizardLocationInput.value = parts.primary;
+      const coords = { lat: Number(item.lat), lng: Number(item.lon) };
+      setWizardLocation(parts.primary, coords, item.display_name || parts.primary);
+      bookingWizardState.locationDetail = parts.secondary || bookingWizardState.locationDetail || '';
+      if (wizardLocationNotes && wizardLocationNotes.value !== bookingWizardState.locationDetail) {
+        wizardLocationNotes.value = bookingWizardState.locationDetail;
+      }
       hideWizardLocationResults();
       renderWizardSummary();
       renderWizardConfirmation();
@@ -1334,7 +1351,15 @@
       const interiorPrice = interiorAddon ? getAddonPrice(interiorAddon) : 0;
       const total = servicePrice + enginePrice + interiorPrice;
 
-      lineItems.push({ label: 'Location', value: bookingWizardState.location || 'Enter your address' });
+      lineItems.push({
+        label: 'Location',
+        value: bookingWizardState.locationCoords
+          ? `${bookingWizardState.location || 'Selected location'} · ${formatLocationCoords(bookingWizardState.locationCoords)}`
+          : (bookingWizardState.location || 'Enter your address')
+      });
+      if (bookingWizardState.locationLabel && bookingWizardState.locationLabel !== bookingWizardState.location) {
+        lineItems.push({ label: 'Place', value: bookingWizardState.locationLabel });
+      }
       lineItems.push({
         label: vehicle ? `${vehicle.model || 'Vehicle'}${vehicle.plate ? ` • ${vehicle.plate}` : ''}` : 'Vehicle',
         value: vehicle ? (vehicle.color || '—') : 'Select a saved vehicle'
@@ -1476,14 +1501,73 @@
       const totals = getWizardTotals();
       const vehicleLabel = vehicle ? `${vehicle.model || 'Vehicle'}${vehicle.plate ? ` • ${vehicle.plate}` : ''}` : 'Select a vehicle';
 
-      titleEl.textContent = bookingWizardState ? 'Booking draft' : 'No booking selected';
-      statusEl.textContent = bookingWizardState ? 'Draft' : 'Waiting';
+      titleEl.textContent = bookingWizardState?.submitted
+        ? `Booking confirmed${bookingWizardState.bookingId ? ` #${bookingWizardState.bookingId.slice(-6).toUpperCase()}` : ''}`
+        : (bookingWizardState ? 'Booking draft' : 'No booking selected');
+      statusEl.textContent = bookingWizardState?.submitted ? 'Submitted' : (bookingWizardState ? 'Draft' : 'Waiting');
       vehicleEl.textContent = vehicleLabel;
       serviceEl.textContent = pkg?.title || '—';
-      locationEl.textContent = bookingWizardState?.location || 'Enter a location';
+      locationEl.textContent = bookingWizardState?.locationCoords
+        ? `${bookingWizardState.location || 'Selected location'} | ${bookingWizardState.locationDetail ? `${bookingWizardState.locationDetail} | ` : ''}${formatLocationCoords(bookingWizardState.locationCoords)}`
+        : (bookingWizardState?.location || 'Enter a location');
       totalEl.textContent = formatMoney(totals.total || 0);
       paymentEl.textContent = bookingWizardState?.payment === 'arrival' ? 'Pay on Arrival' : 'Online Card';
-      noteEl.textContent = bookingWizardState ? 'Ready to submit' : 'Waiting for booking details';
+      noteEl.textContent = bookingWizardState?.submitted
+        ? 'Booking sent to dispatch'
+        : (bookingWizardState ? 'Ready to submit' : 'Waiting for booking details');
+    }
+
+    async function submitWizardBooking() {
+      if (!bookingWizardState || bookingSubmissionInFlight || bookingWizardState.submitted) return false;
+
+      const locationCoords = bookingWizardState.locationCoords || currentLocationCoords;
+      if (!locationCoords || locationCoords.lat == null || locationCoords.lng == null) {
+        alert('Please choose a location on the map or from the search results first.');
+        return false;
+      }
+
+      const pkg = getSelectedPackage();
+      const vehicle = getSelectedVehicle();
+      const totals = getWizardTotals();
+      bookingSubmissionInFlight = true;
+
+      try {
+        if (!window.EcoWash || typeof window.EcoWash.createBooking !== 'function') {
+          throw new Error('Booking service unavailable.');
+        }
+
+        const result = await window.EcoWash.createBooking({
+          customerId: currentUser?.uid || null,
+          customerLocation: locationCoords,
+          customerLocationName: bookingWizardState.location || '',
+          customerLocationLabel: bookingWizardState.locationLabel || bookingWizardState.location || '',
+          customerLocationDetail: bookingWizardState.locationDetail || '',
+          service: pkg?.title || '',
+          serviceKey: pkg?.key || '',
+          vehicle: vehicle ? (vehicle.label || vehicle.model || '') : '',
+          vehicleId: bookingWizardState.selectedVehicleId || '',
+          address: bookingWizardState.location || bookingWizardState.locationLabel || '',
+          area: bookingWizardState.locationDetail || '',
+          notes: bookingWizardState.locationDetail || '',
+          payment: bookingWizardState.payment,
+          price: totals.total
+        });
+
+        if (!result?.success) {
+          throw new Error(result?.error || 'Booking could not be created.');
+        }
+
+        bookingWizardState.submitted = true;
+        bookingWizardState.bookingId = result.id || null;
+        renderWizardConfirmation();
+        return true;
+      } catch (error) {
+        console.error('Booking submission failed:', error);
+        alert(error.message || 'Unable to submit booking.');
+        return false;
+      } finally {
+        bookingSubmissionInFlight = false;
+      }
     }
 
     function updateWizardFooter() {
@@ -1974,7 +2058,7 @@
       const fallbackCenter = getFallbackMapCenter();
       map = L.map('map', { zoomControl: false, attributionControl: false, preferCanvas: true }).setView([fallbackCenter.lat, fallbackCenter.lng], 7);
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png', {
         maxZoom: 20,
         subdomains: 'abcd',
         attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
@@ -1985,6 +2069,20 @@
       });
 
       focusMapOnCurrentVisitorLocation();
+
+      map.on('click', async (event) => {
+        if (!bookingWizardState) return;
+        const coords = { lat: event.latlng.lat, lng: event.latlng.lng };
+        const displayName = await reverseGeocodeLocation(coords);
+        const parts = splitLocationText(displayName || 'Picked location');
+        setWizardLocation(parts.primary, coords, displayName || parts.primary);
+        if (wizardLocationNotes && !bookingWizardState.locationDetail) {
+          bookingWizardState.locationDetail = parts.secondary || bookingWizardState.locationDetail || '';
+          wizardLocationNotes.value = bookingWizardState.locationDetail;
+        }
+        setMapCurrentLocation(coords, 15);
+        hideWizardLocationResults();
+      });
     }
 
     function showSection(section, openSheetOnMobile = true) {
@@ -2123,7 +2221,9 @@
       wizardNextBtn?.addEventListener('click', () => {
         if (!bookingWizardState) return;
         if (bookingWizardState.step === 4) {
-          goToWizardStep(5);
+          submitWizardBooking().then((submitted) => {
+            if (submitted) goToWizardStep(5);
+          });
           return;
         }
         if (bookingWizardState.step === 5) {
@@ -2165,11 +2265,15 @@
       wizardStage?.addEventListener('click', (event) => {
         const suggestion = event.target.closest('.wizard-suggestion');
         if (suggestion && bookingWizardState) {
-          setWizardLocation(suggestion.dataset.location || '');
           const coordsText = suggestion.dataset.locationCoords || '';
           const [latRaw, lngRaw] = coordsText.split(',');
           const lat = Number(latRaw);
           const lng = Number(lngRaw);
+          setWizardLocation(
+            suggestion.dataset.location || '',
+            Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng } : null,
+            suggestion.dataset.location || ''
+          );
           if (Number.isFinite(lat) && Number.isFinite(lng)) {
             setMapCurrentLocation({ lat, lng }, 15);
           }

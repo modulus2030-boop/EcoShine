@@ -14,6 +14,7 @@ class WorkerPortal {
     this.workerMapRouteLayer = null;
     this.workerMapWorkerUnsub = null;
     this.workerMapJobUnsub = null;
+    this.promptedRatings = {}; // Track prompted ratings per jobId instead of a single global boolean
     this.init();
   }
 
@@ -119,8 +120,15 @@ class WorkerPortal {
     }
   }
 
+  // Helper method to resolve server timestamps across environments safely
+  getServerTimestamp() {
+    if (window.firebaseService && window.firebaseService.FieldValue && window.firebaseService.FieldValue.serverTimestamp) {
+      return window.firebaseService.FieldValue.serverTimestamp();
+    }
+    return firebase.firestore.FieldValue.serverTimestamp();
+  }
+
   setupRealtimeListeners() {
-    // Only attach once the worker is authenticated (avoids permission-denied on load).
     if (this.listenersSetup) return;
     if (!window.firebaseService || !window.firebaseService.db || !this.currentUser) return;
     this.listenersSetup = true;
@@ -378,20 +386,19 @@ class WorkerPortal {
     this.showNotification('Customer location is not available for this job.', 'error');
   }
 
-  // Start streaming this washer's live GPS + FCM + retry any pending dispatch.
   startWasherSession() {
     if (!this.currentUser) return;
     const uid = this.currentUser.uid;
 
     if (window.EcoWash) {
-      // Mark available so the matching engine can dispatch to us.
+      const ts = this.getServerTimestamp();
       window.firebaseService.db.collection('liveLocations').doc(uid).set(
-        { available: true, online: true, timestamp: firebase.firestore.FieldValue.serverTimestamp() },
+        { available: true, online: true, timestamp: ts },
         { merge: true }
       ).catch(() => {});
       window.firebaseService.db.collection('washers').doc(uid).set({
         status: 'available',
-        lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        lastUpdatedAt: ts
       }, { merge: true }).catch(() => {});
 
       this._gpsWatch = window.EcoWash.startWasherLocationStream(uid, { available: true });
@@ -407,7 +414,6 @@ class WorkerPortal {
   }
 
   switchTab(tabName) {
-    // Update tab buttons
     document.querySelectorAll('.tab-btn').forEach(btn => {
       if (btn.dataset.tab === tabName) {
         btn.classList.add('active', 'bg-emerald-500/20', 'border-emerald-500/30', 'text-emerald-400');
@@ -418,13 +424,11 @@ class WorkerPortal {
       }
     });
 
-    // Show/hide tab content
     document.querySelectorAll('.tab-content').forEach(content => {
       content.classList.add('hidden');
     });
     document.getElementById(`tab-${tabName}`)?.classList.remove('hidden');
 
-    // Load data for specific tab
     if (tabName === 'history') {
       this.loadJobHistory();
     }
@@ -499,7 +503,6 @@ class WorkerPortal {
         [STATUS.COMPLETED]: 'Completed'
       }[job.status] || job.status;
 
-      // Status-aware action buttons (Step 7, 8, 9).
       let actions = '';
       if (job.status === STATUS.ASSIGNED) {
         actions = `<button onclick="workerPortal.startEnRoute('${job.id}')" class="px-6 py-2.5 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-all text-sm font-medium">
@@ -545,7 +548,6 @@ class WorkerPortal {
             </div>
           </div>
 
-          <!-- Progress Tracker -->
           <div class="mt-4 pt-4 border-t border-white/5">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
@@ -620,14 +622,12 @@ class WorkerPortal {
     try {
       await window.EcoWash.acceptBooking(jobId);
       this.showNotification('Job accepted! Navigate to client location.', 'success');
-      this.renderAvailableJobs();
     } catch (error) {
       console.error('Error accepting job:', error);
       this.showNotification('Failed to accept job', 'error');
     }
   }
 
-  // STEP 7 - Launch external Google Maps navigation + move to "En Route".
   async startEnRoute(jobId) {
     const jobDoc = await window.firebaseService.db.collection('bookings').doc(jobId).get();
     const job = jobDoc.exists ? jobDoc.data() : null;
@@ -635,37 +635,37 @@ class WorkerPortal {
       const c = job.customerLocation;
       window.EcoWash.openNavigation(c.latitude, c.longitude, job.address || '');
     }
+    const ts = this.getServerTimestamp();
     await window.EcoWash.updateBookingStatus(jobId, window.EcoWash.STATUS.EN_ROUTE, {
-      enRouteAt: firebase.firestore.FieldValue.serverTimestamp()
+      enRouteAt: ts
     });
     if (this.currentUser) {
       await window.firebaseService.db.collection('washers').doc(this.currentUser.uid).set({
         status: 'en-route',
         activeBookingId: jobId,
-        lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        lastUpdatedAt: ts
       }, { merge: true });
     }
     this.showNotification('En route to customer.', 'success');
   }
 
-  // STEP 8 - Washer has arrived on-site.
   async markArrived(jobId) {
     await window.EcoWash.updateBookingStatus(jobId, window.EcoWash.STATUS.ARRIVED, {
-      arrivedAt: firebase.firestore.FieldValue.serverTimestamp()
+      arrivedAt: this.getServerTimestamp()
     });
     this.showNotification('Marked as arrived.', 'success');
   }
 
-  // STEP 8 - Begin the wash.
   async startWash(jobId) {
+    const ts = this.getServerTimestamp();
     await window.EcoWash.updateBookingStatus(jobId, window.EcoWash.STATUS.WASHING, {
-      washStartedAt: firebase.firestore.FieldValue.serverTimestamp()
+      washStartedAt: ts
     });
     if (this.currentUser) {
       await window.firebaseService.db.collection('washers').doc(this.currentUser.uid).set({
         status: 'washing',
         activeBookingId: jobId,
-        lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        lastUpdatedAt: ts
       }, { merge: true });
     }
     this.showNotification('Wash started.', 'success');
@@ -715,20 +715,18 @@ class WorkerPortal {
         status: newStatus
       });
 
-      // Reflect availability in the live-location doc so the matching
-      // engine includes/excludes this washer.
+      const ts = this.getServerTimestamp();
       await window.firebaseService.db.collection('liveLocations').doc(this.currentUser.uid).set(
-        { online: goingOnline, available: goingOnline, timestamp: firebase.firestore.FieldValue.serverTimestamp() },
+        { online: goingOnline, available: goingOnline, timestamp: ts },
         { merge: true }
       );
       await window.firebaseService.db.collection('washers').doc(this.currentUser.uid).set({
         status: goingOnline ? 'available' : 'offline',
-        lastUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        lastUpdatedAt: ts
       }, { merge: true });
 
       if (goingOnline) {
         this.startWasherSession();
-        // Re-run dispatch for any bookings waiting on a washer.
         if (window.EcoWash) window.EcoWash.retryPendingDispatch().catch(() => {});
       } else {
         this.stopWasherSession();
@@ -744,10 +742,11 @@ class WorkerPortal {
   }
 
   promptCompletedJobRating() {
-    if (!this.currentUser || this.hasPromptedRating) return;
+    if (!this.currentUser) return;
     const completedJob = this.activeJobs.find(job => job.status === (window.EcoWash && window.EcoWash.STATUS && window.EcoWash.STATUS.COMPLETED));
-    if (!completedJob) return;
-    this.hasPromptedRating = true;
+    if (!completedJob || this.promptedRatings[completedJob.id]) return;
+    
+    this.promptedRatings[completedJob.id] = true;
     window.EcoWash.promptRating({
       bookingId: completedJob.id,
       reviewerId: this.currentUser.uid,
@@ -809,7 +808,7 @@ class WorkerPortal {
 async function showWorkerForgotPassword() {
   const email = prompt('Enter your worker email to receive a password reset link:');
   if (email) {
-    const result = await window.firebaseService.sendPasswordResetEmail(email);
+    const result = await window.authService.sendPasswordResetEmail(email);
     if (result.success) {
       alert(result.message);
     } else {
